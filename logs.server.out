@@ -1,0 +1,24 @@
+ℹ️  RAG index cargado: 98 items.
+ℹ️  Intent index cargado: 5 intents.
+➡️  OpenAI habilitado. true
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3005
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (/Users/ferneysalas/Desktop/Fer bot/ferbot-api/node_modules/express/lib/application.js:635:24)
+    at /Users/ferneysalas/Desktop/Fer bot/ferbot-api/server.js:582:7
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3005
+}
+
+Node.js v24.9.0

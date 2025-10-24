@@ -1,0 +1,38 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FerBot API",
+    "version": "1.0.0",
+    "description": "Acciones para entrenar y pedir sugerencias a FerBot."
+  },
+  "servers": [
+    { "url": "https://carly-subcerebral-nongenealogically.ngrok-free.dev" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Prueba de vida",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "service": { "type": "string" },
+                    "time": { "type": "string" }
+                  },
+                  "required": ["ok", "service", "time"],
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
