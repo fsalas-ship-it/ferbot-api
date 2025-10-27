@@ -1,0 +1,98 @@
+{
+  "cert": {
+    "sondeo": {
+      "0": {
+        "shown": 1,
+        "wins": 0
+      }
+    },
+    "rebatir": {
+      "0": {
+        "shown": 1,
+        "wins": 1
+      }
+    },
+    "pre_cierre": {
+      "0": {
+        "shown": 1,
+        "wins": 0
+      }
+    },
+    "cierre": {
+      "0": {
+        "shown": 1,
+        "wins": 0
+      }
+    },
+    "integracion": {
+      "0": {
+        "shown": 1,
+        "wins": 0
+      }
+    }
+  },
+  "tiempo": {
+    "sondeo": {
+      "0": {
+        "shown": 4,
+        "wins": 0
+      }
+    },
+    "rebatir": {
+      "0": {
+        "shown": 4,
+        "wins": 1
+      }
+    },
+    "pre_cierre": {
+      "0": {
+        "shown": 4,
+        "wins": 0
+      }
+    },
+    "cierre": {
+      "0": {
+        "shown": 4,
+        "wins": 0
+      }
+    },
+    "integracion": {
+      "0": {
+        "shown": 4,
+        "wins": 0
+      }
+    }
+  },
+  "generico": {
+    "sondeo": {
+      "0": {
+        "shown": 6,
+        "wins": 0
+      }
+    },
+    "rebatir": {
+      "0": {
+        "shown": 6,
+        "wins": 0
+      }
+    },
+    "pre_cierre": {
+      "0": {
+        "shown": 6,
+        "wins": 0
+      }
+    },
+    "cierre": {
+      "0": {
+        "shown": 6,
+        "wins": 0
+      }
+    },
+    "integracion": {
+      "0": {
+        "shown": 6,
+        "wins": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,1689 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "intent": "tiempo",
+      "text": "Las rutas se adaptan a tu ritmo y muestran progreso visible cada semana."
+    },
+    {
+      "id": 2,
+      "intent": "tiempo",
+      "text": "Clases desde 5 minutos mantienen constancia incluso con agenda llena."
+    },
+    {
+      "id": 3,
+      "intent": "tiempo",
+      "text": "App offline y rutas paso a paso garantizan aprendizaje sin depender de horario."
+    },
+    {
+      "id": 4,
+      "intent": "precio",
+      "text": "Invertir en Platzi devuelve valor real: más oportunidades y mejores ingresos."
+    },
+    {
+      "id": 5,
+      "intent": "precio",
+      "text": "El plan Expert ofrece acceso completo a 17 escuelas con el mejor costo-beneficio."
+    },
+    {
+      "id": 6,
+      "intent": "precio",
+      "text": "Cada certificación lograda mejora tu perfil profesional y retorno de inversión."
+    },
+    {
+      "id": 7,
+      "intent": "cert",
+      "text": "Certificados digitales verificables en LinkedIn y físicos enviados a casa validan tu progreso."
+    },
+    {
+      "id": 8,
+      "intent": "cert",
+      "text": "Las certificaciones Platzi fortalecen empleabilidad y confianza profesional."
+    },
+    {
+      "id": 9,
+      "intent": "_default",
+      "text": "Platzi transforma carreras con rutas, comunidad y certificaciones verificables."
+    },
+    {
+      "id": 10,
+      "intent": "_default",
+      "text": "Cada paso en Platzi impulsa progreso profesional y orgullo personal."
+    },
+    {
+      "id": 11,
+      "intent": "tiempo",
+      "text": "Las rutas se adaptan a tu ritmo y muestran progreso visible cada semana."
+    },
+    {
+      "id": 12,
+      "intent": "tiempo",
+      "text": "Clases desde 5 minutos mantienen constancia incluso con agenda llena."
+    },
+    {
+      "id": 13,
+      "intent": "tiempo",
+      "text": "App offline y rutas paso a paso garantizan aprendizaje sin depender de horario."
+    },
+    {
+      "id": 14,
+      "intent": "precio",
+      "text": "Invertir en Platzi devuelve valor real: más oportunidades y mejores ingresos."
+    },
+    {
+      "id": 15,
+      "intent": "precio",
+      "text": "El plan Expert ofrece acceso completo a 17 escuelas con el mejor costo-beneficio."
+    },
+    {
+      "id": 16,
+      "intent": "precio",
+      "text": "Cada certificación lograda mejora tu perfil profesional y retorno de inversión."
+    },
+    {
+      "id": 17,
+      "intent": "cert",
+      "text": "Certificados digitales verificables en LinkedIn y físicos enviados a casa validan tu progreso."
+    },
+    {
+      "id": 18,
+      "intent": "cert",
+      "text": "Las certificaciones Platzi fortalecen empleabilidad y confianza profesional."
+    },
+    {
+      "id": 19,
+      "intent": "_default",
+      "text": "Platzi transforma carreras con rutas, comunidad y certificaciones verificables."
+    },
+    {
+      "id": 20,
+      "intent": "_default",
+      "text": "Cada paso en Platzi impulsa progreso profesional y orgullo personal."
+    },
+    {
+      "id": 21,
+      "intent": "tiempo",
+      "text": "Las rutas se adaptan a tu ritmo y muestran progreso visible cada semana."
+    },
+    {
+      "id": 22,
+      "intent": "tiempo",
+      "text": "Clases desde 5 minutos mantienen constancia incluso con agenda llena."
+    },
+    {
+      "id": 23,
+      "intent": "tiempo",
+      "text": "App offline y rutas paso a paso garantizan aprendizaje sin depender de horario."
+    },
+    {
+      "id": 24,
+      "intent": "precio",
+      "text": "Invertir en Platzi devuelve valor real: más oportunidades y mejores ingresos."
+    },
+    {
+      "id": 25,
+      "intent": "precio",
+      "text": "El plan Expert ofrece acceso completo a 17 escuelas con el mejor costo-beneficio."
+    },
+    {
+      "id": 26,
+      "intent": "precio",
+      "text": "Cada certificación lograda mejora tu perfil profesional y retorno de inversión."
+    },
+    {
+      "id": 27,
+      "intent": "cert",
+      "text": "Certificados digitales verificables en LinkedIn y físicos enviados a casa validan tu progreso."
+    },
+    {
+      "id": 28,
+      "intent": "cert",
+      "text": "Las certificaciones Platzi fortalecen empleabilidad y confianza profesional."
+    },
+    {
+      "id": 29,
+      "intent": "_default",
+      "text": "Platzi transforma carreras con rutas, comunidad y certificaciones verificables."
+    },
+    {
+      "id": 30,
+      "intent": "_default",
+      "text": "Cada paso en Platzi impulsa progreso profesional y orgullo personal."
+    },
+    {
+      "id": 31,
+      "intent": "tiempo",
+      "text": "Clases cortas + rutas paso a paso = constancia aun con poco tiempo."
+    },
+    {
+      "id": 32,
+      "intent": "precio",
+      "text": "Ver el plan como inversión: acceso total a rutas, comunidad y certificados verificables."
+    },
+    {
+      "id": 33,
+      "intent": "tiempo",
+      "text": "Clases desde 5 minutos, app offline y rutas paso a paso mantienen constancia y hábito."
+    },
+    {
+      "id": 34,
+      "intent": "competencia",
+      "text": "Platzi ofrece rutas completas, comunidad y certificación continua, no solo cursos aislados."
+    },
+    {
+      "id": 35,
+      "intent": "cert",
+      "text": "Certificaciones digitales verificables por curso y rutas profesionales, reconocidas por empresas."
+    },
+    {
+      "id": 36,
+      "intent": "motivacion",
+      "text": "Mantener propósito y estructura; Expert ayuda a sostener la motivación con resultados semanales."
+    },
+    {
+      "id": 37,
+      "intent": "promocion",
+      "text": "Beneficios por tiempo limitado que premian la acción. Urgencia sin presión, enfocada en oportunidad."
+    },
+    {
+      "id": 38,
+      "intent": "ingles",
+      "text": "El inglés amplía oportunidades laborales; rutas desde fundamentos hasta certificaciones TOEFL/IELTS."
+    },
+    {
+      "id": 39,
+      "intent": "programacion",
+      "text": "Habilidad con alta demanda; rutas desde cero a profesional, con proyectos reales y comunidad técnica."
+    },
+    {
+      "id": 40,
+      "intent": "ia",
+      "text": "IA aplicada a distintas áreas; aprendizaje desde fundamentos hasta machine learning práctico."
+    },
+    {
+      "id": 41,
+      "intent": "negocios",
+      "text": "Formación en liderazgo, estrategia y negocios digitales para crecimiento profesional y emprendimiento."
+    },
+    {
+      "id": 42,
+      "intent": "precio",
+      "text": "Gracias por tu mensaje, {name} 🙌. Veo que te interesa el precio especial; antes de darte los detalles, ¿podrías contarme en qué programa o área te gustaría enfocarte?"
+    },
+    {
+      "id": 43,
+      "intent": "precio",
+      "text": "Hola {name} 🙌. Vi que te interesa el precio especial. Antes de entrar en detalles, ¿puedes contarme qué programa te llamó la atención? Así te doy la información exacta y resolvemos tus dudas juntos."
+    },
+    {
+      "id": 44,
+      "intent": "precio",
+      "text": "Hola {name}, ¡qué buena decisión interesarte en el precio especial! 💚 Cuéntame, ¿en qué programa o ruta te gustaría avanzar? Así te comparto los detalles más útiles para ti."
+    },
+    {
+      "id": 45,
+      "intent": "precio",
+      "text": "Hola {name}, genial que estés considerando aprovechar la promoción ✨. ¿Qué programa o meta profesional te gustaría alcanzar? Así veo cuál plan se ajusta mejor a ti."
+    },
+    {
+      "id": 46,
+      "intent": "precio",
+      "text": "Hola {name}, genial verte por acá 🚀. Antes de hablar del precio, me gustaría conocerte un poco más: ¿en qué programa estás interesado? Así puedo darte más información y aclarar tus dudas."
+    },
+    {
+      "id": 47,
+      "intent": "precio",
+      "text": "Hola {name}, me alegra mucho verte explorando Platzi 🎓. Antes de hablar del precio, cuéntame un poco: ¿qué tema o programa te gustaría estudiar primero?"
+    },
+    {
+      "id": 48,
+      "intent": "precio",
+      "text": "Qué emoción que estés interesado en el precio especial, {name} 🚀. ¿Ya tienes en mente algún programa o estás explorando opciones? Así te ayudo a elegir la mejor ruta."
+    },
+    {
+      "id": 49,
+      "intent": "precio",
+      "text": "Qué gusto verte, {name} ✨. Me alegra que quieras aprovechar el precio especial. Cuéntame, ¿en qué programa o área te gustaría avanzar? Así te explico las opciones y te ayudo a decidir tranquilo."
+    },
+    {
+      "id": 50,
+      "intent": "precio",
+      "text": "Tu inversión empieza a rendir frutos. Cada curso completado refuerza tu perfil profesional y te acerca a nuevas oportunidades. ¿Qué logro te gustaría compartir?"
+    },
+    {
+      "id": 51,
+      "intent": "precio",
+      "text": "Has invertido con inteligencia. Tus avances demuestran que cada decisión cuenta. ¿Qué nuevo objetivo quieres planear?"
+    },
+    {
+      "id": 52,
+      "intent": "precio",
+      "text": "Cada mes que avanzas, tu inversión se transforma en valor real. ¿Qué habilidad te gustaría sumar a tu perfil ahora?"
+    },
+    {
+      "id": 53,
+      "intent": "precio",
+      "text": "Tu crecimiento ya está generando retorno. Seguir aprendiendo solo lo multiplica. ¿Qué nueva meta te gustaría plantearte?"
+    },
+    {
+      "id": 54,
+      "intent": "precio",
+      "text": "Invertir en ti fue la mejor decisión. Tus resultados hablan por sí solos. ¿Qué te gustaría reforzar a continuación?"
+    },
+    {
+      "id": 55,
+      "intent": "precio",
+      "text": "Tus logros validan tu inversión. Cada certificado es una señal de crecimiento. ¿Qué reto te gustaría asumir ahora?"
+    },
+    {
+      "id": 56,
+      "intent": "precio",
+      "text": "Ver tus resultados tangibles demuestra que el valor está en tu progreso. ¿Qué nueva ruta te gustaría explorar?"
+    },
+    {
+      "id": 57,
+      "intent": "precio",
+      "text": "Has convertido tu inversión en progreso real. Sigamos ese camino. ¿Qué área te gustaría potenciar en este ciclo?"
+    },
+    {
+      "id": 58,
+      "intent": "precio",
+      "text": "Hola {name} 🙌. Antes de hablar del precio, cuéntame: ¿en qué programa te gustaría avanzar? Así te doy el dato exacto y opciones claras."
+    },
+    {
+      "id": 59,
+      "intent": "precio",
+      "text": "Genial que quieras aprovechar una promo, {name}. ¿Te interesa tecnología, inglés o liderazgo? Desde eso ajusto la info de precio."
+    },
+    {
+      "id": 60,
+      "intent": "_default",
+      "text": "¡Hey! 😄 ¿Ya viste algún curso o programa que te llame la atención? Me gusta conocer qué quieren lograr quienes arrancan con la cuenta gratuita, así puedo pasarte algo que les sirva de impulso."
+    },
+    {
+      "id": 61,
+      "intent": "_default",
+      "text": "¡Hey! 😊 ¿Cómo va todo? Vi que ya tienes cuenta en Platzi. ¿Qué te gustaría aprender o mejorar por ahora? Hay muchas rutas para explorar según lo que busques."
+    },
+    {
+      "id": 62,
+      "intent": "_default",
+      "text": "¡Hola! 👋 ¿Qué tal va todo? Si ya estuviste viendo la plataforma, cuéntame: ¿qué programa o tema te atrapó más? Me encanta saber qué motiva a cada estudiante cuando empieza."
+    },
+    {
+      "id": 63,
+      "intent": "_default",
+      "text": "¡Hola! 👋 Qué bueno verte por acá. ¿Hay algún tema o programa que te haya despertado curiosidad últimamente? A veces con solo una ruta se abre todo un camino nuevo, y me encantaría saber por dónde te gustaría empezar."
+    },
+    {
+      "id": 64,
+      "intent": "_default",
+      "text": "¡Hola! 😊 Qué gusto tenerte por aquí. Vi que ya empezaste a explorar Platzi, ¿qué temas o programas te han llamado más la atención hasta ahora? Me interesa saber qué te gustaría seguir desarrollando para orientarte mejor en las rutas que pueden impulsarte."
+    },
+    {
+      "id": 65,
+      "intent": "_default",
+      "text": "¡Qué gusto saludarte! 🌟 A veces solo se necesita un punto de partida. ¿Qué tema te gustaría dominar o mejorar con tu suscripción actual? Puedo mostrarte cómo avanzar paso a paso desde ahí."
+    },
+    {
+      "id": 66,
+      "intent": "_default",
+      "text": "Hola 😊 A veces lo más difícil es decidir por dónde empezar, ¿verdad? ¿Qué te inspira más: aprender algo nuevo, mejorar tu trabajo actual o prepararte para un cambio? Desde ahí te oriento mejor."
+    },
+    {
+      "id": 67,
+      "intent": "_default",
+      "text": "Hola, ¿cómo estás? Me alegra saber que ya estás conociendo Platzi. ¿Qué área o programa te gustaría fortalecer en esta etapa? Así puedo orientarte hacia rutas que se ajusten a tus objetivos."
+    },
+    {
+      "id": 68,
+      "intent": "_default",
+      "text": "Qué alegría verte avanzar. Cada certificado que sumas refuerza tu perfil y abre nuevas oportunidades. ¿Qué objetivo te gustaría definir para este mes?"
+    },
+    {
+      "id": 69,
+      "intent": "_default",
+      "text": "Tu constancia inspira. Aprender un poco cada día genera grandes resultados. ¿Qué nueva habilidad quieres fortalecer ahora?"
+    },
+    {
+      "id": 70,
+      "intent": "_default",
+      "text": "Vas en gran camino. Cada ruta completada te deja mejor preparado para tus objetivos. ¿Qué sigue para ti?"
+    },
+    {
+      "id": 71,
+      "intent": "_default",
+      "text": "Increíble progreso. Tu esfuerzo es la clave del éxito. ¿Te gustaría que revisemos nuevas rutas para seguir creciendo?"
+    },
+    {
+      "id": 72,
+      "intent": "_default",
+      "text": "Tu crecimiento es evidente. Ya tienes bases sólidas, ahora puedes aspirar a nuevas metas. ¿Qué tema te gustaría explorar a continuación?"
+    },
+    {
+      "id": 73,
+      "intent": "_default",
+      "text": "Ver tu avance motiva. Cada certificado obtenido refuerza tu perfil profesional. ¿Qué siguiente paso te gustaría dar?"
+    },
+    {
+      "id": 74,
+      "intent": "_default",
+      "text": "Tu disciplina está marcando la diferencia. Lo que logras hoy impacta directamente en tus próximos desafíos. ¿Qué objetivo te gustaría planear ahora?"
+    },
+    {
+      "id": 75,
+      "intent": "_default",
+      "text": "Cada semana de progreso suma. Tu aprendizaje ya se refleja en resultados. ¿Qué nueva ruta te gustaría iniciar?"
+    },
+    {
+      "id": 76,
+      "intent": "_default",
+      "text": "¡Hey! 😄 ¿Qué tema te gustaría dominar este año? En Platzi hay rutas para tecnología, inglés, diseño o liderazgo."
+    },
+    {
+      "id": 77,
+      "intent": "_default",
+      "text": "¡Hola! 😊 Cuéntame un poco sobre ti, ¿qué te motivó a registrarte en Platzi? Me interesa saber si buscas mejorar en tu trabajo, aprender algo nuevo o explorar un cambio profesional."
+    },
+    {
+      "id": 78,
+      "intent": "_default",
+      "text": "¡Qué gusto saludarte! 👋 ¿Tenías algún objetivo en mente al entrar a Platzi? A veces empezar con una meta clara hace más fácil avanzar paso a paso."
+    },
+    {
+      "id": 79,
+      "intent": "_default",
+      "text": "Hola 😊 ¿Qué fue lo primero que te llamó la atención de Platzi? ¿Estás pensando en una habilidad específica o solo explorando por ahora?"
+    },
+    {
+      "id": 80,
+      "intent": "_default",
+      "text": "Hola, me alegra verte por aquí. Cuéntame, ¿qué objetivo te gustaría alcanzar con Platzi: un ascenso, mejorar tus ingresos o prepararte para un cambio laboral? Así te guío mejor."
+    },
+    {
+      "id": 81,
+      "intent": "_default",
+      "text": "Qué gusto saludarte. Si pudieras lograr un avance real en los próximos 60 días, ¿qué resultado te haría sentir orgulloso: aprender algo nuevo o consolidar tu carrera?"
+    },
+    {
+      "id": 82,
+      "intent": "_default",
+      "text": "Vale la pena tener claridad. ¿Buscas avanzar en tu empleo actual o prepararte para una nueva oportunidad profesional? Así encontramos la ruta ideal para ti."
+    },
+    {
+      "id": 83,
+      "intent": "_default",
+      "text": "Cada persona llega con un propósito distinto. ¿Qué esperas conseguir en esta etapa: aumentar tu salario, certificarte o fortalecer una habilidad específica?"
+    },
+    {
+      "id": 84,
+      "intent": "_default",
+      "text": "Si hoy pudieras mejorar un área de tu carrera, ¿cuál elegirías? Desde ahí puedo ayudarte a construir un plan de aprendizaje enfocado."
+    },
+    {
+      "id": 85,
+      "intent": "_default",
+      "text": "Cuéntame algo: ¿qué te motivó a retomar tu aprendizaje? Entenderlo me ayuda a proponerte una ruta que realmente impulse tu crecimiento."
+    },
+    {
+      "id": 86,
+      "intent": "_default",
+      "text": "Hay muchas formas de avanzar, pero lo importante es tener dirección. ¿Qué meta profesional tienes en mente para los próximos meses?"
+    },
+    {
+      "id": 87,
+      "intent": "_default",
+      "text": "Me alegra verte dando este paso. ¿Cuál es el resultado que más te gustaría conseguir con tu formación: empleo, ascenso o estabilidad?"
+    },
+    {
+      "id": 88,
+      "intent": "precio",
+      "text": "¡Hey! 👋 ¿Tienes alguna meta en los próximos 30 o 60 días? Puedo ayudarte a elegir una ruta con resultados visibles desde el inicio."
+    },
+    {
+      "id": 89,
+      "intent": "precio",
+      "text": "¡Hey! 👋 Con 10 minutos al día puedes avanzar bastante. ¿En qué tema te gustaría aplicarlo? Te muestro cómo hacerlo desde tu cuenta."
+    },
+    {
+      "id": 90,
+      "intent": "precio",
+      "text": "¡Hola! 🌟 Qué bueno verte explorando Platzi. Si me cuentas qué te gustaría conseguir con tus estudios, puedo mostrarte rutas que te ayuden a avanzar más rápido."
+    },
+    {
+      "id": 91,
+      "intent": "precio",
+      "text": "¡Hola! 😄 Dime qué área te interesa —tecnología, inglés, diseño o liderazgo— y te recomiendo por dónde empezar para ver progreso rápido."
+    },
+    {
+      "id": 92,
+      "intent": "precio",
+      "text": "¡Hola! 🙌 Si te comparto una ruta para dar tus primeros pasos según lo que quieres aprender, ¿te gustaría probarla?"
+    },
+    {
+      "id": 93,
+      "intent": "precio",
+      "text": "¡Qué gusto saludarte! 🙌 ¿Qué habilidad te gustaría desarrollar este mes? Te guío con una ruta práctica."
+    },
+    {
+      "id": 94,
+      "intent": "precio",
+      "text": "Hola 😊 Si ya miraste cursos, ¿hay alguno que te llamó más la atención? Desde ahí armamos una ruta paso a paso."
+    },
+    {
+      "id": 95,
+      "intent": "precio",
+      "text": "Hola 😊 Todos empezamos con algo que queremos mejorar. ¿Cuál sería en tu caso? Te digo qué ruta se adapta mejor."
+    },
+    {
+      "id": 96,
+      "intent": "precio",
+      "text": "Cuando piensas en invertir en tu crecimiento, ¿qué valoras más: el costo inmediato o el retorno profesional que obtendrás?"
+    },
+    {
+      "id": 97,
+      "intent": "precio",
+      "text": "Cuéntame algo: ¿has comparado lo que cuesta una certificación individual con el acceso total de Expert? Así te muestro el valor real."
+    },
+    {
+      "id": 98,
+      "intent": "precio",
+      "text": "Para elegir el mejor plan, es clave entender qué resultado buscas. ¿Te interesa mejorar tus ingresos o fortalecer tu perfil profesional?"
+    },
+    {
+      "id": 99,
+      "intent": "precio",
+      "text": "A veces lo más costoso no es invertir, sino quedarse quieto. ¿Te gustaría conocer cómo Expert multiplica tu valor profesional?"
+    },
+    {
+      "id": 100,
+      "intent": "precio",
+      "text": "¿Qué esperas obtener de tu inversión en formación? Desde ahí puedo ayudarte a encontrar el plan más rentable para ti."
+    },
+    {
+      "id": 101,
+      "intent": "precio",
+      "text": "El valor de lo que aprendes no se mide solo en precio. ¿Quieres que te muestre cómo tu inversión se convierte en oportunidades reales?"
+    },
+    {
+      "id": 102,
+      "intent": "precio",
+      "text": "Tu crecimiento también es una inversión. ¿Qué resultados te gustaría ver al finalizar tu ruta de aprendizaje?"
+    },
+    {
+      "id": 103,
+      "intent": "precio",
+      "text": "Antes de hablar del valor, me gustaría saber: ¿cuál es tu objetivo principal con la formación? Así te explico cómo Expert lo hace rentable."
+    },
+    {
+      "id": 104,
+      "intent": "precio",
+      "text": "Para darte el mejor costo, {name}, dime tu objetivo: ¿ascenso, cambiar de empleo o certificarte?"
+    },
+    {
+      "id": 105,
+      "intent": "precio",
+      "text": "¿Qué quieres lograr en 30–60 días? Según eso te doy precio y ruta precisa, {name}."
+    },
+    {
+      "id": 106,
+      "intent": "_default",
+      "text": "Da gusto ver tu claridad 👏 Si tuvieras que elegir ahora, ¿ya tienes identificado el camino que más te motiva?"
+    },
+    {
+      "id": 107,
+      "intent": "_default",
+      "text": "Hasta aquí suena que ya tienes claro el tipo de crecimiento que buscas 💪 ¿Dirías que ya encontraste el enfoque que más te motiva dentro de Platzi?"
+    },
+    {
+      "id": 108,
+      "intent": "_default",
+      "text": "Lo estás tomando en serio 😊 ¿Te gustaría que te acompañe a estructurar el siguiente paso según tus objetivos?"
+    },
+    {
+      "id": 109,
+      "intent": "_default",
+      "text": "Me encanta lo que compartes 👏 ¿Te sientes listo para dar el siguiente paso hacia esa meta?"
+    },
+    {
+      "id": 110,
+      "intent": "_default",
+      "text": "Me gusta cómo conectas tus objetivos con el aprendizaje 👌 ¿Te ayudo a definir el plan exacto para avanzar?"
+    },
+    {
+      "id": 111,
+      "intent": "_default",
+      "text": "Perfecto 😄 Con lo que revisamos, ¿ya sabes qué formación te ayudaría más a alcanzar tu meta?"
+    },
+    {
+      "id": 112,
+      "intent": "_default",
+      "text": "Vas enfocando muy bien 👏 ¿Ya sientes claro qué necesitas reforzar primero?"
+    },
+    {
+      "id": 113,
+      "intent": "_default",
+      "text": "Ya tienes un panorama sólido 💪 ¿Hay algo que quieras aclarar antes de seguir con tu plan de aprendizaje?"
+    },
+    {
+      "id": 114,
+      "intent": "_default",
+      "text": "Tu avance demuestra compromiso. Con un plan Expert tendrás acceso continuo a todas las rutas certificadas y seguimiento constante. ¿Te gustaría que revisemos cuál se adapta mejor a tus objetivos?"
+    },
+    {
+      "id": 115,
+      "intent": "_default",
+      "text": "Vas por excelente camino. Expert te permite mantener el enfoque y la estructura para seguir creciendo sin interrupciones. ¿Quieres que te ayude a elegir la mejor opción?"
+    },
+    {
+      "id": 116,
+      "intent": "_default",
+      "text": "Tu progreso no puede detenerse. Con Expert aseguras continuidad y certificaciones verificables. ¿Te gustaría activarlo para mantener el ritmo?"
+    },
+    {
+      "id": 117,
+      "intent": "_default",
+      "text": "Ya diste el paso de aprender, ahora toca consolidarlo. Expert te ayuda a mantener el impulso y lograr tus objetivos con guía. ¿Quieres ver cómo activarlo?"
+    },
+    {
+      "id": 118,
+      "intent": "_default",
+      "text": "Tu esfuerzo merece continuidad. Expert te ofrece acompañamiento y estructura. ¿Deseas que te muestre cómo mantener tu progreso?"
+    },
+    {
+      "id": 119,
+      "intent": "_default",
+      "text": "Cada semana de avance suma. Expert te garantiza acceso total a tus rutas para mantener el impulso. ¿Te gustaría revisarlo juntos?"
+    },
+    {
+      "id": 120,
+      "intent": "_default",
+      "text": "Has demostrado disciplina y enfoque. Expert te permite transformar esa energía en resultados tangibles. ¿Quieres que te acompañe a configurarlo?"
+    },
+    {
+      "id": 121,
+      "intent": "_default",
+      "text": "Ya tienes una base sólida. Con Expert puedes escalar tus objetivos y convertir tu aprendizaje en resultados reales. ¿Te ayudo a activarlo?"
+    },
+    {
+      "id": 122,
+      "intent": "precio",
+      "text": "Alineamos bien tus objetivos 🎯 ¿Te comparto la opción que te permite empezar sin pausa?"
+    },
+    {
+      "id": 123,
+      "intent": "precio",
+      "text": "Excelente 👏 Ya tienes clara la dirección. Si te muestro cómo consolidar ese plan para ver resultados pronto, ¿seguimos por ahí?"
+    },
+    {
+      "id": 124,
+      "intent": "precio",
+      "text": "Excelente actitud 💪 Ya definiste tu meta; ahora toca dar el paso para convertirla en avance real. ¿Te muestro cómo?"
+    },
+    {
+      "id": 125,
+      "intent": "precio",
+      "text": "Lo planteaste muy bien 😊 Si estás seguro del rumbo, ¿te muestro cómo avanzar de forma estructurada y constante?"
+    },
+    {
+      "id": 126,
+      "intent": "precio",
+      "text": "Me alegra tu decisión 👏 Si este es el camino, ¿te guío con los pasos para activarlo?"
+    },
+    {
+      "id": 127,
+      "intent": "precio",
+      "text": "Perfecto 💪 ¿Confirmamos que te interesa avanzar con el siguiente paso para construir tu progreso?"
+    },
+    {
+      "id": 128,
+      "intent": "precio",
+      "text": "Se nota que sabes a dónde vas 👏 Puedo orientarte con el paso siguiente para consolidar esa meta. ¿Vamos?"
+    },
+    {
+      "id": 129,
+      "intent": "precio",
+      "text": "Si estás listo para avanzar, te acompaño a concretar el siguiente paso y asegurar tu progreso."
+    },
+    {
+      "id": 130,
+      "intent": "precio",
+      "text": "Ya viste que Expert te da acceso completo y certificaciones verificables. Si activas hoy, aseguras el valor actual y mantienes el precio estable. ¿Te gustaría revisarlo juntos?"
+    },
+    {
+      "id": 131,
+      "intent": "precio",
+      "text": "Tu formación es la mejor inversión. Con Expert puedes acceder a todas las rutas por menos del valor de un curso suelto. ¿Te paso el enlace para activarlo?"
+    },
+    {
+      "id": 132,
+      "intent": "precio",
+      "text": "Invertir en ti siempre tiene retorno. Con Expert lo verás reflejado en tu perfil y en nuevas oportunidades. ¿Quieres que te muestre cómo hacerlo?"
+    },
+    {
+      "id": 133,
+      "intent": "precio",
+      "text": "Si lo ves a largo plazo, Expert reduce tus costos de formación mientras incrementa tu valor profesional. ¿Deseas asegurar ese beneficio?"
+    },
+    {
+      "id": 134,
+      "intent": "precio",
+      "text": "Con Expert ahorras tiempo y dinero al tener todo en un solo lugar. Es una inversión inteligente para seguir creciendo."
+    },
+    {
+      "id": 135,
+      "intent": "precio",
+      "text": "Tu desarrollo merece prioridad. Con Expert puedes planear tu crecimiento sin pagar de más. ¿Te gustaría activarlo ahora?"
+    },
+    {
+      "id": 136,
+      "intent": "precio",
+      "text": "El costo inicial se convierte en resultados cuando cada curso te acerca a tus objetivos. Expert te facilita ese camino. ¿Lo revisamos juntos?"
+    },
+    {
+      "id": 137,
+      "intent": "precio",
+      "text": "Si activas Expert hoy, obtendrás acceso total y estabilidad de precio durante todo el año. ¿Quieres que te envíe la oferta?"
+    },
+    {
+      "id": 138,
+      "intent": "precio",
+      "text": "Si vemos valor mensual, Expert cuesta menos que un curso suelto y te da todas las rutas. ¿Te muestro el plan que mejor encaja?"
+    },
+    {
+      "id": 139,
+      "intent": "precio",
+      "text": "Ya tenemos claro tu objetivo. ¿Te parece si activamos el plan que optimiza costo/valor para ti?"
+    },
+    {
+      "id": 140,
+      "intent": "_default",
+      "text": "El siguiente paso depende de ti. Si lo decidiste, inicia hoy y convierte tu intención en acción."
+    },
+    {
+      "id": 141,
+      "intent": "_default",
+      "text": "Estás en un punto perfecto para comenzar 🚀. No esperes a sentirte más listo; el aprendizaje empieza cuando decides dar el paso."
+    },
+    {
+      "id": 142,
+      "intent": "_default",
+      "text": "Has trazado muy bien tu objetivo 🎯. Si lo tienes claro, este es un gran momento para empezar y mantener el impulso que ya generaste."
+    },
+    {
+      "id": 143,
+      "intent": "_default",
+      "text": "Todo indica que estás preparado. Aprovecha este impulso y comienza tu proceso hoy para mantener foco y energía."
+    },
+    {
+      "id": 144,
+      "intent": "_default",
+      "text": "Todo lo que dijiste muestra que estás listo para comenzar. Empezar hoy te ayuda a mantener la claridad y el ritmo que lograste."
+    },
+    {
+      "id": 145,
+      "intent": "_default",
+      "text": "Tu meta y tu motivación están definidas 🌟. Es el momento ideal para transformar esa meta en progreso real."
+    },
+    {
+      "id": 146,
+      "intent": "_default",
+      "text": "Ya analizamos lo necesario 👏. Te invito a activar tu proceso y dar el primer paso hacia tu meta."
+    },
+    {
+      "id": 147,
+      "intent": "_default",
+      "text": "Ya tienes todo para avanzar 💪. Solo falta decidir el punto de partida y dar el paso. ¿Iniciamos hoy mismo?"
+    },
+    {
+      "id": 148,
+      "intent": "_default",
+      "text": "Excelente avance. Ya tienes claro tu objetivo y estás a un paso de consolidarlo con Expert. ¿Prefieres que te envíe el enlace de activación a tu WhatsApp o a tu correo?"
+    },
+    {
+      "id": 149,
+      "intent": "_default",
+      "text": "Tu progreso habla por sí mismo. Si activas Expert hoy, aseguras continuidad en todas tus rutas. ¿Quieres recibir el enlace por correo o WhatsApp?"
+    },
+    {
+      "id": 150,
+      "intent": "_default",
+      "text": "Has demostrado constancia y enfoque. Activar Expert es el paso natural para seguir creciendo. ¿Dónde prefieres recibir el enlace de activación?"
+    },
+    {
+      "id": 151,
+      "intent": "_default",
+      "text": "Ya estás listo para el siguiente nivel. Expert te da acceso ilimitado y certificaciones verificables. ¿Te envío el enlace a tu WhatsApp o prefieres correo?"
+    },
+    {
+      "id": 152,
+      "intent": "_default",
+      "text": "El mejor momento para avanzar es ahora. Expert mantiene tu impulso y acelera tus resultados. ¿Te comparto el enlace de pago por WhatsApp o correo?"
+    },
+    {
+      "id": 153,
+      "intent": "_default",
+      "text": "Has trabajado por esto, ahora toca consolidarlo. Expert te da estructura y acompañamiento. ¿Te gustaría que te envíe el enlace para activarlo?"
+    },
+    {
+      "id": 154,
+      "intent": "_default",
+      "text": "Estás a un paso de asegurar tu avance. Con Expert tu crecimiento no se detiene. ¿Te mando el enlace de activación por el canal que prefieras?"
+    },
+    {
+      "id": 155,
+      "intent": "_default",
+      "text": "Todo está listo para seguir creciendo. Expert te da acceso completo y flexibilidad total. ¿Te envío el enlace por WhatsApp o correo electrónico?"
+    },
+    {
+      "id": 156,
+      "intent": "precio",
+      "text": "Cada semana que esperas es una oportunidad que se posterga. Si estás decidido, iniciemos hoy mismo tu proceso."
+    },
+    {
+      "id": 157,
+      "intent": "precio",
+      "text": "El momento perfecto no existe, pero este se acerca bastante 🌟. Empezar hoy mantiene tu energía y compromiso."
+    },
+    {
+      "id": 158,
+      "intent": "precio",
+      "text": "Excelente momento para iniciar 🎯. Las rutas están listas y puedes empezar hoy con total flexibilidad."
+    },
+    {
+      "id": 159,
+      "intent": "precio",
+      "text": "Nada impulsa más que empezar con la motivación alta 🌱. Aprovecha este momento y activa tu proceso hoy."
+    },
+    {
+      "id": 160,
+      "intent": "precio",
+      "text": "Si empiezas ahora, aseguras continuidad en tu progreso y aprovechas el impulso que ya tienes. ¿Avanzamos con la activación?"
+    },
+    {
+      "id": 161,
+      "intent": "precio",
+      "text": "Tienes todo alineado para arrancar 💪. Aprovecha que ya definiste tu ruta y construyamos resultados desde ahora."
+    },
+    {
+      "id": 162,
+      "intent": "precio",
+      "text": "Tu meta está clara y las condiciones son ideales. Iniciar hoy te permite aprovechar la organización y el ritmo que ya definiste."
+    },
+    {
+      "id": 163,
+      "intent": "precio",
+      "text": "Tu plan está listo; el siguiente paso es activarlo 🚀. Si te parece, avancemos hoy para aprovechar el impulso."
+    },
+    {
+      "id": 164,
+      "intent": "precio",
+      "text": "La mejor inversión es en ti. Con Expert accedes a todo Platzi y tus rutas certificadas. ¿Prefieres que te envíe el enlace de activación a tu correo o a tu WhatsApp?"
+    },
+    {
+      "id": 165,
+      "intent": "precio",
+      "text": "Tu crecimiento profesional no tiene precio, pero sí una oportunidad. ¿Te envío el enlace de pago al canal que te sea más cómodo?"
+    },
+    {
+      "id": 166,
+      "intent": "precio",
+      "text": "Estás invirtiendo en resultados, no en clases. Activar Expert es asegurar que cada peso invertido te acerque a tus objetivos. ¿Te paso el enlace?"
+    },
+    {
+      "id": 167,
+      "intent": "precio",
+      "text": "Ya decidiste avanzar. Consolidemos tu inversión en ti mismo. ¿Quieres recibir el enlace de activación por WhatsApp o correo?"
+    },
+    {
+      "id": 168,
+      "intent": "precio",
+      "text": "Invertir en conocimiento siempre rinde. Hoy puedes hacerlo con Expert y obtener acceso completo. ¿Por dónde prefieres que te envíe el enlace?"
+    },
+    {
+      "id": 169,
+      "intent": "precio",
+      "text": "Has analizado el valor y sabes que Expert te conviene. ¿Te comparto el enlace por correo para hacerlo ahora mismo?"
+    },
+    {
+      "id": 170,
+      "intent": "precio",
+      "text": "El retorno más alto es el de invertir en ti. Activemos Expert y empecemos a trabajar en esos objetivos. ¿Dónde te envío el enlace?"
+    },
+    {
+      "id": 171,
+      "intent": "precio",
+      "text": "Ya diste el paso de decidirte. Solo falta activar tu plan y empezar a crecer. ¿Quieres que te pase el enlace directo?"
+    },
+    {
+      "id": 172,
+      "intent": "precio",
+      "text": "Te paso el enlace seguro para activar Expert con el mejor valor y empezar hoy tu ruta. ¿Lo envío aquí?"
+    },
+    {
+      "id": 173,
+      "intent": "precio",
+      "text": "Listo para avanzar, {name}. Activamos con el mejor precio y arrancas hoy. ¿Quieres el enlace ahora?"
+    },
+    {
+      "id": 174,
+      "intent": "precio",
+      "text": "El valor está en el resultado, {name}. Un ascenso o nuevo empleo paga la membresía por años 📈. ¿Quieres aprovecharlo?"
+    },
+    {
+      "id": 175,
+      "intent": "precio",
+      "text": "Entiendo el presupuesto, {name}. En Platzi inviertes en resultados: empleabilidad e ingresos 💼. ¿Activamos tu plan Expert hoy?"
+    },
+    {
+      "id": 176,
+      "intent": "precio",
+      "text": "Hola Ferney,. entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos \udcbc ¿Activamos tu plan Expert hoy?"
+    },
+    {
+      "id": 177,
+      "intent": "precio",
+      "text": "Entiendo que el precio puede hacer dudar. Pero si ves el valor mensual, Expert cuesta menos que una academia individual y te da acceso total a todas las rutas y certificados."
+    },
+    {
+      "id": 178,
+      "intent": "precio",
+      "text": "No se trata de gastar, sino de invertir. Con Expert el retorno se ve en empleabilidad, ascensos y proyectos nuevos."
+    },
+    {
+      "id": 179,
+      "intent": "precio",
+      "text": "El costo es menor cuando mides el resultado. Cada curso y certificación en Expert suma valor real a tu perfil profesional."
+    },
+    {
+      "id": 180,
+      "intent": "precio",
+      "text": "Comparar precios es natural, pero el valor de Expert está en lo que logras: habilidades aplicadas, comunidad y certificaciones verificables."
+    },
+    {
+      "id": 181,
+      "intent": "precio",
+      "text": "Más que un gasto, Expert es una estrategia. Pagas menos por más: acceso ilimitado, mentorías y rutas completas sin cargos extra."
+    },
+    {
+      "id": 182,
+      "intent": "precio",
+      "text": "Cuando ves el impacto de una nueva habilidad en tu salario, la inversión se paga sola. Expert te acerca a ese punto."
+    },
+    {
+      "id": 183,
+      "intent": "precio",
+      "text": "Piensa en el costo de oportunidad: cada mes sin aprender es un mes sin avanzar. Expert te ayuda a acortar esa distancia."
+    },
+    {
+      "id": 184,
+      "intent": "precio",
+      "text": "Tu inversión en Expert se traduce en resultados visibles. Más que pagar por clases, aseguras tu crecimiento continuo."
+    },
+    {
+      "id": 185,
+      "intent": "tiempo",
+      "text": "Agenda llena, avance posible: definimos tu mejor horario y sostenemos 10 min diarios. ¿Te muestro la primera semana?"
+    },
+    {
+      "id": 186,
+      "intent": "tiempo",
+      "text": "Hola Ferney,. entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real \udcc8 ¿Listo para iniciar?"
+    },
+    {
+      "id": 187,
+      "intent": "tiempo",
+      "text": "Hola Ferney,...tu respuesta aquí..."
+    },
+    {
+      "id": 188,
+      "intent": "tiempo",
+      "text": "Te entiendo, {name}. No es tener tiempo, es constancia. Con clases desde 5 min y rutas claras verás resultados reales 📈. ¿Listo para empezar?"
+    },
+    {
+      "id": 189,
+      "intent": "tiempo",
+      "text": "Hola Ferney, . entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real \udcc8 ¿Listo para iniciar?"
+    },
+    {
+      "id": 190,
+      "intent": "tiempo",
+      "text": "Te entiendo, {name}. Con clases de 5 minutos diarios, avanzas sin romper tu agenda. ¿Qué momento te funciona mejor?"
+    },
+    {
+      "id": 191,
+      "intent": "tiempo",
+      "text": "Te entiendo, el tiempo es limitado. Por eso en Platzi puedes avanzar con clases desde 5 minutos y rutas paso a paso. Lo importante es mantener constancia."
+    },
+    {
+      "id": 192,
+      "intent": "tiempo",
+      "text": "A veces parece que no hay espacio, pero 10 minutos bien usados transforman tu semana. Expert te ayuda a mantener ese ritmo sin frustrarte."
+    },
+    {
+      "id": 193,
+      "intent": "tiempo",
+      "text": "No necesitas horas, solo intención. Las rutas están pensadas para que progreses poco a poco sin descuidar tu rutina diaria."
+    },
+    {
+      "id": 194,
+      "intent": "tiempo",
+      "text": "El secreto no es tener más tiempo, sino estructura. Expert te organiza para avanzar sin sentirte abrumado."
+    },
+    {
+      "id": 195,
+      "intent": "tiempo",
+      "text": "Cada minuto invertido en ti multiplica resultados. Con Expert puedes estudiar incluso sin conexión, en cualquier momento del día."
+    },
+    {
+      "id": 196,
+      "intent": "tiempo",
+      "text": "Sé que tu agenda está llena, por eso las rutas están diseñadas para avanzar con pequeñas metas diarias que suman grandes resultados."
+    },
+    {
+      "id": 197,
+      "intent": "tiempo",
+      "text": "Si esperas tener tiempo perfecto, nunca llega. Lo importante es empezar con poco y mantenerlo. Expert te ayuda a hacerlo posible."
+    },
+    {
+      "id": 198,
+      "intent": "tiempo",
+      "text": "La constancia vence al reloj. Con Expert avanzas sin presión y con progreso medible cada semana."
+    },
+    {
+      "id": 199,
+      "intent": "cert",
+      "text": "Tus logros deben contar 🎓. Certificados digitales (LinkedIn) y físicos fortalecen tu perfil profesional. ¿Listo para obtener el tuyo?"
+    },
+    {
+      "id": 200,
+      "intent": "cert",
+      "text": "Cada certificado de Platzi está validado digitalmente y puede agregarse a tu perfil de LinkedIn. Es evidencia real de tus conocimientos."
+    },
+    {
+      "id": 201,
+      "intent": "cert",
+      "text": "Las certificaciones verificables te diferencian. Con Expert puedes obtener varias al año y fortalecer tu perfil profesional."
+    },
+    {
+      "id": 202,
+      "intent": "cert",
+      "text": "Cada ruta completada genera un certificado único con validez digital, reconocible por empresas. Es prueba tangible de tu avance."
+    },
+    {
+      "id": 203,
+      "intent": "cert",
+      "text": "No todos los certificados son iguales. En Platzi cada curso y ruta acredita habilidades aplicadas, no solo teoría."
+    },
+    {
+      "id": 204,
+      "intent": "cert",
+      "text": "Tu esfuerzo merece validación. Los certificados de Platzi son verificables y compartibles con reclutadores."
+    },
+    {
+      "id": 205,
+      "intent": "cert",
+      "text": "Cada logro cuenta. Las certificaciones de Platzi están diseñadas para mostrar tu crecimiento real en el mercado laboral."
+    },
+    {
+      "id": 206,
+      "intent": "cert",
+      "text": "Los certificados de Platzi tienen trazabilidad y respaldo profesional, no son solo imágenes. Aumentan tu credibilidad ante empresas."
+    },
+    {
+      "id": 207,
+      "intent": "cert",
+      "text": "Tus conocimientos valen más cuando son verificables. Con Expert certificas cada etapa de tu avance."
+    },
+    {
+      "id": 208,
+      "intent": "_default",
+      "text": "Es normal tener dudas al empezar. Pero recuerda que los resultados llegan cuando hay estructura. En Platzi aprendes con rutas claras y acompañamiento constante."
+    },
+    {
+      "id": 209,
+      "intent": "_default",
+      "text": "A veces cuesta dar el primer paso, pero avanzar un poco cada día marca la diferencia. Con Expert, cada minuto invertido suma a tus objetivos."
+    },
+    {
+      "id": 210,
+      "intent": "_default",
+      "text": "Te entiendo, todos necesitamos ver resultados. En Platzi puedes medir tu progreso semanal y validar tus avances con certificados reales."
+    },
+    {
+      "id": 211,
+      "intent": "_default",
+      "text": "La duda es natural, pero lo que te acerca al cambio es la acción. Expert te acompaña con guías, comunidad y estructura."
+    },
+    {
+      "id": 212,
+      "intent": "_default",
+      "text": "Lo importante no es empezar perfecto, sino constante. Expert te da la estructura para mantener ese ritmo sin frustración."
+    },
+    {
+      "id": 213,
+      "intent": "_default",
+      "text": "Cada paso que das es avance. Con Expert, aprendes acompañado y con una meta clara en cada ruta."
+    },
+    {
+      "id": 214,
+      "intent": "_default",
+      "text": "El miedo a no avanzar desaparece cuando ves resultados. Con Expert, ese progreso es medible y certificable."
+    },
+    {
+      "id": 215,
+      "intent": "_default",
+      "text": "Es normal preguntarse si vale la pena. Lo que cambia la historia es decidirte y avanzar con propósito. Platzi te guía paso a paso."
+    },
+    {
+      "id": 216,
+      "intent": "tiempo",
+      "text": "Cuéntame algo: ¿cuánto tiempo puedes dedicarle al día a tu aprendizaje? Así te recomiendo una ruta realista que se ajuste a tu ritmo."
+    },
+    {
+      "id": 217,
+      "intent": "tiempo",
+      "text": "Todos tenemos agendas distintas. ¿En qué momento del día te resulta más fácil enfocarte y avanzar en tus objetivos?"
+    },
+    {
+      "id": 218,
+      "intent": "tiempo",
+      "text": "El tiempo siempre es un reto. Si pudieras reservar solo 10 minutos diarios, ¿preferirías hacerlo en la mañana o en la noche?"
+    },
+    {
+      "id": 219,
+      "intent": "tiempo",
+      "text": "Cuéntame, ¿cómo se ve un día típico para ti? Así puedo ayudarte a planificar un ritmo de aprendizaje que funcione sin estrés."
+    },
+    {
+      "id": 220,
+      "intent": "tiempo",
+      "text": "Si defines un pequeño espacio para ti, los resultados llegan. ¿Qué momento del día podrías aprovechar para avanzar sin interrupciones?"
+    },
+    {
+      "id": 221,
+      "intent": "tiempo",
+      "text": "Tu progreso no depende del tiempo que tengas, sino de cómo lo usas. ¿Qué horario se adapta mejor a tu rutina actual?"
+    },
+    {
+      "id": 222,
+      "intent": "tiempo",
+      "text": "Aprender es cuestión de hábito. ¿Qué espacio del día podrías dedicarte para construir ese hábito sin presiones?"
+    },
+    {
+      "id": 223,
+      "intent": "tiempo",
+      "text": "A veces solo se necesita un compromiso pequeño. ¿Te gustaría que te recomiende una ruta que se ajuste a tus tiempos reales?"
+    },
+    {
+      "id": 224,
+      "intent": "tiempo",
+      "text": "Has demostrado que el tiempo no es excusa. Con Expert puedes seguir avanzando sin cambiar tu rutina. ¿Quieres que te ayude a activarlo?"
+    },
+    {
+      "id": 225,
+      "intent": "tiempo",
+      "text": "Tu constancia demuestra que con poco tiempo se puede lograr mucho. Expert te permitirá mantener ese ritmo con estructura."
+    },
+    {
+      "id": 226,
+      "intent": "tiempo",
+      "text": "Ya viste que estudiar unos minutos diarios funciona. Con Expert asegurarás esa constancia sin perder foco."
+    },
+    {
+      "id": 227,
+      "intent": "tiempo",
+      "text": "Mantener el hábito es clave. Expert te da continuidad sin presiones y resultados tangibles. ¿Quieres que revisemos tu plan?"
+    },
+    {
+      "id": 228,
+      "intent": "tiempo",
+      "text": "Si activas Expert ahora, aseguras mantener el ritmo que ya creaste. Es la mejor forma de no perder impulso."
+    },
+    {
+      "id": 229,
+      "intent": "tiempo",
+      "text": "Tu progreso constante merece una estructura sólida. Expert te la da sin exigir más tiempo del que ya inviertes."
+    },
+    {
+      "id": 230,
+      "intent": "tiempo",
+      "text": "Seguir avanzando con poco tiempo disponible es posible. Expert te da esa flexibilidad. ¿Te gustaría mantener tu progreso?"
+    },
+    {
+      "id": 231,
+      "intent": "tiempo",
+      "text": "Has probado que puedes hacerlo. Ahora toca consolidarlo con Expert. Así no dependes del tiempo, sino del hábito."
+    },
+    {
+      "id": 232,
+      "intent": "tiempo",
+      "text": "Tu compromiso con tu tiempo demuestra disciplina. Sigamos ese ritmo con Expert. ¿Quieres que te envíe el enlace por WhatsApp o correo?"
+    },
+    {
+      "id": 233,
+      "intent": "tiempo",
+      "text": "Ya tienes la rutina ideal para avanzar. Activar Expert hoy garantiza que no pierdas el impulso. ¿Te envío el enlace de activación?"
+    },
+    {
+      "id": 234,
+      "intent": "tiempo",
+      "text": "Has convertido minutos en progreso real. Consolidemos ese hábito con Expert. ¿Prefieres que te envíe el enlace al correo o WhatsApp?"
+    },
+    {
+      "id": 235,
+      "intent": "tiempo",
+      "text": "Tu avance constante merece continuidad. Expert te mantiene en ritmo sin agregar presión. ¿Dónde te envío el enlace de activación?"
+    },
+    {
+      "id": 236,
+      "intent": "tiempo",
+      "text": "Lo que lograste con pocos minutos diarios es increíble. Expert te ayuda a multiplicar esos resultados. ¿Te paso el enlace de pago por WhatsApp?"
+    },
+    {
+      "id": 237,
+      "intent": "tiempo",
+      "text": "El tiempo bien usado es tu mejor inversión. Expert te asegura progreso estable. ¿Quieres que te mande el enlace por correo?"
+    },
+    {
+      "id": 238,
+      "intent": "tiempo",
+      "text": "Ya comprobaste que el tiempo se gestiona, no se encuentra. Expert te ayuda a hacerlo sostenible. ¿Te envío el enlace para continuar?"
+    },
+    {
+      "id": 239,
+      "intent": "tiempo",
+      "text": "Estás logrando mucho con poco. Activemos Expert para mantener ese ritmo. ¿Por dónde prefieres que te comparta el enlace?"
+    },
+    {
+      "id": 240,
+      "intent": "tiempo",
+      "text": "Qué buena constancia. Estás demostrando que la clave no es tener tiempo, sino hacerlo valer. ¿Qué horario te ha funcionado mejor hasta ahora?"
+    },
+    {
+      "id": 241,
+      "intent": "tiempo",
+      "text": "Tu hábito de estudio está marcando la diferencia. Cada minuto bien usado suma a tus logros. ¿Qué meta semanal quieres proponerte?"
+    },
+    {
+      "id": 242,
+      "intent": "tiempo",
+      "text": "Has sabido aprovechar cada espacio. Estudiar unos minutos diarios genera resultados visibles. ¿Qué ruta te gustaría continuar?"
+    },
+    {
+      "id": 243,
+      "intent": "tiempo",
+      "text": "Tu disciplina se nota. Mantener la constancia es clave. ¿Qué te ha ayudado más a sostener tu rutina?"
+    },
+    {
+      "id": 244,
+      "intent": "tiempo",
+      "text": "El tiempo que dedicas rinde. Tus avances son prueba de ello. ¿Te gustaría ajustar tu horario o mantenerlo igual?"
+    },
+    {
+      "id": 245,
+      "intent": "tiempo",
+      "text": "Aprovechar pequeños momentos es un arte, y tú lo dominas. ¿Qué objetivo te gustaría alcanzar este mes?"
+    },
+    {
+      "id": 246,
+      "intent": "tiempo",
+      "text": "Ver tu progreso con tan poco tiempo invertido es inspirador. ¿Qué te motiva a seguir aprendiendo así?"
+    },
+    {
+      "id": 247,
+      "intent": "tiempo",
+      "text": "Cada minuto de constancia suma. ¿Qué nueva meta te gustaría definir para continuar avanzando?"
+    },
+    {
+      "id": 248,
+      "intent": "tiempo",
+      "text": "Hola {name} 👋. Si tu agenda está apretada, trabajamos con 5–10 min al día. ¿Qué franja te funciona mejor, mañana o noche?"
+    },
+    {
+      "id": 249,
+      "intent": "competencia",
+      "text": "Udemy y Coursera ofrecen buenos contenidos, pero en Platzi no solo ves clases: sigues rutas completas con certificaciones y mentoría continua que te llevan a resultados reales."
+    },
+    {
+      "id": 250,
+      "intent": "competencia",
+      "text": "Cada plataforma tiene su enfoque. En Platzi no compras cursos sueltos, compras estructura, acompañamiento y progreso medible."
+    },
+    {
+      "id": 251,
+      "intent": "competencia",
+      "text": "A diferencia de otras academias, en Platzi tienes rutas que te llevan de cero a profesional y certificaciones que puedes compartir en tu perfil."
+    },
+    {
+      "id": 252,
+      "intent": "competencia",
+      "text": "Otras plataformas enseñan temas, pero Platzi forma profesionales. Aquí tienes comunidad, práctica y seguimiento."
+    },
+    {
+      "id": 253,
+      "intent": "competencia",
+      "text": "Coursera y Udemy te dejan solo en el contenido; Platzi te acompaña hasta ver resultados. Esa es la diferencia que cambia carreras."
+    },
+    {
+      "id": 254,
+      "intent": "competencia",
+      "text": "No se trata de ver videos, se trata de avanzar. En Platzi aplicas lo que aprendes y certificas tu progreso con aval profesional."
+    },
+    {
+      "id": 255,
+      "intent": "competencia",
+      "text": "Platzi no compite en cantidad de cursos, sino en calidad de resultados. Tus avances se miden y se celebran con certificados verificables."
+    },
+    {
+      "id": 256,
+      "intent": "competencia",
+      "text": "La diferencia está en la comunidad. Mientras otras plataformas son solitarias, Platzi te conecta con mentores y otros profesionales que crecen contigo."
+    },
+    {
+      "id": 257,
+      "intent": "competencia",
+      "text": "Ya conoces otras plataformas, pero Platzi te ofrece algo más: una estructura guiada y certificaciones verificables. ¿Te gustaría activar Expert y continuar con acompañamiento real?"
+    },
+    {
+      "id": 258,
+      "intent": "competencia",
+      "text": "Lo valioso de Platzi no es solo lo que aprendes, sino cómo avanzas. Con Expert sigues un camino definido que otras academias no ofrecen."
+    },
+    {
+      "id": 259,
+      "intent": "competencia",
+      "text": "Mientras en otras plataformas eliges cursos sueltos, en Platzi sigues rutas completas con acompañamiento. ¿Te gustaría activar tu plan y continuar?"
+    },
+    {
+      "id": 260,
+      "intent": "competencia",
+      "text": "Ya comprobaste la diferencia: Platzi te guía con estructura, comunidad y resultados. ¿Quieres que dejemos tu plan Expert activo hoy mismo?"
+    },
+    {
+      "id": 261,
+      "intent": "competencia",
+      "text": "La ventaja de Platzi está en la práctica y el seguimiento. Expert te asegura ambas. ¿Quieres activarlo y continuar tu ruta?"
+    },
+    {
+      "id": 262,
+      "intent": "competencia",
+      "text": "Si buscas más que contenido, busca transformación. Platzi te ofrece resultados verificables. ¿Deseas activar Expert para seguir avanzando?"
+    },
+    {
+      "id": 263,
+      "intent": "competencia",
+      "text": "Tu experiencia previa te prepara para aprovechar mejor Expert. Es la diferencia entre aprender y lograr. ¿Te ayudo a activarlo?"
+    },
+    {
+      "id": 264,
+      "intent": "competencia",
+      "text": "Ya viste que Platzi va más allá de los cursos. Es acompañamiento real. Activemos tu Expert y continúa creciendo."
+    },
+    {
+      "id": 265,
+      "intent": "competencia",
+      "text": "Ya comparaste y sabes que Platzi te da estructura, comunidad y resultados. ¿Prefieres que te envíe el enlace de activación por WhatsApp o correo?"
+    },
+    {
+      "id": 266,
+      "intent": "competencia",
+      "text": "La diferencia ya la viviste: Platzi te acompaña hasta el resultado. ¿Te paso el enlace de pago para continuar?"
+    },
+    {
+      "id": 267,
+      "intent": "competencia",
+      "text": "Has probado el valor de Platzi frente a otras plataformas. Ahora toca consolidarlo con Expert. ¿Dónde te envío el enlace?"
+    },
+    {
+      "id": 268,
+      "intent": "competencia",
+      "text": "Tu decisión marca la diferencia. En Platzi no estudias solo, creces con propósito. ¿Quieres recibir el enlace de activación por correo o WhatsApp?"
+    },
+    {
+      "id": 269,
+      "intent": "competencia",
+      "text": "Ya sabes lo que nos distingue: estructura, comunidad y progreso real. ¿Te envío el enlace para activar Expert?"
+    },
+    {
+      "id": 270,
+      "intent": "competencia",
+      "text": "El siguiente paso es simple y poderoso: activar tu Expert y seguir tu ruta con propósito. ¿Te paso el enlace al canal que prefieras?"
+    },
+    {
+      "id": 271,
+      "intent": "competencia",
+      "text": "Platzi no es teoría, es resultados. Activa tu Expert y lleva tu aprendizaje al siguiente nivel. ¿Te envío el enlace de pago?"
+    },
+    {
+      "id": 272,
+      "intent": "competencia",
+      "text": "Has visto el valor, ahora consolídalo. Expert te da continuidad y foco. ¿Te gustaría que te envíe el enlace para activarlo?"
+    },
+    {
+      "id": 273,
+      "intent": "cert",
+      "text": "Cada certificación que obtienes con Platzi valida tus conocimientos ante empresas. Con Expert puedes completar varias rutas este año. ¿Te gustaría activarlo para empezar?"
+    },
+    {
+      "id": 274,
+      "intent": "cert",
+      "text": "Los certificados verificables te ayudan a destacar en procesos laborales. Expert te da acceso a todos ellos. ¿Deseas activarlo hoy mismo?"
+    },
+    {
+      "id": 275,
+      "intent": "cert",
+      "text": "Certificarte es más que estudiar, es demostrar resultados. Con Expert podrás hacerlo constantemente. ¿Te muestro cómo activarlo?"
+    },
+    {
+      "id": 276,
+      "intent": "cert",
+      "text": "Con Expert tienes acceso ilimitado a rutas con certificaciones verificables. Es la mejor forma de fortalecer tu perfil profesional."
+    },
+    {
+      "id": 277,
+      "intent": "cert",
+      "text": "Tu progreso se consolida con certificados reconocidos. Expert te da el acceso completo para lograrlos. ¿Te gustaría activarlo?"
+    },
+    {
+      "id": 278,
+      "intent": "cert",
+      "text": "El siguiente paso es validar tu aprendizaje. Expert te ofrece todas las certificaciones en un solo plan. ¿Te ayudo a activarlo?"
+    },
+    {
+      "id": 279,
+      "intent": "cert",
+      "text": "Cada certificado suma valor real a tu CV. Con Expert tienes acceso a todos. ¿Te gustaría que te muestre cómo empezar?"
+    },
+    {
+      "id": 280,
+      "intent": "cert",
+      "text": "Tus certificaciones son la huella de tu progreso. Expert te ayuda a acumularlas y mantenerte vigente. ¿Revisamos tu acceso?"
+    },
+    {
+      "id": 281,
+      "intent": "cert",
+      "text": "Cada certificado que logras refuerza tu perfil profesional. Activar Expert te da acceso a todos. ¿Prefieres que te envíe el enlace por correo o WhatsApp?"
+    },
+    {
+      "id": 282,
+      "intent": "cert",
+      "text": "Ya estás cerca de certificar tu primera ruta. Consolidemos ese logro con Expert. ¿Te paso el enlace de activación?"
+    },
+    {
+      "id": 283,
+      "intent": "cert",
+      "text": "Tu crecimiento se valida con cada certificado obtenido. Expert te permite seguir acumulándolos. ¿Quieres que te mande el enlace para activarlo?"
+    },
+    {
+      "id": 284,
+      "intent": "cert",
+      "text": "Has demostrado disciplina y aprendizaje. Ahora toca validarlo con certificaciones verificables. ¿Te envío el enlace para activar tu Expert?"
+    },
+    {
+      "id": 285,
+      "intent": "cert",
+      "text": "Cada certificado es una puerta abierta. Activa tu plan Expert y sigue avanzando. ¿Te comparto el enlace por WhatsApp o correo?"
+    },
+    {
+      "id": 286,
+      "intent": "cert",
+      "text": "Tus certificados ya cuentan una historia. Con Expert puedes ampliarla. ¿Dónde te envío el enlace de activación?"
+    },
+    {
+      "id": 287,
+      "intent": "cert",
+      "text": "Ya tienes las bases, ahora valídalas con Expert. Es el paso que consolida tu perfil. ¿Te paso el enlace para hacerlo?"
+    },
+    {
+      "id": 288,
+      "intent": "cert",
+      "text": "Tu próximo certificado puede ser el que cambie tu carrera. Activa Expert y empieza hoy. ¿Prefieres enlace por correo o WhatsApp?"
+    },
+    {
+      "id": 289,
+      "intent": "motivacion",
+      "text": "A veces perder el impulso es normal, lo importante es recordar por qué empezaste. Cada minuto que dedicas a aprender te acerca a tu mejor versión."
+    },
+    {
+      "id": 290,
+      "intent": "motivacion",
+      "text": "Motivarse no es tener energía todo el tiempo, es tener propósito. Y con Expert, ese propósito se convierte en resultados medibles."
+    },
+    {
+      "id": 291,
+      "intent": "motivacion",
+      "text": "Tu progreso es prueba de que la motivación se construye con acción. Sigamos avanzando juntos, paso a paso."
+    },
+    {
+      "id": 292,
+      "intent": "motivacion",
+      "text": "Cada logro pequeño renueva tu energía. Mantén el foco en tus objetivos y deja que Expert te acompañe en el proceso."
+    },
+    {
+      "id": 293,
+      "intent": "motivacion",
+      "text": "No necesitas estar motivado todos los días, solo ser constante. Expert te ayuda a mantener el ritmo cuando la motivación baja."
+    },
+    {
+      "id": 294,
+      "intent": "motivacion",
+      "text": "Recordar por qué empezaste te impulsa a continuar. Y en Platzi, ese 'por qué' se convierte en oportunidades reales."
+    },
+    {
+      "id": 295,
+      "intent": "motivacion",
+      "text": "Motivación y progreso van de la mano. Expert te da el marco para convertir tu esfuerzo en resultados tangibles."
+    },
+    {
+      "id": 296,
+      "intent": "motivacion",
+      "text": "Lo que te trajo hasta aquí fue la decisión de mejorar. Sigamos alimentando esa motivación con estructura y propósito."
+    },
+    {
+      "id": 297,
+      "intent": "promocion",
+      "text": "Por poco tiempo, puedes activar Expert con un valor preferencial y acceso a todas las rutas certificadas. Es una oportunidad ideal para consolidar tu crecimiento."
+    },
+    {
+      "id": 298,
+      "intent": "promocion",
+      "text": "Hay un beneficio activo por tiempo limitado: Expert cuesta menos que una academia individual y te da acceso a todas las rutas. ¿Te gustaría aprovecharlo?"
+    },
+    {
+      "id": 299,
+      "intent": "promocion",
+      "text": "Durante un periodo corto puedes acceder a Expert con precio especial y mantenerlo durante todo el año. Es un excelente momento para avanzar."
+    },
+    {
+      "id": 300,
+      "intent": "promocion",
+      "text": "Tienes la oportunidad de activar Expert a valor preferencial y asegurar ese precio mientras sigues aprendiendo sin límites."
+    },
+    {
+      "id": 301,
+      "intent": "promocion",
+      "text": "Aprovecha este beneficio temporal y empieza tu ruta certificada con Expert. Es el impulso perfecto para tus objetivos."
+    },
+    {
+      "id": 302,
+      "intent": "promocion",
+      "text": "Este beneficio estará disponible solo por poco tiempo. Si activas Expert hoy, aseguras el valor preferencial todo el año."
+    },
+    {
+      "id": 303,
+      "intent": "promocion",
+      "text": "Más que una promoción, es una oportunidad de avanzar invirtiendo menos. Expert te da acceso total y acompañamiento real."
+    },
+    {
+      "id": 304,
+      "intent": "promocion",
+      "text": "Estas ofertas cambian sin previo aviso. Si activas ahora, aseguras el precio y comienzas tu progreso de inmediato."
+    },
+    {
+      "id": 305,
+      "intent": "ingles",
+      "text": "¿Buscas mejorar tu inglés para oportunidades laborales o para sentirte más seguro en entornos internacionales? Así te muestro la ruta más efectiva."
+    },
+    {
+      "id": 306,
+      "intent": "ingles",
+      "text": "Hablar inglés abre puertas profesionales. ¿Tu meta es certificarte o comunicarte con confianza en tu trabajo actual?"
+    },
+    {
+      "id": 307,
+      "intent": "ingles",
+      "text": "El inglés puede multiplicar tus oportunidades laborales. ¿Te gustaría avanzar hacia una certificación o practicar conversación?"
+    },
+    {
+      "id": 308,
+      "intent": "ingles",
+      "text": "Aprender inglés con Expert te permite certificarte y mejorar tu perfil internacional. ¿Cuál es tu principal motivación?"
+    },
+    {
+      "id": 309,
+      "intent": "ingles",
+      "text": "¿Qué te gustaría lograr con el inglés: oportunidades globales, entrevistas más seguras o viajes profesionales?"
+    },
+    {
+      "id": 310,
+      "intent": "ingles",
+      "text": "Dominar el inglés cambia carreras. ¿Te gustaría iniciar con una ruta práctica de conversación o con fundamentos?"
+    },
+    {
+      "id": 311,
+      "intent": "ingles",
+      "text": "Si ya tienes base, puedes avanzar hacia la certificación TOEFL o IELTS. ¿Quieres que te recomiende la mejor ruta?"
+    },
+    {
+      "id": 312,
+      "intent": "ingles",
+      "text": "Aprender inglés te prepara para un futuro sin fronteras. ¿Qué nivel deseas alcanzar este trimestre?"
+    },
+    {
+      "id": 313,
+      "intent": "programacion",
+      "text": "La programación abre puertas a empleos de alto crecimiento. ¿Quieres aprender desde cero o reforzar tus bases actuales?"
+    },
+    {
+      "id": 314,
+      "intent": "programacion",
+      "text": "¿Tu meta es conseguir tu primer empleo en tecnología o crecer en el que ya tienes? Así te muestro la ruta adecuada."
+    },
+    {
+      "id": 315,
+      "intent": "programacion",
+      "text": "Programar no es solo código, es resolver problemas. ¿Quieres empezar con fundamentos o con desarrollo web?"
+    },
+    {
+      "id": 316,
+      "intent": "programacion",
+      "text": "Si ya aprendiste algo por tu cuenta, con Expert puedes seguir una ruta guiada y certificada hacia tu primer proyecto profesional."
+    },
+    {
+      "id": 317,
+      "intent": "programacion",
+      "text": "La demanda en tecnología sigue creciendo. ¿Qué lenguaje o área te gustaría dominar este año?"
+    },
+    {
+      "id": 318,
+      "intent": "programacion",
+      "text": "En Platzi puedes construir tu portafolio desde cero. ¿Quieres enfocarte en front-end, back-end o full stack?"
+    },
+    {
+      "id": 319,
+      "intent": "programacion",
+      "text": "Miles de programadores iniciaron con Platzi. ¿Te gustaría unirte a esa comunidad y seguir una ruta certificada?"
+    },
+    {
+      "id": 320,
+      "intent": "programacion",
+      "text": "Programar es la habilidad más demandada del mercado. ¿Qué objetivo profesional quieres lograr con ella?"
+    },
+    {
+      "id": 321,
+      "intent": "ia",
+      "text": "La inteligencia artificial ya está transformando todas las industrias. ¿Te gustaría aprender desde la base o aplicarla en tu trabajo actual?"
+    },
+    {
+      "id": 322,
+      "intent": "ia",
+      "text": "IA no es futuro, es presente. ¿Qué te interesa más: aprender a usar herramientas o crear tus propios modelos?"
+    },
+    {
+      "id": 323,
+      "intent": "ia",
+      "text": "¿Has probado herramientas de IA? Con Platzi puedes pasar de usuario a creador en pocas semanas."
+    },
+    {
+      "id": 324,
+      "intent": "ia",
+      "text": "Con IA puedes automatizar tareas y destacar profesionalmente. ¿Quieres explorar su aplicación en tu área laboral?"
+    },
+    {
+      "id": 325,
+      "intent": "ia",
+      "text": "Aprender IA te prepara para las oportunidades del futuro. ¿Qué objetivo te gustaría alcanzar en este campo?"
+    },
+    {
+      "id": 326,
+      "intent": "ia",
+      "text": "Desde fundamentos hasta machine learning, las rutas de IA te acompañan paso a paso. ¿Te gustaría iniciar esa ruta?"
+    },
+    {
+      "id": 327,
+      "intent": "ia",
+      "text": "¿Te interesa IA generativa o aplicada a negocios? Según eso, puedo sugerirte una ruta certificada."
+    },
+    {
+      "id": 328,
+      "intent": "ia",
+      "text": "Aprender IA con Platzi te permite aplicar lo aprendido en proyectos reales. ¿Qué tipo de proyecto te gustaría desarrollar?"
+    },
+    {
+      "id": 329,
+      "intent": "negocios",
+      "text": "El liderazgo y los negocios digitales son habilidades clave hoy. ¿Qué te gustaría fortalecer: estrategia o gestión de equipos?"
+    },
+    {
+      "id": 330,
+      "intent": "negocios",
+      "text": "¿Buscas emprender o mejorar la rentabilidad de tu negocio actual? Así te muestro la ruta ideal."
+    },
+    {
+      "id": 331,
+      "intent": "negocios",
+      "text": "Aprender sobre negocios digitales te da ventaja competitiva. ¿Qué objetivo te gustaría lograr con Platzi Business?"
+    },
+    {
+      "id": 332,
+      "intent": "negocios",
+      "text": "Las habilidades blandas también se certifican. ¿Te gustaría trabajar liderazgo, comunicación o negociación?"
+    },
+    {
+      "id": 333,
+      "intent": "negocios",
+      "text": "Platzi tiene rutas de gestión, marketing y estrategia. ¿Cuál de estas áreas te interesa más desarrollar?"
+    },
+    {
+      "id": 334,
+      "intent": "negocios",
+      "text": "¿Tu meta es crecer dentro de tu empresa o lanzar un nuevo proyecto? Así elegimos la ruta que más te aporte valor."
+    },
+    {
+      "id": 335,
+      "intent": "negocios",
+      "text": "Los negocios digitales cambian rápido. Aprender te mantiene vigente. ¿Qué tema te gustaría dominar primero?"
+    },
+    {
+      "id": 336,
+      "intent": "negocios",
+      "text": "La mentalidad empresarial también se entrena. ¿Qué objetivo te gustaría alcanzar este trimestre?"
+    },
+    {
+      "id": 337,
+      "intent": "competencia",
+      "text": "Para comparar bien, {name}, dime tu objetivo: ¿certificarte, proyecto práctico o portafolio? Así te muestro la ruta específica."
+    }
+  ]
+}

@@ -1,0 +1,333 @@
+{
+  "items": [
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Las rutas se adaptan a tu ritmo y muestran progreso visible cada semana.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Clases desde 5 minutos mantienen constancia incluso con agenda llena.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "App offline y rutas paso a paso garantizan aprendizaje sin depender de horario.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Invertir en Platzi devuelve valor real: más oportunidades y mejores ingresos.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "El plan Expert ofrece acceso completo a 17 escuelas con el mejor costo-beneficio.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Cada certificación lograda mejora tu perfil profesional y retorno de inversión.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Certificados digitales verificables en LinkedIn y físicos enviados a casa validan tu progreso.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Las certificaciones Platzi fortalecen empleabilidad y confianza profesional.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "_default",
+      "contenido": "Platzi transforma carreras con rutas, comunidad y certificaciones verificables.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "_default",
+      "contenido": "Cada paso en Platzi impulsa progreso profesional y orgullo personal.",
+      "ts": "2025-10-13T21:08:33.667Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Las rutas se adaptan a tu ritmo y muestran progreso visible cada semana.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Clases desde 5 minutos mantienen constancia incluso con agenda llena.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "App offline y rutas paso a paso garantizan aprendizaje sin depender de horario.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Invertir en Platzi devuelve valor real: más oportunidades y mejores ingresos.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "El plan Expert ofrece acceso completo a 17 escuelas con el mejor costo-beneficio.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Cada certificación lograda mejora tu perfil profesional y retorno de inversión.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Certificados digitales verificables en LinkedIn y físicos enviados a casa validan tu progreso.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Las certificaciones Platzi fortalecen empleabilidad y confianza profesional.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "_default",
+      "contenido": "Platzi transforma carreras con rutas, comunidad y certificaciones verificables.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "_default",
+      "contenido": "Cada paso en Platzi impulsa progreso profesional y orgullo personal.",
+      "ts": "2025-10-14T22:09:49.277Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Las rutas se adaptan a tu ritmo y muestran progreso visible cada semana.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Clases desde 5 minutos mantienen constancia incluso con agenda llena.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "App offline y rutas paso a paso garantizan aprendizaje sin depender de horario.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Invertir en Platzi devuelve valor real: más oportunidades y mejores ingresos.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "El plan Expert ofrece acceso completo a 17 escuelas con el mejor costo-beneficio.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Cada certificación lograda mejora tu perfil profesional y retorno de inversión.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Certificados digitales verificables en LinkedIn y físicos enviados a casa validan tu progreso.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Las certificaciones Platzi fortalecen empleabilidad y confianza profesional.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "_default",
+      "contenido": "Platzi transforma carreras con rutas, comunidad y certificaciones verificables.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "_default",
+      "contenido": "Cada paso en Platzi impulsa progreso profesional y orgullo personal.",
+      "ts": "2025-10-14T22:16:01.068Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Clases cortas + rutas paso a paso = constancia aun con poco tiempo.",
+      "ts": "2025-10-21T20:49:30.745Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "precio",
+      "contenido": "Ver el plan como inversión: acceso total a rutas, comunidad y certificados verificables.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Clases desde 5 minutos, app offline y rutas paso a paso mantienen constancia y hábito.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "competencia",
+      "contenido": "Platzi ofrece rutas completas, comunidad y certificación continua, no solo cursos aislados.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Certificaciones digitales verificables por curso y rutas profesionales, reconocidas por empresas.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "motivacion",
+      "contenido": "Mantener propósito y estructura; Expert ayuda a sostener la motivación con resultados semanales.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "promocion",
+      "contenido": "Beneficios por tiempo limitado que premian la acción. Urgencia sin presión, enfocada en oportunidad.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "ingles",
+      "contenido": "El inglés amplía oportunidades laborales; rutas desde fundamentos hasta certificaciones TOEFL/IELTS.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "programacion",
+      "contenido": "Habilidad con alta demanda; rutas desde cero a profesional, con proyectos reales y comunidad técnica.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "ia",
+      "contenido": "IA aplicada a distintas áreas; aprendizaje desde fundamentos hasta machine learning práctico.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "negocios",
+      "contenido": "Formación en liderazgo, estrategia y negocios digitales para crecimiento profesional y emprendimiento.",
+      "ts": "2025-10-21T20:52:29.814Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "competencia",
+      "contenido": "Ruta guiada con proyecto + certificación verificable supera cursos sueltos.",
+      "ts": "2025-10-22T01:28:25.637Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "competencia",
+      "contenido": "Acompañamiento, metas semanales y comunidad elevan finalización y empleabilidad.",
+      "ts": "2025-10-22T01:28:25.639Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Certificaciones verificables con práctica evaluada y proyecto final.",
+      "ts": "2025-10-22T01:28:25.639Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "cert",
+      "contenido": "Evidencia de habilidades aplicadas para CV/LinkedIn y procesos de selección.",
+      "ts": "2025-10-22T01:28:25.639Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "promocion",
+      "contenido": "Beneficio por tiempo limitado; valor clave es acceso total a rutas y certificados.",
+      "ts": "2025-10-22T01:28:25.639Z",
+      "source": "ferney_variants.json"
+    },
+    {
+      "tipo": "objecion",
+      "tema": "tiempo",
+      "contenido": "Clases cortas (5–10min) + constancia diaria = progreso medible.",
+      "ts": "2025-10-22T01:28:25.639Z",
+      "source": "ferney_variants.json"
+    }
+  ]
+}

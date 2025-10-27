@@ -1,0 +1,1788 @@
+{
+  "byKey": {
+    "tiempo::rebatir": {
+      "Hola Ferney, entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real 📈 ¿Listo para iniciar?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real \udcc8 ¿Listo para iniciar?": {
+        "shown": 4,
+        "wins": 2,
+        "good": 2,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, no se trata de tener tiempo, sino de constancia. Con rutas claras verás resultados reales 💪 ¿Activamos tu plan?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ...tu respuesta aquí...": {
+        "shown": 5,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,. . tu respuesta aquí. .": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola ${(localStorage.getItem(, no se trata de tener tiempo, sino de constancia. Con rutas claras verás resultados reales 💪 ¿Activamos tu plan?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola ${(localStorage.getItem(, . no se trata de tener tiempo, sino de constancia. Con rutas claras verás resultados reales \udcaa ¿Activamos tu plan?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Te entiendo, Ferney. No es tener tiempo, es constancia. Con clases desde 5 min y rutas claras verás resultados reales 📈. ¿Listo para empezar?": {
+        "shown": 13,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,...tu respuesta aquí...": {
+        "shown": 6,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,. entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real \udcc8 ¿Listo para iniciar?": {
+        "shown": 7,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Agenda llena, avance posible: definimos tu mejor horario y sostenemos 10 min diarios. ¿Te muestro la primera semana?": {
+        "shown": 5,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,. entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real ¿Listo para iniciar?": {
+        "shown": 6,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real ¿Listo para iniciar?": {
+        "shown": 9,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, Te entiendo, Ferney. No es tener tiempo, es constancia. Con clases desde 5 min y rutas claras verás resultados reales \udcc8. ¿Listo para empezar?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, Agenda llena, avance posible: definimos tu mejor horario y sostenemos 10 min diarios. ¿Te muestro la primera semana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Te entiendo, {name}. No es tener tiempo... ¿Listo para empezar?": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Agenda llena, avance posible: definimos tu mejor horario...": {
+        "shown": 2,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "No necesitas horas, solo constancia. Con clases desde 5 minutos...": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "A veces parece que no hay espacio, pero 10 minutos bien usados transforman tu semana. Expert te ayuda a mantener ese ritmo sin frustrarte.": {
+        "shown": 6,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Te entiendo, el tiempo es limitado. Por eso en Platzi puedes avanzar con clases desde 5 minutos y rutas paso a paso. Lo importante es mantener constancia.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "No necesitas horas, solo intención. Las rutas están pensadas para que progreses poco a poco sin descuidar tu rutina diaria.": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "El secreto no es tener más tiempo, sino estructura. Expert te organiza para avanzar sin sentirte abrumado.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "La constancia vence al reloj. Con Expert avanzas sin presión y con progreso medible cada semana.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Cada minuto invertido en ti multiplica resultados. Con Expert puedes estudiar incluso sin conexión, en cualquier momento del día.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo, Diego. Las rutas son cortas, desde 5 minutos, y se adaptan a tu ritmo, así puedes avanzar incluso con poco tiempo. ¿Te gustaría que te envíe una ruta personalizada y un plan de inicio?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo, por eso nuestras clases son de solo 5 minutos, perfectas para adaptarse a cualquier agenda. ¿Te gustaría empezar con una clase hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "precio::rebatir": {
+      "Hola Ferney, el valor está en el resultado. Un ascenso o nuevo empleo paga la membresía por años 📈 ¿Quieres aprovecharlo?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . el valor está en el resultado. Un ascenso o nuevo empleo paga la membresía por años \udcc8 ¿Quieres aprovecharlo?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 1
+      },
+      "Hola ${(localStorage.getItem(, entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos 💼 ¿Activamos tu plan Expert hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola ${(localStorage.getItem(, . entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos \udcbc ¿Activamos tu plan Expert hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos 💼 ¿Activamos tu plan Expert hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos \udcbc ¿Activamos tu plan Expert hoy?": {
+        "shown": 2,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "El valor está en el resultado, Ferney. Un ascenso o nuevo empleo paga la membresía por años 📈. ¿Quieres aprovecharlo?": {
+        "shown": 4,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo el presupuesto, Ferney. En Platzi inviertes en resultados: empleabilidad e ingresos 💼. ¿Activamos tu plan Expert hoy?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,. entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos \udcbc ¿Activamos tu plan Expert hoy?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,. el valor está en el resultado. Un ascenso o nuevo empleo paga la membresía por años \udcc8 ¿Quieres aprovecharlo?": {
+        "shown": 3,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, Entiendo el presupuesto, Ferney. En Platzi inviertes en resultados: empleabilidad e ingresos \udcbc. ¿Activamos tu plan Expert hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, el valor está en el resultado. Un ascenso o nuevo empleo paga la membresía por años \udcc8 ¿Quieres aprovecharlo?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . entiendo el presupuesto. En Platzi inviertes en resultados: empleabilidad e ingresos ¿Activamos tu plan Expert hoy?": {
+        "shown": 4,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . el valor está en el resultado. Un ascenso o nuevo empleo paga la membresía por años ¿Quieres aprovecharlo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney,. entiendo tu agenda. Las rutas guiadas y clases desde 5 minutos mantienen constancia y avance real ¿Listo para iniciar?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Cuando ves el impacto de una nueva habilidad en tu salario, la inversión se paga sola. Expert te acerca a ese punto.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tu inversión en Expert se traduce en resultados visibles. Más que pagar por clases, aseguras tu crecimiento continuo.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Piensa en el costo de oportunidad: cada mes sin aprender es un mes sin avanzar. Expert te ayuda a acortar esa distancia.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Más que un gasto, Expert es una estrategia. Pagas menos por más: acceso ilimitado, mentorías y rutas completas sin cargos extra.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, te entiendo: el valor está en el resultado. Con rutas guiadas, certificaciones verificables (y certificado físico en rutas profesionales) y clases desde 5 min, con 1 curso al mes tu pago se vuelve inversión. \n¿Te envío ahora la ruta más rentable para tu meta y una clase para empezar hoy, y así elegimos el plan que mejor se ajuste a tu presupuesto?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, entiendo la comparación: con Expert accedes a 17 escuelas, rutas y certificaciones que elevan tus oportunidades e ingresos; es el mejor costo-beneficio. \n¿Te muestro el plan y armamos tu ruta según tu objetivo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Lo entiendo, pero invertir en Platzi se recupera: el Plan Expert te abre 17 escuelas y certificaciones que elevan tu perfil e ingresos.  \n¿Avanzamos con el Plan Expert? ¿Prefieres pago mensual o anual?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "_default::rebatir": {
+      "Hola Ferney, no se trata de estudiar, sino de transformar tu carrera 🎯. Rutas guiadas, comunidad y certificados te acompañan. ¿Listo para empezar?": {
+        "shown": 7,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . no se trata de estudiar, sino de transformar tu carrera 🎯. Rutas guiadas, comunidad y certificados te acompañan. ¿Listo para empezar?": {
+        "shown": 5,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 4,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Es normal tener dudas al empezar. Pero recuerda que los resultados llegan cuando hay estructura. En Platzi aprendes con rutas claras y acompañamiento constante.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Lo importante no es empezar perfecto, sino constante. Expert te da la estructura para mantener ese ritmo sin frustración.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "La duda es natural, pero lo que te acerca al cambio es la acción. Expert te acompaña con guías, comunidad y estructura.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Es normal preguntarse si vale la pena. Lo que cambia la historia es decidirte y avanzar con propósito. Platzi te guía paso a paso.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo la duda: en Platzi avanzas con rutas guiadas, comunidad activa y certificaciones verificables que sí pesan en tu CV.  \nDime tu objetivo (rol o skill) y te envío la ruta exacta con el primer paso para empezar hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo la duda: Platzi transforma carreras con rutas claras, comunidad activa y certificaciones verificables que suman a tu CV.  \n¿Te envío ahora la ruta ideal y una clase gratis para probar hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Genial! En Platzi tienes rutas de Inglés de cero a avanzado con práctica y certificación. Dime tu nivel (A1–C1) y objetivo; te envío la ruta ideal y plan de inicio, o agendamos una llamada de 10 min.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Buenísimo! En Platzi tenemos la ruta de Inglés para impulsar tu carrera, con práctica en comunidad y certificados verificables. ¿Te envío ahora el plan de inicio y temario? Dime tu nivel (A1–C1) u objetivo.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Excelente, Ferney! Tenemos la Ruta de Inglés Profesional con certificaciones verificables. ¿Te envío ahora la ruta y el temario de inicio o agendamos 10 min para armar tu plan?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Excelente: te llevo de cero con la Ruta de Contabilidad para No Financieros—registros, estados financieros y Excel aplicado—en clases cortas desde 5 minutos y con certificación digital verificable al terminar.  \n¿Te la envío ya con tu primera clase para hoy y otra para mañana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Excelente: podemos empezar con la Ruta de Contabilidad desde Cero y Finanzas para No Financieros; clases de 5–10 min, certificado digital verificable y certificado físico al completar la ruta profesional. ¿Te la envío y hoy tomas tu primera clase?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Perfecto: te llevo de cero con la Ruta Básica de Contabilidad (Fundamentos + Estados Financieros) en clases de 5–10 min y certificado digital verificable; en 4 semanas puedes dominar lo esencial. \n¿Te envío la ruta y activamos tu primera clase hoy? ¿Cuánto tiempo al día puedes dedicar?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Perfecto, Esteban! Con la Ruta de Contabilidad desde Cero en Platzi dominas fundamentos, registros, estados financieros y Excel con clases desde 5 min y certificación digital verificable (física al completar la ruta). ¿Te envío la ruta ya con tu primera clase para hoy y otra para mañana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Sí puedes: en Platzi empiezas desde cero con la Ruta de Contabilidad, práctica guiada, comunidad y certificaciones verificables para dominar lo básico con confianza.\n¿Te envío la ruta y te ayudo a iniciar hoy con el primer módulo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Desde cero es totalmente viable: en Platzi sigues una ruta de Contabilidad básica con práctica, comunidad y certificaciones verificables que demuestran tu progreso. ¿Te envío el enlace de la ruta para que empieces hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Sí, actualizamos cada mes: IA generativa, LLMs, agentes, RAG, MLOps y Prompt Engineering con rutas y certificaciones verificables.  \n¿Te envío la ruta de IA ideal para ti y el link para empezar hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "En Platzi tienes rutas y comunidad con bibliografía digital curada, material descargable y certificaciones verificables. Dime tu área (ej. Data, Marketing, Dev) y te envío la ruta con su bibliografía.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "No necesitas armarla desde cero: tenemos la Ruta de Gerencia de Marketing Digital (estrategia, data, growth, liderazgo) con comunidad y certificaciones verificables. \nCuéntame tu rol y años de experiencia y te envío la ruta personalizada y el paso para inscribirte hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Claro, no es solo Maya: te armamos una ruta en gráficos con C++/OpenGL, matemáticas y shaders, con proyectos, comunidad y certificaciones verificables. \n¿Te la envío ahora y te dejo los primeros 3 pasos para empezar hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo: más que Maya, tenemos ruta de gráficos con C++ y OpenGL/WebGL, shaders y mates, con comunidad y certificación verificable.  \n¿Te la envío ahora y te ayudo a inscribirte?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Listo: Ruta de Gráficos con C++, OpenGL/WebGL, shaders y mates, con comunidad y certificación verificable. ¿Te la envío aquí y te guío en 2 pasos para inscribirte ahora?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Más que cursos, en Platzi tienes rutas prácticas de Ventas B2B e IA para prospección (prompts, automatización con GPT/HubSpot) con certificación verificable.  \n¿Te envío ahora tu plan y el link de inscripción para empezar esta semana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Te recomiendo el curso de Git y GitHub Curso de Git y GitHub (https://platzi.com/cursos/git-github/). Te dará las bases necesarias para manejarlo bien. ¿Te gustaría que te pase más detalles?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Laura, actualmente no tenemos un curso específico de Trading, pero te puedo recomendar la Ruta de Finanzas e Inversiones Ruta de Finanzas e Inversiones (https://platzi.com/ruta/finanzas-inversiones/) para mejorar tus conocimientos financieros. ¿Te gustaría más información?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola José, para enfocarte en bases de datos, te recomiendo la Ruta de Desarrollo Web, que también abarca habilidades en manejo de datos. Puedes revisarla aquí: https://platzi.com/ruta/desarrollo-web/. ¿Te gustaría que te ayude a inscribirte?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola Diego! Te recomendaría la ruta de Data Science en Platzi, que incluye cursos de bases de datos y te prepara para trabajar remoto. ¿Te gustaría que te comparto más detalles sobre los cursos?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Diego, en Platzi ofrecemos rutas de IA y automatización junto con inglés profesional. ¿Te gustaría que te compartiera más sobre cómo empezarte en esto?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Diego, en Platzi encontrarás rutas específicas para IA, automatización e inglés, todo junto para impulsar tu carrera. ¿Te gustaría que te comparta más sobre los cursos?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Diego, tenemos rutas específicas para IA y automatizaciones, así como para inglés. Te gustaría que te envíe una ruta personalizada y un plan de inicio para comenzar hoy mismo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Claro, Diego! Te enviaré una ruta personalizada para gerencia en marketing digital y un plan de inicio para que empieces hoy. ¿Te parece bien?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Claro, Diego, puedo ayudarte con eso. Te voy a enviar una ruta personalizada para gerencia en marketing digital y un plan de inicio para que empieces hoy. ¿Te parece bien?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Claro, Diego. Te puedo ayudar a construir una ruta de aprendizaje para gerencia en marketing digital. ¿Te gustaría que te envíe una ruta personalizada y un plan de inicio para hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "No, los cursos no son gratis, pero ofrecemos un gran valor con certificaciones y acceso a una comunidad activa. ¿Te gustaría que te envíe tu ruta personalizada y un plan de inicio?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Santiago, entiendo que busques opciones gratis, pero en Platzi ofrecemos un valor que transforma tu carrera. Te puedo enviar una ruta personalizada y un plan de inicio para hoy, ¿te parece?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo que busques opciones gratuitas, pero en Platzi ofrecemos contenido de gran valor a través de nuestras rutas. Te puedo enviar una ruta personalizada y un plan de inicio que se ajuste a tus necesidades. ¿Te gustaría?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo tu inquietud, Luna. Con nuestras rutas personalizadas y la comunidad de Platzi, podrás prepararte de manera efectiva para el mercado laboral. ¿Te gustaría que te envíe tu ruta personalizada y un plan de inicio para hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo que el presupuesto es una preocupación. Platzi ofrece rutas que se adaptan a tu ritmo y necesitas, lo que puede ayudarte a avanzar en tu carrera sin desestabilizarte económicamente.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Es normal tener altibajos, Ferney. Lo importante es que con Platzi puedes avanzar a tu ritmo y disfrutar del proceso. ¿Te gustaría que te muestre cómo funciona?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo que las facilidades son importantes, pero en Platzi te ofrecemos un valor que va más allá: rutas de aprendizaje, comunidad activa y certificaciones verificables que impulsan tu carrera.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo, Ferney. Muchos de nuestros estudiantes también comenzaron sin experiencia en educación a distancia y han tenido éxito. En Platzi, ofrecemos una plataforma intuitiva y una comunidad de apoyo que facilita el aprendizaje. Te gustaría saber más sobre cómo funcionamos?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo, Ferney. En Platzi tenemos rutas de aprendizaje específicas para gerencia en marketing digital que te ayudarán a avanzar en tu carrera. ¿Te gustaría saber qué cursos están incluidos?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo, en Platzi tenemos rutas específicas para gerencia en marketing digital que pueden potenciar tu carrera. ¿Te gustaría saber más sobre los cursos que incluye?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "tiempo::sondeo": {
+      "Hola Ferney, cuéntame cómo es tu rutina. Con rutas flexibles avanzas paso a paso sin descuidar tu agenda 🎯 ¿Empezamos esta semana?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . cuéntame cómo es tu rutina. Con rutas flexibles avanzas paso a paso sin descuidar tu agenda 🎯 ¿Empezamos esta semana?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ¿cómo manejas tu tiempo entre semana? Las rutas se ajustan a tu ritmo y muestran progreso constante 🚀 ¿Quieres iniciar hoy?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . ¿cómo manejas tu tiempo entre semana? Las rutas se ajustan a tu ritmo y muestran progreso constante \ude80 ¿Quieres iniciar hoy?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . ¿cómo manejas tu tiempo entre semana? Las rutas se ajustan a tu ritmo y muestran progreso constante ¿Quieres iniciar hoy?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hey! 😄 ¿Qué tema te gustaría dominar este año? En Platzi hay rutas para tecnología, inglés, diseño o liderazgo.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Entiendo, Diego! ¿Cuál es tu meta con el aprendizaje y cuánto tiempo podrías dedicarle a la semana? ¿Buscas alguna certificación específica?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Entiendo que el tiempo es un desafío, pero nuestras clases son cortas, desde solo 5 minutos, ideales para adaptarse a agendas ocupadas. ¿Le gustaría saber más sobre cómo funciona?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "tiempo::pre_cierre": {
+      "Hola Ferney, definamos tu horario ideal y mide tu avance desde esta semana 🚀 ¿Iniciamos tu ruta personalizada hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . definamos tu horario ideal y mide tu avance desde esta semana \ude80 ¿Iniciamos tu ruta personalizada hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . definamos tu horario ideal y mide tu avance desde esta semana ¿Iniciamos tu ruta personalizada hoy?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Mantener el hábito es clave. Expert te da continuidad sin presiones y resultados tangibles. ¿Quieres que revisemos tu plan?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "tiempo::integracion": {
+      "Hola Ferney, revisemos tu avance y ajustemos tu ruta si es necesario 🔄 ¿Te parece si lo vemos juntos esta semana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . revisemos tu avance y ajustemos tu ruta si es necesario \udd04 ¿Te parece si lo vemos juntos esta semana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola! 😊 Qué gusto tenerte por aquí. Vi que ya empezaste a explorar Platzi, ¿qué temas o programas te han llamado más la atención hasta ahora? Me interesa saber qué te gustaría seguir desarrollando para orientarte mejor en las rutas que pueden impulsarte.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . revisemos tu avance y ajustemos tu ruta si es necesario ¿Te parece si lo vemos juntos esta semana?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hey! 😄 ¿Ya viste algún curso o programa que te llame la atención? Me gusta conocer qué quieren lograr quienes arrancan con la cuenta gratuita, así puedo pasarte algo que les sirva de impulso.": {
+        "shown": 9,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Aprovechar pequeños momentos es un arte, y tú lo dominas. ¿Qué objetivo te gustaría alcanzar este mes?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ¡Buenísimo, Ferney! Inglés es clave. Te envío la ruta ideal con temario y certificaciones, más un plan de inicio según tu nivel; ¿te la mando por aquí o agendamos una llamada de 10 min hoy para afinarlo?": {
+        "shown": 1,
+        "wins": 0.5,
+        "good": 0,
+        "regular": 1,
+        "bad": 0
+      }
+    },
+    "precio::integracion": {
+      "Gracias por tu mensaje, Ferney 🙌. Veo que te interesa el precio especial; antes de darte los detalles, ¿podrías contarme en qué programa o área te gustaría enfocarte?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, genial que estés considerando aprovechar la promoción ✨. Cuéntame, ¿qué programa o meta profesional te gustaría alcanzar? Así veo cuál plan se ajusta mejor a ti.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney 🙌. Vi que te interesa el precio especial. Antes de entrar en detalles, ¿puedes contarme qué programa te llamó la atención? Así te doy la información exacta y resolvemos tus dudas juntos.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Qué emoción que estés interesado en el precio especial, Ferney 🚀. Me gustaría saber, ¿ya tienes en mente algún programa o estás explorando opciones? Así te ayudo a elegir la mejor ruta.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, me alegra mucho verte explorando Platzi 🎓. Antes de hablar del precio, cuéntame un poco: ¿qué tema o programa te gustaría estudiar primero?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Qué emoción que estés interesado en el precio especial, Ferney 🚀. ¿Ya tienes en mente algún programa o estás explorando opciones? Así te ayudo a elegir la mejor ruta.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Has convertido tu inversión en progreso real. Sigamos ese camino. ¿Qué área te gustaría potenciar en este ciclo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "_default::integracion": {
+      "Hola, ¿cómo estás? Me alegra saber que ya estás conociendo Platzi. Cuéntame, ¿qué área o programa te gustaría fortalecer en esta etapa? Así puedo orientarte hacia rutas que se ajusten a tus objetivos personales o profesionales.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola 😊 A veces lo más difícil es decidir por dónde empezar, ¿verdad? Me encantaría saber qué te inspira más: aprender algo nuevo, mejorar tu trabajo actual o prepararte para un cambio. Desde ahí puedo orientarte mejor.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola! 👋 Qué bueno verte por acá. ¿Hay algún tema o programa que te haya despertado curiosidad últimamente? A veces con solo una ruta se abre todo un camino nuevo, y me encantaría saber por dónde te gustaría empezar.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola, ¿cómo estás? Me alegra saber que ya estás conociendo Platzi. ¿Qué área o programa te gustaría fortalecer en esta etapa? Así puedo orientarte hacia rutas que se ajusten a tus objetivos.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola 😊 A veces lo más difícil es decidir por dónde empezar, ¿verdad? ¿Qué te inspira más: aprender algo nuevo, mejorar tu trabajo actual o prepararte para un cambio? Desde ahí te oriento mejor.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola ¿cómo estás? Me alegra saber que ya estás conociendo Platzi. Cuéntame, ¿qué área o programa te gustaría fortalecer en esta etapa? Así puedo orientarte hacia rutas que se ajusten a tus objetivos personales o profesionales.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tu disciplina está marcando la diferencia. Lo que logras hoy impacta directamente en tus próximos desafíos. ¿Qué objetivo te gustaría planear ahora?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Qué alegría verte avanzar. Cada certificado que sumas refuerza tu perfil y abre nuevas oportunidades. ¿Qué objetivo te gustaría definir para este mes?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tu constancia inspira. Aprender un poco cada día genera grandes resultados. ¿Qué nueva habilidad quieres fortalecer ahora?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Excelente que quieras inglés! Te envío ahora el test de nivel y la ruta ideal con un plan de inicio de 7 días; ¿lo recibes por aquí?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Genial, Ferney! Dime tu nivel (básico/intermedio/avanzado) y objetivo (trabajo, viajes o certificación) y te envío hoy la ruta ideal y plan de inicio; si prefieres, agendamos una llamada de 10 min.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Buenísimo, Ferney! Inglés es clave. Te envío la ruta ideal con temario y certificaciones, más un plan de inicio según tu nivel; ¿te la mando por aquí o agendamos una llamada de 10 min hoy para afinarlo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Vamos, Esteban! Con Platzi dominas contabilidad básica desde cero con clases cortas; hoy arrancas con Fundamentos de Contabilidad y mañana con Estados Financieros (certificado digital verificable al completar la ruta). \nMini agenda: 10–15 min lun–vie; te envío la ruta y la primera clase ahora y en 7 días revisamos avances, ¿te parece?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, ¡bien hecho! Ya tienes lista la Ruta Contabilidad desde Cero + Excel para Finanzas; hoy toma la clase 1: Principios contables (10 min) y obtén tu certificado digital verificable; al completar la ruta profesional puedes pedir el físico. \nMini agenda: lun–vie, 10 min diarios; te escribo en 7 días para revisar avances. ¿Te envío ahora el acceso directo a tu primera clase?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Excelente paso, Esteban! Hoy empieza con la Ruta de Contabilidad desde Cero: clase 1 – Fundamentos (15 min) y mañana – Estados Financieros; con 5–10 min diarios avanzas y al completar obtienes tu certificado digital verificable. \nTe dejo mini agenda (lun–vie, 10 min) y te escribo en 7 días para revisar avances; ¿abres la primera lección ahora?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, sí: IA Generativa con OpenAI, RAG aplicado y Agentes con LangChain; están en la Ruta de IA con certificación verificable.  \n¿Te activo la Ruta de IA en tu cuenta y te envío el acceso ahora?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Sí: Prompt Engineering, RAG con vectores, LangChain, OpenAI API y Agentes IA (todos con certificación verificable).\nEntra a Platzi y dale Iniciar a la Ruta de IA Generativa; ¿te envío el link directo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Listo Esteban: te armo una ruta Full Stack + Móvil en Platzi con Python, Java, Angular, HTML/CSS, Bases de Datos y frameworks (Django, Spring, Ionic) con certificaciones verificables.  \nPásame tu correo para activarla en tu cuenta y enviarte el plan de 12 semanas y el primer reto hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Genial, enfoquémonos en la Ruta de C++ y Computación Gráfica (OpenGL/WebGL) con certificación; ¿te envío el enlace y fijamos metas para esta semana?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Porque te da respaldo: fuentes confiables para citar, profundizar y mantenerte actualizado, conectadas a tus rutas y certificaciones en Platzi.  \nAbre Recursos en tu curso hoy y guarda 3 lecturas clave en Favoritos para tu proyecto.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "En Platzi accedes a un acervo digital en la pestaña Recursos de cada curso y ruta (lecturas, papers y guías descargables). ¿En qué tema lo necesitas para enviarte la ruta con su bibliografía hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tenemos acervo digital en la pestaña Recursos de cada curso y en las Rutas: lecturas, papers y guías descargables. Dime el tema y te armo una bibliografía curada hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "En Platzi, cada curso y ruta trae bibliografía digital curada (lecturas, papers y guías) en la pestaña Recursos.  \n¿En qué área la necesitas? Te envío la ruta con su acervo y la agrego a tu plan hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Edilson, ve por la Ruta de Bases de Datos: SQL básico → modelado → PostgreSQL/MySQL → admin → ETL con Python → Cloud (RDS) → BI, cerrando con 2 proyectos y certificación para perfil remoto. ¿Te envío ahora el plan de 8 semanas y checklist para empezar?": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Edilson, te recomiendo la Ruta de Inteligencia Artificial y Data Science Ruta de Inteligencia Artificial y Data Science (https://platzi.com/ruta/inteligencia-artificial/) para enfocarte en bases de datos. ¡Vamos a construir tu futuro profesional!": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola Diego! Te recomiendo seguir la ruta de Data Science en Platzi. Te proporcionará las habilidades necesarias para trabajar con bases de datos y podrás hacerlo de forma remota. ¿Te gustaría que te comparta los cursos iniciales?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Claro, Diego. Platzi ofrece rutas de aprendizaje, acceso a una comunidad activa y certificaciones que avalan tu progreso. ¿Te gustaría que te comparta algunas rutas específicas que podrían interesarte?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Claro, Diego. Platzi ofrece rutas educativas, comunidad activa y certificaciones verificables que transforman tu carrera. ¿Te gustaría que te comparta una ruta específica que se alinee con tus objetivos?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, en Platzi tenemos rutas de IA, automatización e inglés que te ayudarán. ¿Te gustaría que te comparta más detalles sobre cómo comenzar?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Genial decisión, Santiago! Te recomiendo enfocarte primero en un área. ¿Te gustaría que agendemos un check-in en 7 días para revisar tus avances?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Santiago, ¡Genial decisión, Santiago! Te recomiendo enfocarte primero en un área. ¿Te gustaría que agendemos un check-in en 7 días para revisar tus avances?": {
+        "shown": 1,
+        "wins": 1.5,
+        "good": 0,
+        "regular": 3,
+        "bad": 0
+      },
+      "¡Excelente decisión, Diego! Agenda un check-in en 7 días para revisar avances y cómo tus empleados están aprovechando Platzi.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Claro, Diego. Platzi ofrece programas estructurados que abarcan varias áreas, desde desarrollo hasta marketing. ¿Hay alguna especialidad que te interese específicamente?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "_default::sondeo": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney 🙌. Cuando entraste a Platzi, ¿tenías algo específico en mente? A veces una idea pequeña se vuelve un gran objetivo si la trabajamos paso a paso.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola! 😊 Cuéntame un poco sobre ti, ¿qué te motivó a registrarte en Platzi? Me interesa saber si buscas mejorar en tu trabajo, aprender algo nuevo o explorar un cambio profesional.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hey! 😄 ¿Qué tema te gustaría dominar este año? En Platzi hay rutas para tecnología, inglés, diseño o liderazgo.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Excelente, Esteban! Te armo la ruta ideal de Inglés con plan de 4 semanas y certificaciones. Dime tu nivel aproximado (A0/A1/A2/B1+) y cuántas horas/semana puedes dedicar, o agendamos 10 min para dejarlo listo hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, ¿la necesitas para tu trabajo, tu emprendimiento o para certificarte? ¿Cuánto tiempo a la semana puedes dedicar?\nRespóndeme y te envío por aquí la ruta de Contabilidad desde cero en Platzi con comunidad y certificación verificable.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, para armarte la ruta de contabilidad desde cero con certificaciones: ¿lo necesitas para tu trabajo o emprendimiento y cuántas horas a la semana puedes dedicar?\nCon eso te envío hoy el plan y los primeros pasos.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, ¿qué tipo de proyecto social buscas impulsar y desde qué rol te ves (producto, datos, marketing o fundraising), con qué plazo objetivo?  \nCon eso te envío una ruta clara con comunidad y certificaciones verificables para empezar hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Excelente, en Platzi tenemos rutas y certificaciones para estructurar proyectos con impacto. ¿Qué problema social quieres abordar y en qué rol te ves (gestión, producto, data o desarrollo) para recomendarte la ruta adecuada?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, cuando dices gestión, ¿apuntas a gestión de proyectos sociales, medición de impacto o fundraising/alianzas?\nCuéntame tu rol actual y en qué plazo quieres aplicarlo para armarte la ruta y certificaciones verificables en Platzi.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, ¿desde qué rol partes y qué tipo de proyecto social quieres estructurar (educación, salud, ambiente; ONG/gobierno/emprendimiento)?\n¿Cuál es tu meta en 3–6 meses? Con eso te recomiendo la ruta y certificaciones verificables de Platzi para lograrlo.": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Esteban, ¿en qué etapa estás (idea, piloto o activo) y qué quieres estructurar primero: modelo, validación, impacto o financiación? Con eso te guío a la ruta y certificación correcta en Platzi.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Para definir tu ruta de base de datos remoto: ¿qué nivel tienes en SQL e inglés? ¿Te interesa más Data Analyst, Data Engineer o DBA?\n¿Cuántas horas/semana puedes estudiar? Con eso te armo la ruta en Platzi con certificaciones verificables.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Edilson, te recomiendo la Ruta de Desarrollo Web Ruta de Desarrollo Web (https://platzi.com/ruta/desarrollo-web/) y también el Curso de Fundamentos de Inteligencia Artificial Curso de Fundamentos de Inteligencia Artificial (https://platzi.com/cursos/fundamentos-ia/) para fortalecer tus habilidades en bases de datos. ¿Te gustaría más información sobre alguna de estas opciones?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola Edilson! Claro, Platzi ofrece rutas de aprendizaje enfocadas en transformar tu carrera con certificaciones verificables y una comunidad activa. ¿Te gustaría saber más sobre alguna área específica?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, para orientarte al manejo de bases de datos, podrías seguir nuestra ruta de Data Science en Platzi. ¿Te gustaría que te envíe más detalles sobre los cursos y certificaciones?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Claro, Diego! Platzi ofrece rutas de aprendizaje con certificaciones, comunidad activa y contenido actualizado. ¿Te gustaría que te comparta detalles sobre alguna área específica?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola Diego! ¿Cuál es tu meta específica en IA y automatizaciones? ¿Y cuánto tiempo puedes dedicarle a esto semanalmente? Además, ¿estás buscando una certificación al finalizar?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola Diego! Claro, ¿cuál es tu meta concreta en gerencia de marketing digital y cuánto tiempo puedes dedicarle a tu aprendizaje? También, ¿buscas obtener una certificación al final?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola, Luna. ¿Cuál es tu meta al aprender sobre ingeniería industrial y cuánto tiempo disponible tienes para dedicarle? ¿Te gustaría obtener una certificación al finalizar el curso?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, ¿cuál es la meta específica que buscas alcanzar con Platzi y cuánto tiempo tienen disponible tus empleados para dedicarle a las certificaciones?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hola Diego! Estudiar marketing es una gran decisión. ¿Tienes alguna preferencia sobre el tipo de curso o contenido que te gustaría ver?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, claro que sí. En Platzi ofrecemos rutas de aprendizaje que transforman carreras a través de cursos y una comunidad activa. ¿Tienes algún área específica en mente que te gustaría explorar?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "precio::sondeo": {
+      "Hola Ferney, me da gusto saludarte 😊. Cuéntame, ¿qué te animó a crear tu cuenta en Platzi? A veces el primer paso viene de una meta clara o de las ganas de aprender algo nuevo.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola 😊 Si ya miraste cursos, ¿hay alguno que te llamó más la atención? Desde ahí armamos una ruta paso a paso.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola 😊 Todos empezamos con algo que queremos mejorar. ¿Cuál sería en tu caso? Te digo qué ruta se adapta mejor.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ¡Hola! 🌟 Qué bueno verte explorando Platzi. Si me cuentas qué te gustaría conseguir con tus estudios, puedo mostrarte rutas que te ayuden a avanzar más rápido.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tu crecimiento también es una inversión. ¿Qué resultados te gustaría ver al finalizar tu ruta de aprendizaje?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "_default::pre_cierre": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, me encanta lo que compartes 👏 Por lo que veo, ya tienes una idea bastante clara de lo que quieres lograr. ¿Te sientes listo para dar el siguiente paso hacia esa meta?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, perfecto 💪 Entonces, ¿confirmamos que te interesa seguir con esa ruta y avanzar con el siguiente paso para empezar a construir tu progreso?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Diego, en Platzi ofrecemos rutas específicas en IA, automatizaciones e inglés, con certificaciones verificables. Si te interesa, podemos agendar una llamada para guiarte en tu camino. ¿Te parece bien?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "precio::pre_cierre": {
+      "Hola Ferney, excelente actitud 💪 Si deseas aprovechar la promo, damos el paso para convertir tu meta en progreso real. ¿Te muestro cómo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, Alineamos bien tus objetivos 🎯 ¿Te comparto la opción que te permite empezar sin pausa?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Alineamos bien tus objetivos 🎯 ¿Te comparto la opción que te permite empezar sin pausa?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Si vemos valor mensual, Expert cuesta menos que un curso suelto y te da todas las rutas. ¿Te muestro el plan que mejor encaja?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "cert::rebatir": {
+      "Tus logros deben contar 🎓. Certificados digitales (LinkedIn) y físicos fortalecen tu perfil profesional. ¿Listo para obtener el tuyo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, Tus logros deben contar 🎓. Certificados digitales (LinkedIn) y físicos fortalecen tu perfil profesional. ¿Listo para obtener el tuyo?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . Tus logros deben contar 🎓. Certificados digitales (LinkedIn) y físicos fortalecen tu perfil profesional. ¿Listo para obtener el tuyo?": {
+        "shown": 2,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tus conocimientos valen más cuando son verificables. Con Expert certificas cada etapa de tu avance.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "No todos los certificados son iguales. En Platzi cada curso y ruta acredita habilidades aplicadas, no solo teoría.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "competencia::rebatir": {
+      "Hola Ferney, no se trata de estudiar, sino de transformar tu carrera 🎯. Rutas guiadas, comunidad y certificados te acompañan. ¿Listo para empezar?": {
+        "shown": 7,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, . no se trata de estudiar, sino de transformar tu carrera 🎯. Rutas guiadas, comunidad y certificados te acompañan. ¿Listo para empezar?": {
+        "shown": 3,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Platzi no compite en cantidad de cursos, sino en calidad de resultados. Tus avances se miden y se celebran con certificados verificables.": {
+        "shown": 4,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Cada plataforma tiene su enfoque. En Platzi no compras cursos sueltos, compras estructura, acompañamiento y progreso medible.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "La diferencia está en la comunidad. Mientras otras plataformas son solitarias, Platzi te conecta con mentores y otros profesionales que crecen contigo.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "No se trata de ver videos, se trata de avanzar. En Platzi aplicas lo que aprendes y certificas tu progreso con aval profesional.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "tiempo::cierre": {
+      "Hola Ferney, Has trazado muy bien tu objetivo 🎯. Si lo tienes claro, este es un gran momento para empezar y mantener el impulso que ya generaste.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "El siguiente paso depende de ti. Si lo decidiste, inicia hoy y convierte tu intención en acción.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Tu compromiso con tu tiempo demuestra disciplina. Sigamos ese ritmo con Expert. ¿Quieres que te envíe el enlace por WhatsApp o correo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Lo que lograste con pocos minutos diarios es increíble. Expert te ayuda a multiplicar esos resultados. ¿Te paso el enlace de pago por WhatsApp?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "precio::cierre": {
+      "Hola Ferney, Nada impulsa más que empezar con la motivación alta 🌱. Aprovecha este momento y activa tu proceso hoy.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, Excelente momento para iniciar 🎯. Las rutas están listas y puedes empezar hoy con total flexibilidad.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Has analizado el valor y sabes que Expert te conviene. ¿Te comparto el enlace por correo para hacerlo ahora mismo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Jose, no manejamos cupones, pero hoy puedo asegurarte el mejor precio del plan Expert (acceso a las 17 escuelas) para maximizar tu retorno.  \n¿Te envío ahora el enlace de pago para que lo asegures?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "cert::integracion": {
+      "Hola ¿cómo estás? Me alegra saber que ya estás conociendo Platzi. ¿Qué área o programa te gustaría fortalecer en esta etapa? Así puedo orientarte hacia rutas que se ajusten a tus objetivos.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Perfecto, Santiago! Felicito tu decisión. Agenda un check-in en 7 días para revisar tus avances y asegurar que estés aprovechando al máximo tu aprendizaje. ¿Qué día te viene bien?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "cert::sondeo": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Sí, al finalizar tus cursos recibirás certificados digitales verificables en LinkedIn y físicos enviados a tu casa.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "cert::pre_cierre": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "cert::cierre": {
+      "Hola Ferney, Has trazado muy bien tu objetivo 🎯. Si lo tienes claro, este es un gran momento para empezar y mantener el impulso que ya generaste.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "competencia::integracion": {
+      "Hola ¿cómo estás? Me alegra saber que ya estás conociendo Platzi. ¿Qué área o programa te gustaría fortalecer en esta etapa? Así puedo orientarte hacia rutas que se ajusten a tus objetivos.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "¡Hey! 😄 ¿Ya viste algún curso o programa que te llame la atención? Me gusta conocer qué quieren lograr quienes arrancan con la cuenta gratuita, así puedo pasarte algo que les sirva de impulso.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "competencia::sondeo": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Para comparar bien, Ferney, dime tu objetivo: ¿certificarte, proyecto práctico o portafolio? Así te muestro la ruta específica.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "competencia::pre_cierre": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "competencia::cierre": {
+      "Hola Ferney, Has trazado muy bien tu objetivo 🎯. Si lo tienes claro, este es un gran momento para empezar y mantener el impulso que ya generaste.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "_default::cierre": {
+      "Hola Ferney, Tu meta y tu motivación están definidas 🌟. Es el momento ideal para transformar esa meta en progreso real.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Ferney, El siguiente paso depende de ti. Si lo decidiste, inicia hoy y convierte tu intención en acción.": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Sí, en Gestión: ruta de Gestión de Proyectos + comunidad + certificaciones verificables para estructurar proyectos con impacto social. ¿Te inscribo al Plan Expert hoy o te envío el enlace de pago?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Diego, para aprender IA, automatizaciones e inglés, te recomiendo nuestro plan Premium. ¿Confirmas para activarlo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "tiempo::": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "precio::": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "competencia::": {
+      "Hola Ferney, ¿Te explico cómo lo hacemos fácil y rápido?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "pitch::rebatir": {
+      "Es normal tener dudas al empezar. Pero recuerda que los resultados llegan cuando hay estructura. En Platzi aprendes con rutas claras y acompañamiento constante.": {
+        "shown": 2,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi transforma tu carrera con rutas claras, comunidad que te impulsa y certificaciones verificables que abren puertas.\n¿Te envío ahora tu ruta ideal y una clase gratis para empezar hoy?": {
+        "shown": 2,
+        "wins": 2,
+        "good": 2,
+        "regular": 0,
+        "bad": 0
+      },
+      "Pega aquí exactamente el texto enviado por el bot": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi acelera tu carrera tech con rutas claras, comunidad que te impulsa y certificaciones verificables que abren puertas.\n¿Te envío ahora la ruta ideal y una clase gratis para probar hoy?": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi acelera tu carrera tech con rutas claras, comunidad que te impulsa y certificaciones verificables que abren puertas.\n¿Te envío ahora tu ruta ideal y una clase gratis para empezar hoy?": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi transforma tu carrera tech con rutas claras, comunidad que te impulsa y certificaciones verificables que abren puertas.\n¿Te envío ahora tu ruta ideal y una clase gratis para empezar hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi transforma tu carrera tech con rutas claras, comunidad que te impulsa y certificaciones verificables que abren puertas.\n¿Te envío ahora tu ruta ideal y un plan de inicio para empezar hoy?": {
+        "shown": 1,
+        "wins": 1,
+        "good": 1,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi acelera tu carrera tech con rutas claras, comunidad que impulsa y certificaciones verificables que abren puertas.\n¿Te envío ahora tu ruta ideal y un plan de inicio para empezar hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Laura, Platzi transforma tu carrera tech con rutas claras, comunidad activa y certificaciones verificables que abren puertas.\n¿Te envío tu ruta ideal y un plan de inicio para hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Platzi transforma tu carrera con rutas de aprendizaje personalizadas, una comunidad activa y certificaciones verificables que impulsan tu progreso profesional. ¿Te gustaría recibir tu ruta personalizada y un plan de inicio para hoy?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "datos::rebatir": {
+      "Hola Edilson, la Ruta de Inteligencia Artificial y Data Science (https://platzi.com/ruta/inteligencia-artificial/) incluye temas de bases de datos y puede ayudarte a trabajar remoto. ¿Te gustaría saber más sobre esta ruta?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Edilson, para especializarte en bases de datos, te recomiendo la ruta de, que te ofrece herramientas para trabajar remoto. ¿Te gustaría que te comparta más detalles?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, para especializarte en bases de datos, te recomiendo la ruta de. Es perfecta para impulsar tu carrera y facilitar el trabajo remoto. ¿Te gustaría saber más sobre los detalles?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, para especializarte en bases de datos te recomiendo nuestra ruta de. Con esos conocimientos podrías optar a trabajos remotos. ¿Te gustaría conocer más sobre la ruta?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      },
+      "Hola Diego, para especializarte en bases de datos, te recomiendo la ruta de. Con Platzi podrás avanzar en tu carrera y trabajar remoto. ¿Te gustaría iniciar hoy mismo?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    },
+    "datos::sondeo": {
+      "Hola, Diego. Para enfocarte en base de datos, te recomiendo la ruta de. Con ella podrás potenciar tus oportunidades laborales remotas. ¿Te gustaría más información sobre el contenido?": {
+        "shown": 1,
+        "wins": 0,
+        "good": 0,
+        "regular": 0,
+        "bad": 0
+      }
+    }
+  }
+}

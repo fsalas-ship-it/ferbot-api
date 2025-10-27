@@ -1,0 +1,9 @@
+intent,stage,text,weight,name_placeholder
+tiempo,rebatir,Te entiendo, Ferney. Con clases desde 5 min puedes avanzar a diario.,3,Ferney
+precio,integracion,Hola Ferney, cuéntame primero en qué programa te interesa avanzar.,1,Ferney
+competencia,rebatir,Cada plataforma tiene enfoque distinto; te muestro cómo comparamos.,2,Ferney
+_default,sondeo,¿Qué te gustaría lograr con tu aprendizaje este mes?,1,
+cert,rebatir,Las certificaciones verificables acreditan tu avance con evaluación práctica.,2,
+tiempo,integracion,¡Qué bueno verte por acá! ¿Cómo te gustaría organizar tu estudio diario?,1,
+precio,sondeo,¿Qué te motivó a preguntar por precio? Así ajusto la info a lo que buscas.,1,
+_default,pre_cierre,Con lo que me cuentas, ¿te gustaría que armemos el siguiente paso?,1,

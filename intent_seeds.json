@@ -1,0 +1,84 @@
+{
+  "precio": [
+    "¿Cuánto cuesta?",
+    "Está muy caro",
+    "¿Hay descuento u oferta?",
+    "No tengo presupuesto",
+    "¿Cuál es el precio del plan?",
+    "¿Tienen promoción?"
+  ],
+  "tiempo": [
+    "No tengo tiempo",
+    "Mi agenda está llena",
+    "No alcanzo a estudiar",
+    "Puedo solo 10 minutos",
+    "No me da el tiempo",
+    "Estoy muy ocupado"
+  ],
+  "cert": [
+    "¿Dan certificado?",
+    "¿Sirven las certificaciones?",
+    "Necesito un diploma",
+    "¿Puedo certificarme?",
+    "¿La empresa valida certificados?"
+  ],
+  "competencia": [
+    "Udemy es más barato",
+    "Estoy entre Coursera y ustedes",
+    "Alura tiene otras rutas",
+    "Qué diferencia con la competencia",
+    "¿Por qué no mejor otra plataforma?"
+  ],
+  "_default": [
+    "Quiero mejorar profesionalmente",
+    "Estoy explorando opciones",
+    "Me interesa aprender algo nuevo",
+    "Quiero crecer en mi trabajo"
+  ],
+  "precio": [
+    "precio",
+    "hay descuento",
+    "tienen promo",
+    "qué vale",
+    "cuánto cuesta",
+    "precio especial",
+    "oferta hoy",
+    "está muy caro",
+    "pueden hacer rebaja",
+    "hay meses sin intereses"
+  ],
+  "tiempo": [
+    "no tengo tiempo",
+    "mi agenda está llena",
+    "no alcanzo a estudiar",
+    "solo 10 minutos",
+    "estoy muy ocupado",
+    "horarios",
+    "me falta constancia",
+    "puedo estudiar poco",
+    "no me rinde el tiempo"
+  ],
+  "cert": [
+    "dan certificado",
+    "sirven las certificaciones",
+    "necesito diploma",
+    "certificado válido",
+    "cómo certifico",
+    "certificación oficial"
+  ],
+  "competencia": [
+    "udemy",
+    "coursera",
+    "alura",
+    "otra plataforma",
+    "comparando con la competencia",
+    "es mejor que udemy"
+  ],
+  "_default": [
+    "quiero mejorar profesionalmente",
+    "estoy explorando opciones",
+    "quiero aprender algo nuevo",
+    "quiero crecer en mi trabajo",
+    "me interesa el plan expert"
+  ]
+}

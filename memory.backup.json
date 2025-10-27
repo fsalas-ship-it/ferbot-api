@@ -1,0 +1,28 @@
+[
+  {
+    "userId": "default",
+    "text": "En Platzi no vendemos cursos, vendemos transformación.",
+    "addedAt": "2025-10-07T22:16:52.419Z"
+  },
+  {
+    "userId": "default",
+    "text": "Si no tienes tiempo, usa microclases de 5–10 min.",
+    "addedAt": "2025-10-07T22:16:52.421Z"
+  },
+  {
+    "userId": "default",
+    "text": "El precio se olvida, el progreso se queda.",
+    "addedAt": "2025-10-07T22:16:52.421Z"
+  },
+  {
+    "id": "kb_1759931950495",
+    "knowledge": "FerBot debe aprender a guiar conversaciones B2B destacando resultados medibles y tiempos claros de onboarding.",
+    "tags": [
+      "B2B",
+      "onboarding",
+      "ventas"
+    ],
+    "source": "manual de Ferney",
+    "createdAt": "2025-10-08T13:59:10.495Z"
+  }
+]
