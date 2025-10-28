@@ -1,14 +1,24 @@
 {
   "manifest_version": 3,
   "name": "FerBot",
-  "version": "1.1.0",
   "description": "Asistente comercial de Ferney (panel flotante en Hilos).",
+  "version": "1.1.0",
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
+  "permissions": [
+    "storage",
+    "clipboardWrite",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://app.hilos.io/*",
+    "https://ferbot-api.onrender.com/*"
+  ],
   "content_scripts": [
     {
       "matches": ["https://app.hilos.io/*"],
@@ -16,5 +26,7 @@
       "run_at": "document_idle"
     }
   ],
-  "host_permissions": ["https://app.hilos.io/*"]
+  "action": {
+    "default_title": "FerBot"
+  }
 }
