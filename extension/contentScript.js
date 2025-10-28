@@ -1,344 +1,225 @@
-// FerBot content script — estable (sin autopaste, con countdown y calificación)
-// Usa BASE desde localStorage o Render por defecto.
-// Campos: Nombre · Etapa · Contexto · Explicación (POR QUÉ + SIGUIENTE PASO) · Respuesta
+// extension/contentScript.js
 (() => {
-  // ====== CONFIG (no tocar si no es necesario) ======
+  // ========== CONFIG ==========
   const BASE = localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
   const PLATZI_GREEN = "#97C93E";
   const DARK = "#0b0f19";
-  const PANEL_BG = "#0b0f19CC"; // semi-transparente (más claro)
+  const PANEL_BG = "rgba(11,15,25,0.92)";
   const GRAY = "#cbd5e1";
 
-  // Evitar doble inyección
   if (document.getElementById("ferbot-fab") || document.getElementById("ferbot-styles")) return;
 
-  // ====== ESTILOS ======
+  // ========== STYLES ==========
   const style = document.createElement("style");
   style.id = "ferbot-styles";
   style.textContent = `
-    .ferbot-fab{
-      position:fixed; right:20px; bottom:20px; z-index:999999;
-      width:56px; height:56px; border-radius:999px; background:${PLATZI_GREEN};
-      display:flex; align-items:center; justify-content:center;
-      box-shadow:0 8px 28px rgba(0,0,0,.35); cursor:grab; user-select:none;
-      font-size:24px; color:#0b0f19; border:0;
-      animation: ferbot-pulse 2s infinite;
-    }
-    @keyframes ferbot-pulse{
-      0%{ box-shadow:0 0 0 0 rgba(151,201,62,.6) }
-      70%{ box-shadow:0 0 0 16px rgba(151,201,62,0) }
-      100%{ box-shadow:0 0 0 0 rgba(151,201,62,0) }
-    }
-    .ferbot-fab:active{ cursor:grabbing; }
-
-    .ferbot-panel{
-      position:fixed; right:20px; bottom:86px; z-index:999999;
-      width:min(420px,92vw);
-      background:${PANEL_BG}; color:#e2e8f0;
-      border-radius:16px; box-shadow:0 18px 40px rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.10); display:flex; flex-direction:column;
-      max-height:78vh; overflow:hidden; backdrop-filter: blur(6px);
-    }
-    .ferbot-header{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 10px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.08);
-      cursor:move; user-select:none;
-    }
-    .ferbot-title{ font-weight:800; letter-spacing:.3px; font-size:13px; }
-    .ferbot-body{ padding:10px 10px 72px; overflow:auto; }
-    .ferbot-label{ font-size:11px; color:#94a3b8; margin:4px 0 4px; }
-
-    /* Áreas de texto opacas (no tocar fondo) */
-    .ferbot-input, .ferbot-output{
-      width:100%; min-height:92px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-      background:#0f1524; color:#dbeafe; outline:none; padding:8px 9px; resize:vertical;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;
-      box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02);
-      font-size:13px;
-    }
-    .ferbot-select, .ferbot-name{
-      width:100%; padding:7px 9px; border-radius:9px; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12);
-      font-size:13px;
-    }
-
-    .ferbot-footer{
-      position:absolute; left:0; right:0; bottom:0;
-      display:flex; gap:6px; padding:8px 10px; background:rgba(255,255,255,.04);
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-    .ferbot-btn{ flex:1; padding:7px 8px; border-radius:9px; border:0; cursor:pointer; font-weight:800; font-size:12px; }
-    .ferbot-primary{ background:${PLATZI_GREEN}; color:#0b0f19; }
-    .ferbot-ghost{ background:#1b2333; color:#cbd5e1; }
-    .ferbot-good{ background:#19c37d; color:#062d1f; }
-    .ferbot-regular{ background:#fbbf24; color:#332200; }
-    .ferbot-bad{ background:#ef4444; color:#fff; }
-
-    .ferbot-count{
-      font-size:11px; color:#cbd5e1; opacity:.85; margin:6px 0 0;
-    }
-    .ferbot-dots::after{
-      display:inline-block; width:1.2em; text-align:left; content:"";
-      animation: ferbot-dots 1.2s infinite steps(4);
-    }
-    @keyframes ferbot-dots{
-      0%{ content:"" } 25%{ content:"." } 50%{ content:".." } 75%{ content:"..." }
-    }
+  @keyframes fbBlink { 0%{transform:scale(1)} 70%{transform:scale(1.06)} 100%{transform:scale(1)} }
+  .ferbot-fab{
+    position: fixed; right: 20px; bottom: 20px; z-index: 999999;
+    width: 58px; height:58px; border-radius: 9999px; background: ${PLATZI_GREEN};
+    display:flex; align-items:center; justify-content:center; cursor:pointer; user-select:none;
+    box-shadow: 8px 28px 70px rgba(0,0,0,.35);
+    font-size: 24px; color:#0b0f19; animation: fbBlink 1.8s infinite ease-out;
+  }
+  .ferbot-panel{
+    position: fixed; right: 20px; bottom:86px; z-index:999999;
+    width: min(480px, calc(100vw - 36px));
+    background: ${PANEL_BG}; color: ${GRAY};
+    border-radius:16px; box-shadow: 18px 40px 80px rgba(0,0,0,.36);
+    border: 1px solid rgba(255,255,255,.06); backdrop-filter: blur(6px);
+    max-height: 78vh; overflow: hidden; display: none;
+  }
+  .ferbot-header{
+    display:flex; align-items:center; gap:10px; padding:14px 16px; background:rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ferbot-title{ font-weight:700; color:#fff; }
+  .ferbot-body{ padding: 14px 16px; overflow: auto; max-height: calc(78vh - 56px); }
+  .ferbot-label{ font-size:12px; color:#93a2b6; margin:8px 0 6px; }
+  .ferbot-input, .ferbot-textarea, .ferbot-select{
+    width:100%; background:#0f1629; border:1px solid #243149; color:#dbe7ff; border-radius:10px;
+    padding:12px 12px; outline:none; font-size:14px;
+  }
+  .ferbot-textarea{ min-height:70px; resize: vertical; }
+  .ferbot-row{ display:flex; gap:10px; align-items:center; }
+  .ferbot-actions{ display:flex; gap:12px; align-items:center; justify-content:flex-start; margin-top:10px; }
+  .ferbot-btn{
+    padding:12px 16px; border-radius:12px; border:none; cursor:pointer; font-weight:700;
+  }
+  .ferbot-btn-primary{ background:${PLATZI_GREEN}; color:#111; }
+  .ferbot-btn-dark{ background:#10192b; color:#dbe7ff; border:1px solid #22304c; }
+  .ferbot-chip{ display:inline-flex; align-items:center; gap:8px; border:1px solid #22304c; padding:4px 8px; border-radius:999px; }
+  .ferbot-rating{ display:none; gap:10px; margin-top:8px; }
+  .ferbot-badge{ display:none; }
+  .ferbot-hint{ font-size:12px; color:#8aa0bd; }
+  .ferbot-sent{ font-size:12px; padding:6px 10px; border-radius:10px; background:#10192b; border:1px solid #22304c; color:#9ec1ff;}
+  .ferbot-count{ margin-left:auto; font-size:12px; color:#9ec1ff; }
   `;
   document.head.appendChild(style);
 
-  // ====== FAB ======
-  const fab = document.createElement("button");
+  // ========== FAB ==========
+  const fab = document.createElement("div");
   fab.id = "ferbot-fab";
   fab.className = "ferbot-fab";
-  fab.title = "Abrir FerBot";
+  fab.title = "FerBot";
   fab.textContent = "🤖";
   document.body.appendChild(fab);
 
-  // drag FAB
-  let dragFab=false, offX=0, offY=0;
-  fab.addEventListener("mousedown",(e)=>{ dragFab=true; offX = e.clientX - fab.getBoundingClientRect().left; offY = e.clientY - fab.getBoundingClientRect().top; });
-  window.addEventListener("mousemove",(e)=>{ if(!dragFab) return; fab.style.right="auto"; fab.style.bottom="auto"; fab.style.left=`${e.clientX-offX}px`; fab.style.top=`${e.clientY-offY}px`; });
-  window.addEventListener("mouseup",()=> dragFab=false);
+  // ========== PANEL ==========
+  const panel = document.createElement("div");
+  panel.className = "ferbot-panel";
+  panel.innerHTML = `
+    <div class="ferbot-header">
+      <div class="ferbot-title">FerBot</div>
+      <span class="ferbot-count" id="fb-count"></span>
+    </div>
+    <div class="ferbot-body">
+      <div class="ferbot-label">Nombre del cliente</div>
+      <input id="fb-name" class="ferbot-input" placeholder="Ej. Laura" />
 
-  // ====== PANEL ======
-  let panel;
-  fab.addEventListener("click", () => {
-    if (panel && panel.isConnected) { panel.remove(); return; }
-    openPanel();
+      <div class="ferbot-label">Etapa</div>
+      <select id="fb-stage" class="ferbot-select">
+        <option>Integración</option>
+        <option>Sondeo</option>
+        <option>Rebatir</option>
+        <option>Cierre</option>
+        <option>Integración</option>
+      </select>
+
+      <div class="ferbot-label">Contexto (opcional, para el bot)</div>
+      <textarea id="fb-context" class="ferbot-textarea" placeholder="Notas breves: certificaciones, poco tiempo, habló de inglés..."></textarea>
+
+      <div class="ferbot-row" style="align-items:center; gap:12px; margin-top:6px;">
+        <div class="ferbot-label" style="margin:0;">Selecciona texto del chat o escribe una objeción, luego Generar.</div>
+        <span class="ferbot-sent" id="fb-sentiment">Sentimiento: —</span>
+      </div>
+      <textarea id="fb-text" class="ferbot-textarea" placeholder="Pega/selecciona lo que dijo el cliente"></textarea>
+
+      <div class="ferbot-label">Explicación (POR QUÉ + SIGUIENTE PASO)</div>
+      <textarea id="fb-explain" class="ferbot-textarea" placeholder="Aquí el bot te enseña..." readonly></textarea>
+
+      <div class="ferbot-label">Respuesta (lista para pegar)</div>
+      <textarea id="fb-reply" class="ferbot-textarea" placeholder="Se generará aquí..." ></textarea>
+
+      <div class="ferbot-actions">
+        <button id="fb-gen"   class="ferbot-btn ferbot-btn-primary">Generar</button>
+        <button id="fb-clear" class="ferbot-btn ferbot-btn-dark">Clear</button>
+        <div class="ferbot-chip" id="fb-rating">
+          <span>¿Te gustó esta respuesta?</span>
+          <button class="ferbot-btn ferbot-btn-primary" data-rate="good">👍 Buena</button>
+          <button class="ferbot-btn ferbot-btn-dark" data-rate="ok">🙂 Regular</button>
+          <button class="ferbot-btn ferbot-btn-dark" data-rate="bad">👎 Mala</button>
+        </div>
+      </div>
+
+      <div class="ferbot-hint" style="margin-top:8px;">Tip: haz doble clic en un mensaje del chat para copiarlo acá.</div>
+    </div>
+  `;
+  document.body.appendChild(panel);
+
+  // ========== estado ==========
+  let open = false;
+  let countdownTimer = null;
+
+  function togglePanel(show){
+    open = (show===undefined) ? !open : !!show;
+    panel.style.display = open ? "block" : "none";
+  }
+
+  fab.addEventListener("click", ()=> togglePanel());
+
+  // Doble clic en la página para llevar texto al área
+  document.addEventListener("dblclick", (e)=>{
+    const sel = window.getSelection()?.toString()?.trim();
+    if(sel){
+      document.getElementById("fb-text").value = sel;
+      analyzeNow(sel);
+    }
   });
 
-  function openPanel(){
-    panel = document.createElement("div");
-    panel.className = "ferbot-panel";
-    const savedName = (localStorage.getItem("ferbot_name") || "").replace(/"/g,"&quot;");
-    panel.innerHTML = `
-      <div class="ferbot-header" id="ferbot-drag-bar">
-        <div class="ferbot-title">FerBot</div>
-      </div>
-      <div class="ferbot-body">
-        <label class="ferbot-label">Nombre del cliente</label>
-        <input id="ferbot-name" class="ferbot-name" placeholder="Ej. Laura" value="${savedName}">
+  // Sentimiento local inmediato
+  async function analyzeNow(text){
+    try{
+      const r = await fetch(`${BASE}/analyze`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({text})
+      });
+      const j = await r.json();
+      const s = j?.sentiment || "—";
+      document.getElementById("fb-sentiment").textContent = `Sentimiento: ${s}`;
+    }catch{ /* silencioso */ }
+  }
 
-        <label class="ferbot-label" style="margin-top:6px;">Etapa</label>
-        <select id="ferbot-stage" class="ferbot-select">
-          <option value="integracion">Integración</option>
-          <option value="sondeo">Sondeo</option>
-          <option value="pre_cierre">Pre-cierre</option>
-          <option value="rebatir" selected>Rebatir</option>
-          <option value="cierre">Cierre</option>
-        </select>
+  // Generar
+  document.getElementById("fb-gen").addEventListener("click", async ()=>{
+    const name = document.getElementById("fb-name").value.trim() || "Cliente";
+    const stage = document.getElementById("fb-stage").value || "Integración";
+    const context = document.getElementById("fb-context").value.trim();
+    const text = document.getElementById("fb-text").value.trim();
 
-        <label class="ferbot-label" style="margin-top:6px;">Contexto (opcional — metas, dudas, profesión, mensajes previos)</label>
-        <textarea id="ferbot-context" class="ferbot-input" placeholder="Ej. Quiere trabajar remoto, 56 años, está en SENA y busca ruta de bases de datos."></textarea>
-
-        <div class="ferbot-label">Selecciona texto del chat (doble clic o arrastre) o escribe una frase, luego <b>Generar</b>.</div>
-        <textarea id="ferbot-input" class="ferbot-input" placeholder="Texto/objeción del cliente..."></textarea>
-
-        <div class="ferbot-count" id="ferbot-count" style="display:none">Generando<span class="ferbot-dots"></span> <span id="ferbot-secs">0</span>s</div>
-
-        <label class="ferbot-label" style="margin-top:6px;">Por qué + siguiente paso (para ti)</label>
-        <textarea id="ferbot-guide" class="ferbot-output" placeholder="Aquí verás la explicación pedagógica (por qué proponemos esto y cuál es el siguiente paso)."></textarea>
-
-        <label class="ferbot-label" style="margin-top:6px;">Respuesta (para pegar)</label>
-        <textarea id="ferbot-output" class="ferbot-output" placeholder="Aquí verás la respuesta lista para pegar."></textarea>
-      </div>
-      <div class="ferbot-footer">
-        <button id="ferbot-generate" class="ferbot-btn ferbot-primary">Generar</button>
-        <button id="ferbot-clear" class="ferbot-btn ferbot-ghost">Clear</button>
-        <button id="ferbot-rate-good" class="ferbot-btn ferbot-good">👍 Buena</button>
-        <button id="ferbot-rate-regular" class="ferbot-btn ferbot-regular">😐 Regular</button>
-        <button id="ferbot-rate-bad" class="ferbot-btn ferbot-bad">👎 Mala</button>
-      </div>
-    `;
-    document.body.appendChild(panel);
-
-    // drag panel
-    const drag = document.getElementById("ferbot-drag-bar");
-    let dragging=false, dx=0, dy=0;
-    drag.addEventListener("mousedown",(e)=>{
-      dragging=true; const r = panel.getBoundingClientRect();
-      dx = e.clientX - r.left; dy = e.clientY - r.top;
-      panel.style.left = `${r.left}px`; panel.style.top  = `${r.top}px`;
-      panel.style.right="auto"; panel.style.bottom="auto";
-    });
-    window.addEventListener("mousemove",(e)=>{ if(!dragging) return; panel.style.left=`${e.clientX-dx}px`; panel.style.top=`${e.clientY-dy}px`; });
-    window.addEventListener("mouseup",()=> dragging=false);
-
-    // refs
-    const input   = document.getElementById("ferbot-input");
-    const output  = document.getElementById("ferbot-output");
-    const guide   = document.getElementById("ferbot-guide");
-    const nameEl  = document.getElementById("ferbot-name");
-    const stageEl = document.getElementById("ferbot-stage");
-    const ctxEl   = document.getElementById("ferbot-context");
-    const countEl = document.getElementById("ferbot-count");
-    const secsEl  = document.getElementById("ferbot-secs");
-
-    // CAPTURA SELECCIÓN → input
-    function captureSelectionIntoInput() {
-      const sel = window.getSelection()?.toString()?.trim() || "";
-      if (sel) input.value = sel;
+    if (!text){
+      alert("Pega o escribe el mensaje del cliente.");
+      return;
     }
-    captureSelectionIntoInput();
-    document.addEventListener("dblclick", captureSelectionIntoInput);
-    document.addEventListener("mouseup", () => { setTimeout(captureSelectionIntoInput, 30); });
 
-    // guarda nombre
-    nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_name", nameEl.value.trim()));
+    // countdown simple
+    const lbl = document.getElementById("fb-count");
+    let s = 7;
+    lbl.textContent = `generando… ${s}s`;
+    clearInterval(countdownTimer);
+    countdownTimer = setInterval(()=>{
+      s--; lbl.textContent = s>0 ? `generando… ${s}s` : "";
+      if (s<=0) clearInterval(countdownTimer);
+    }, 1000);
 
-    // ======= GENERAR =======
-    document.getElementById("ferbot-generate").onclick = async () => {
-      const q = (input.value || "").trim() || window.getSelection()?.toString()?.trim() || "";
-      if (!q) { alert("Escribe o selecciona el texto del cliente primero."); return; }
-      const name  = nameEl.value.trim() || "Cliente";
-      const stage = stageEl.value;
-      const context = (ctxEl.value || "").trim();
+    try{
+      const r = await fetch(`${BASE}/assist_openai`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({customerName:name, stage, context, text})
+      });
+      const j = await r.json();
+      clearInterval(countdownTimer);
+      lbl.textContent = "";
 
-      // Countdown (sin pacman)
-      let t0 = Date.now(), timer;
-      countEl.style.display = "";
-      secsEl.textContent = "0";
-      timer = setInterval(()=> { secsEl.textContent = Math.floor((Date.now()-t0)/1000).toString(); }, 250);
+      if(!j.ok) throw new Error(j.error||"No se pudo generar. ¿API vigente?");
 
-      const intent = guessIntent(q);
+      // pintar
+      document.getElementById("fb-explain").value = j.explanation || "";
+      document.getElementById("fb-reply").value = j.reply || "";
+      document.getElementById("fb-sentiment").textContent = `Sentimiento: ${j.sentiment||"—"}`;
 
-      const payload = {
-        question: q,
-        customerName: name,
-        stage,
-        intent,
-        // Pasamos contexto para mejorar explicación
-        context
-      };
+      // mostrar rating (una sola vez por generación)
+      const rate = document.getElementById("fb-rating");
+      rate.style.display = "inline-flex";
+      Array.from(rate.querySelectorAll("button[data-rate]")).forEach(b=>{
+        b.disabled = false;
+        b.onclick = async ()=>{
+          try{
+            await fetch(`${BASE}/trackRate`,{
+              method:"POST",
+              headers:{"Content-Type":"application/json"},
+              body: JSON.stringify({rating: b.getAttribute("data-rate")})
+            });
+          }catch{}
+          // ocultar tras votar
+          rate.style.display = "none";
+        };
+      });
 
-      try{
-        // 1) Intento con OpenAI (si está activo en tu backend)
-        let res = await fetch(`${BASE}/assist_openai`, {
-          method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload)
-        });
-        if (!res.ok) {
-          // 2) Fallback a offline /assist
-          res = await fetch(`${BASE}/assist`, {
-            method:"POST", headers:{ "Content-Type":"application/json" },
-            body: JSON.stringify({ question: q, customerName: name, stage })
-          });
-        }
-        const json = await res.json();
-
-        // GUIDE (arriba) y REPLY (abajo) — priorizamos explicación
-        // Usamos result.guide si existe; si no, reconstruimos algo útil
-        const rawGuide = json?.result?.guide
-              || buildFallbackGuide(intent, context)
-              || "";
-
-        let rawReply = json?.result?.sections?.[stage]
-                || json?.result?.reply
-                || json?.text
-                || "";
-
-        const cleanGuide = tidy(normalizeSpace(rawGuide));
-        const cleanReply = tidy(postProcessReply(rawReply, name));
-
-        guide.value  = cleanGuide;
-        output.value = cleanReply;
-
-      }catch(e){
-        alert("No se pudo generar. Revisa que el servidor esté arriba.");
-      }finally{
-        clearInterval(timer); countEl.style.display = "none";
-      }
-    };
-
-    // ======= CLEAR =======
-    document.getElementById("ferbot-clear").onclick = () => {
-      guide.value = "";
-      output.value = "";
-      // input/context NO se borran
-    };
-
-    // ======= RATING =======
-    async function sendRating(rating){
-      const utter = (output.value || "").trim(); if(!utter) return;
-      try{
-        await fetch(`${BASE}/trackRate`, {
-          method:"POST", headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ intent: guessIntent(input.value), stage: stageEl.value, text: utter, rating })
-        });
-      }catch{}
+    }catch(err){
+      clearInterval(countdownTimer);
+      document.getElementById("fb-explain").value = "";
+      document.getElementById("fb-reply").value = `No se pudo generar. ¿API vigente?\n${String(err.message||err)}`;
     }
-    document.getElementById("ferbot-rate-good").onclick    = ()=> sendRating("good");
-    document.getElementById("ferbot-rate-regular").onclick = ()=> sendRating("regular");
-    document.getElementById("ferbot-rate-bad").onclick     = ()=> sendRating("bad");
-  }
+  });
 
-  // ====== LIMPIEZA TEXTO ======
-  function normalizeSpace(s){ return (s||"").replace(/\s{2,}/g," ").trim(); }
-  function tidy(s){
-    if(!s) return s;
-    s = s.replace(/\s*:\s*/g, ": ");
-    s = s.replace(/\s*,\s*/g, ", ");
-    s = s.replace(/\s*\.\s*\.\s*/g, ". ");
-    s = s.replace(/\.\.+/g, ".");
-    s = s.replace(/\s{2,}/g, " ");
-    return s.trim();
-  }
-  function postProcessReply(raw, name){
-    let t = raw || "";
-    t = t.replace(/[🔵🟢🟣🔴◆◇▪︎•●◦■□▶️►]/g, "").replace(/\s{2,}/g, " ");
-    // Evitar duplicados de oración
-    const parts = t.split(/(?<=[.!?])\s+|\n+/).map(x=>x.trim()).filter(Boolean);
-    const seen = new Set(); const out=[];
-    for(const p of parts){ const key = p.toLowerCase(); if(!seen.has(key)){ seen.add(key); out.push(p); } }
-    t = out.join(" ");
-    // Asegurar saludo limpio
-    const hi = name ? `Hola ${name}, ` : "Hola, ";
-    if (!/^hola\b/i.test(t.trim())) t = hi + t.trim();
-    else t = t.replace(/^hola[^,]*,\s*/i, hi);
-    return t;
-  }
+  // Clear
+  document.getElementById("fb-clear").addEventListener("click", ()=>{
+    ["fb-context","fb-text","fb-explain","fb-reply"].forEach(id=> document.getElementById(id).value = "");
+    document.getElementById("fb-sentiment").textContent = "Sentimiento: —";
+    document.getElementById("fb-rating").style.display = "none";
+  });
 
-  // ====== INTENT HEURÍSTICA ======
-  function guessIntent(q=""){
-    const s = (q||"").toLowerCase();
-    if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|no me da el tiempo)/i.test(s)) return "tiempo";
-    if (/(precio|caro|costo|costoso|muy caro|vale|promoci|oferta|descuento|black friday)/i.test(s)) return "precio";
-    if (/(cert|certificado|certificación|certificaciones)/i.test(s)) return "cert";
-    if (/(coursera|udemy|alura|competenc)/i.test(s)) return "competencia";
-    if (/(ruta|camino|itinerario|plan de estudio)/i.test(s)) return "ruta";
-    return "_default";
-  }
-
-  // ====== Fallback de guía si el backend no envía una explicación ======
-  function buildFallbackGuide(intent, context){
-    const base = [
-      "• Empatiza con la meta real del cliente.",
-      "• Conecta la propuesta con su resultado deseado.",
-      "• Cierra con un siguiente paso concreto (CTA)."
-    ];
-    const map = {
-      tiempo: [
-        "• Reafirma que puede avanzar con 5–10 minutos/día.",
-        "• Propón una micro-agenda y primer hito en 7–14 días."
-      ],
-      precio: [
-        "• Reenfoca a inversión y resultado, no costo.",
-        "• Ofrece comparar plan según objetivo de carrera."
-      ],
-      cert: [
-        "• Menciona certificaciones digitales verificables y físicas en rutas.",
-        "• Enlaza la certificación con su meta laboral."
-      ],
-      competencia: [
-        "• Diferencia por comunidad, rutas guiadas y certificaciones verificables.",
-        "• Propón probar 1–2 clases para medir avance real."
-      ],
-      ruta: [
-        "• Propón 1 ruta principal y 1 apoyo, no catálogos largos.",
-        "• Explica el primer módulo y el hito de 2 semanas."
-      ],
-      _default: []
-    };
-    const ctx = context ? `• Contexto: ${context}` : null;
-    return ["Guía para el asesor:", ctx, ...base, ...(map[intent]||[])].filter(Boolean).join(" ");
-  }
 })();
