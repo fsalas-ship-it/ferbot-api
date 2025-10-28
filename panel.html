@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FerBot — Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --platzi:#97C93E;
+    --dark:#0b0f19;
+    --panel:#0b0f19CC;
+    --muted:#94a3b8;
+    --ink:#e2e8f0;
+    --chip:#1e293b;
+    --ok:#19c37d; --meh:#fbbf24; --bad:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:#0a0f1d;color:var(--ink);font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .card{
+    width:min(980px,96vw); background:var(--panel); border:1px solid rgba(255,255,255,.08);
+    border-radius:16px; box-shadow:0 18px 40px rgba(0,0,0,.35); backdrop-filter:blur(6px);
+  }
+  .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04)}
+  .brand{display:flex;gap:10px;align-items:center}
+  .bot{
+    width:28px;height:28px;border-radius:8px;background:var(--platzi); display:grid;place-items:center; color:#0b0f19; font-weight:900;
+    animation:blink 1.6s infinite ease-in-out;
+  }
+  @keyframes blink{ 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.18)} }
+  h1{margin:0;font-weight:800;font-size:16px;letter-spacing:.3px}
+  .api{
+    display:flex;gap:6px;align-items:center;
+    padding:6px 8px;border-radius:999px;background:#1b2233;border:1px solid rgba(255,255,255,.08); color:#cbd5e1; font-size:12px;
+  }
+  .api input{width:280px;max-width:48vw;background:transparent;border:0;outline:none;color:#e2e8f0}
+  .api small{opacity:.7}
+  .wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px}
+  .full{grid-column:1 / -1}
+  label{display:block;margin:6px 2px 6px;color:var(--muted);font-size:12px}
+  input[type=text], select, textarea{
+    width:100%; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12);
+    border-radius:10px; padding:10px 12px; outline:none; resize:vertical; min-height:42px;
+  }
+  textarea{min-height:110px}
+  .row{display:flex;gap:10px}
+  .hint{font-size:12px;color:#93a4bd}
+  .sent{
+    position:absolute; right:10px; top:10px; background:var(--chip); color:#cbd5e1;
+    border:1px solid rgba(255,255,255,.10); border-radius:999px; padding:4px 8px; font-size:12px; display:flex;gap:6px; align-items:center;
+  }
+  .badge{padding:2px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.1); background:#142033; font-size:11px}
+  .ok{background:rgba(25,195,125,.12); color:#74f3c1; border-color:rgba(25,195,125,.35)}
+  .meh{background:rgba(251,191,36,.12); color:#ffd271; border-color:rgba(251,191,36,.35)}
+  .bad{background:rgba(239,68,68,.12); color:#ff9b9b; border-color:rgba(239,68,68,.35)}
+  .box{position:relative}
+  .btn{
+    border:0;border-radius:12px;padding:12px 16px; font-weight:800; cursor:pointer;
+  }
+  .primary{background:var(--platzi); color:#0b0f19}
+  .ghost{background:#1b2333;color:#cbd5e1}
+  .rate{display:none; gap:8px; align-items:center; flex-wrap:wrap}
+  .pill{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:800}
+  .good{background:var(--ok); color:#062d1f}
+  .regular{background:var(--meh); color:#332200}
+  .bad2{background:var(--bad); color:#fff}
+  .toolbar{display:flex;gap:10px;align-items:center;justify-content:flex-start}
+  .right{justify-content:flex-end}
+  .muted{color:#9fb1c7}
+  .tiny{font-size:11px}
+  .small{font-size:12px}
+  .count{font-variant-numeric:tabular-nums; margin-left:8px}
+  .promoToggle{
+    appearance:none; width:46px;height:26px;border-radius:999px;background:#22304a; position:relative; cursor:pointer; border:1px solid rgba(255,255,255,.12);
+  }
+  .promoToggle::after{
+    content:""; position:absolute; left:3px; top:3px; width:18px;height:18px;border-radius:99px;background:#cbd5e1; transition:all .2s ease;
+  }
+  .promoToggle:checked{background:#23421a;border-color:#2a6a1b}
+  .promoToggle:checked::after{transform:translateX(20px); background:#c3f092}
+  .cta-row{display:flex;gap:12px; align-items:center; justify-content:space-between}
+  .mini{font-size:12px;opacity:.9}
+  .footer{padding:12px 14px;border-top:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04); display:flex; gap:12px; align-items:center; justify-content:space-between}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">
+      <div class="brand">
+        <div class="bot">🤖</div>
+        <h1>FerBot</h1>
+      </div>
+      <div class="api">
+        <small>API:</small>
+        <input id="apiBase" spellcheck="false" />
+        <button id="saveBase" class="pill ghost small">Guardar</button>
+        <label class="small" title="Activar promos (ej. Black Friday)" style="display:flex;gap:6px;align-items:center;margin-left:8px">
+          <input id="promoOn" class="promoToggle" type="checkbox" />
+          <span>Promo</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div>
+        <label>Nombre del cliente</label>
+        <input id="name" type="text" placeholder="Ej. Ferney">
+      </div>
+      <div>
+        <label>Etapa</label>
+        <select id="stage">
+          <option value="integracion">Integración</option>
+          <option value="sondeo">Sondeo</option>
+          <option value="rebatir">Rebatir</option>
+          <option value="pre_cierre">Pre-cierre</option>
+          <option value="cierre">Cierre</option>
+        </select>
+      </div>
+
+      <div class="full">
+        <label>Contexto (opcional, para el bot) <span class="hint">Ej. “busca certificaciones; poco tiempo al día; habló de inglés”</span></label>
+        <textarea id="ctx" placeholder="Notas breves que ayuden al bot..."></textarea>
+      </div>
+
+      <div class="full box">
+        <label>Selecciona texto del chat o escríbelo, luego <b>Generar</b>.</label>
+        <textarea id="userText" placeholder="Objeción / intención del cliente..."></textarea>
+        <div id="sentiment" class="sent" style="display:none"><span class="badge" id="sentLabel">—</span><span id="sentHelp" class="tiny muted">Detectando…</span></div>
+      </div>
+
+      <div class="full">
+        <label>Explicación (POR QUÉ + SIGUIENTE PASO)</label>
+        <textarea id="guide" readonly placeholder="Aquí verás el POR QUÉ de la respuesta y el SIGUIENTE PASO recomendado."></textarea>
+      </div>
+
+      <div class="full">
+        <label>Respuesta (lista para pegar)</label>
+        <textarea id="reply" readonly placeholder="Aquí verás la respuesta final, corta y accionable."></textarea>
+      </div>
+
+      <div class="full cta-row">
+        <div class="toolbar">
+          <button id="generate" class="btn primary">Generar <span class="count tiny muted" id="count">(0s)</span></button>
+          <button id="clear" class="btn ghost">Clear</button>
+        </div>
+        <div id="rateRow" class="rate">
+          <span class="muted small">¿Te pareció útil?</span>
+          <button class="pill good"   id="rGood">👍 Buena</button>
+          <button class="pill regular" id="rReg">😐 Regular</button>
+          <button class="pill bad2"    id="rBad">👎 Mala</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="mini muted" id="status">Listo.</div>
+      <div class="mini muted">Hecho con ❤️ para el equipo de Platzi.</div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ========= CONFIG =========
+  const BASE_INPUT = document.getElementById('apiBase');
+  const SAVE_BASE  = document.getElementById('saveBase');
+  const DEFAULT_BASE = "https://ferbot-api.onrender.com";
+  BASE_INPUT.value = localStorage.getItem("ferbot_api_base") || DEFAULT_BASE;
+
+  // ========= REFS =========
+  const nameEl = document.getElementById('name');
+  const stageEl= document.getElementById('stage');
+  const ctxEl  = document.getElementById('ctx');
+  const input  = document.getElementById('userText');
+  const guide  = document.getElementById('guide');
+  const reply  = document.getElementById('reply');
+  const generateBtn = document.getElementById('generate');
+  const clearBtn    = document.getElementById('clear');
+  const rateRow     = document.getElementById('rateRow');
+  const rGood = document.getElementById('rGood'), rReg = document.getElementById('rReg'), rBad = document.getElementById('rBad');
+  const status = document.getElementById('status');
+  const promoOn = document.getElementById('promoOn');
+  const sentWrap = document.getElementById('sentiment');
+  const sentLabel= document.getElementById('sentLabel');
+  const sentHelp = document.getElementById('sentHelp');
+  const countEl  = document.getElementById('count');
+
+  // persist basics
+  nameEl.value = localStorage.getItem('fer_name') || '';
+  nameEl.addEventListener('change', ()=> localStorage.setItem('fer_name', nameEl.value.trim()));
+  SAVE_BASE.onclick = () => {
+    const v = (BASE_INPUT.value||"").trim() || DEFAULT_BASE;
+    localStorage.setItem('ferbot_api_base', v);
+    toast(`API actualizada`);
+  };
+
+  // ========= SENTIMENT (ligero, cliente) =========
+  input.addEventListener('input', () => showSentiment(input.value));
+  function showSentiment(s){
+    const res = analyzeSentiment(s || "");
+    if(!s.trim()){ sentWrap.style.display='none'; return; }
+    sentWrap.style.display='flex';
+    sentLabel.textContent = res.label;
+    sentLabel.className = 'badge ' + (res.tone==='ok' ? 'ok' : res.tone==='meh' ? 'meh' : 'bad');
+    sentHelp.textContent = res.tip;
+  }
+  function analyzeSentiment(t){
+    const s = (t||"").toLowerCase();
+    let tone = 'ok', label='motivado', tip='Confirma meta y su primer clase para hoy.';
+    if(/(car[oa]|precio|cost|carísimo|promoci|descuento)/.test(s)){ tone='meh'; label='precio'; tip='Enfoca valor→resultado, menciona anual y fracciona en meses.'; }
+    if(/(no tengo tiempo|tiempo|agenda|ocupad|horario)/.test(s)){ tone='meh'; label='tiempo'; tip='Rebate con “5–10 min/día + rutas cortas” y propone clase hoy.'; }
+    if(/(dud|no sé|miedo|debo pensarlo|no conf)/.test(s)){ tone='meh'; label='duda'; tip='Usa prueba guiada: 1 clase hoy + seguimiento.'; }
+    if(/(cancel|reembolso|malo|enga)/.test(s)){ tone='bad'; label='negativo'; tip='Baja fricción, valida y ofrece ruta mínima verificable.'; }
+    return {tone,label,tip};
+  }
+
+  // ========= GENERAR =========
+  let timerInt=null, t0=0;
+  generateBtn.onclick = async () => {
+    const q = (input.value || "").trim();
+    if(!q){ toast("Escribe el texto del cliente."); input.focus(); return; }
+    rateRow.style.display='none';
+    guide.value=""; reply.value="";
+    const base = localStorage.getItem("ferbot_api_base") || DEFAULT_BASE;
+    const name = (nameEl.value||"").trim() || "Cliente";
+    const stage= stageEl.value;
+    const ctx  = ctxEl.value || "";
+    const intent = guessIntent(q);
+    const body = { question:q, customerName:name, stage, context:ctx, intent, promo: !!promoOn.checked };
+
+    // countdown
+    let sec=0; t0=Date.now();
+    countEl.textContent=`(0s)`; generateBtn.disabled=true; startCounter();
+
+    try{
+      status.textContent="Generando…";
+      const res = await fetchWithTimeout(`${base}/assist_openai`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}, 30000);
+      const json = await res.json();
+
+      const rawGuide = json?.result?.guide || json?.result?.message || json?.text || "";
+      let   rawReply = json?.result?.sections?.[stage] || json?.result?.reply || json?.text || "";
+
+      // Limpieza + políticas (sin “enviar info”, sin “llamada”)
+      const cleanGuide = tidyPunctuation(dedupeSentences(bulletsToSentence(rawGuide)));
+      const softReply  = enforcePolicy( postProcessText(rawReply, name) , intent, !!promoOn.checked);
+
+      // Fallback si la guía viene mala o plantilla
+      const isBadGuide = !cleanGuide || /cierra con un siguiente paso simple/i.test(cleanGuide);
+      guide.value = isBadGuide ? buildGuideFallback(q, intent, stage) : cleanGuide;
+      reply.value = softReply;
+
+      rateRow.style.display='flex';
+      status.textContent = "Listo.";
+    }catch(e){
+      status.textContent = "Error generando. Revisa la API.";
+      toast("No se pudo generar. ¿API vigente?");
+    }finally{
+      stopCounter(); generateBtn.disabled=false;
+    }
+  };
+
+  clearBtn.onclick = () => { guide.value=""; reply.value=""; status.textContent="Listo."; };
+
+  // ========= RATING =========
+  async function sendRating(rating){
+    const base = localStorage.getItem("ferbot_api_base") || DEFAULT_BASE;
+    const utter = (reply.value||"").trim(); if(!utter) return;
+    try{
+      await fetch(`${base}/trackRate`, { method:"POST", headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({ intent: guessIntent(input.value), stage: stageEl.value, text: utter, rating })
+      });
+    }catch(_){}
+  }
+  rGood.onclick=()=> sendRating("good");
+  rReg.onclick =()=> sendRating("regular");
+  rBad.onclick =()=> sendRating("bad");
+
+  // ========= HELPERS =========
+  function toast(m){ status.textContent=m; }
+  function startCounter(){ stopCounter(); timerInt = setInterval(()=>{ const s = Math.round((Date.now()-t0)/1000); countEl.textContent=`(${s}s)`; }, 250); }
+  function stopCounter(){ if(timerInt){ clearInterval(timerInt); timerInt=null; } }
+
+  function guessIntent(q=""){
+    const s = (q||"").toLowerCase();
+    if(/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|no me da el tiempo)/i.test(s)) return "tiempo";
+    if(/(precio|caro|costo|costoso|promoci|oferta|descuento|vale)/i.test(s)) return "precio";
+    if(/(cert|certificado|certificación|certificaciones)/i.test(s)) return "cert";
+    if(/(coursera|udemy|alura|competenc)/i.test(s)) return "competencia";
+    return "_default";
+  }
+
+  function enforcePolicy(text,intent, promo){
+    let t = text || "";
+    // Quitar promesas indebidas
+    t = t.replace(/(te (envío|mando).{0,40}(resumen|información|info|demo|material))/gi, "Te paso tu ruta personalizada y la primera clase para hoy");
+    t = t.replace(/(coordinamos|agendamos|agendar|llamada|call|telefono|telefóno|videollamada|zoom)/gi, "damos el primer paso hoy");
+    // CTA corta
+    const cta = promo
+      ? "¿Quieres activar la promo y te dejo 1 clase para hoy?"
+      : "¿Quieres que te active la ruta y te dejo 1 clase para hoy?";
+    if(!/[?!.]\s*$/.test(t)) t += ".";
+    if(!/¿/i.test(t)) t += " " + cta;
+    // Longitud razonable (WhatsApp)
+    return limitLength(t, 520);
+  }
+
+  function buildGuideFallback(q,intent,stage){
+    const map = {
+      tiempo: { why:"Reduce fricción: clases desde 5–10 min/día manteniendo constancia.", next:"Propón ruta + 1 clase para hoy, agenda micro-hábito." },
+      precio: { why:"Reenfoca en valor→resultado: certificaciones verificables y rutas guiadas.", next:"Ofrece plan anual (fraccionable) + prueba hoy." },
+      cert:   { why:"Valida credenciales: certificados digitales verificables y físicos en rutas pro.", next:"Propón ruta con certificación y 1 clase hoy." },
+      _default:{ why:"Conecta meta→ruta real + acción mínima hoy.", next:"Propón ruta breve + 1 clase hoy; seguimiento en 7 días." }
+    }[intent||"_default"];
+    return `POR QUÉ: ${map.why}\nSIGUIENTE PASO: ${map.next}`;
+  }
+
+  // Limpieza & formato
+  function postProcessText(raw,name){
+    let t = raw || "";
+    t = stripBadTokens(t);
+    t = fixNumbers(t);
+    t = bulletsToSentence(t);
+    t = removeBlockBackToBackDup(t);
+    t = dedupeSentences(t);
+    t = cleanGreeting(t, name);
+    t = ensureOneHola(t, name);
+    t = tidyPunctuation(t);
+    t = normalizeSpace(t);
+    return t;
+  }
+  function stripBadTokens(s){ return s?.replace(/[🔵🟢🟣🔴◆◇▪︎•●◦■□▶️►]/g,"") ?? s; }
+  function fixNumbers(s){ return (s||"").replace(/\b(\d+)\s*-\s*(\d+)\b/g,"$1–$2"); }
+  function bulletsToSentence(s){ return (s||"").replace(/^\s*[•\-·]\s*/gm,"").replace(/\n+/g," "); }
+  function removeBlockBackToBackDup(s){ const m=(s||"").match(/^([\s\S]{50,}?)\1$/); return m?m[1]:s; }
+  function dedupeSentences(s){
+    if(!s) return s; const parts=s.split(/(?<=[.!?])\s+|\n+/).map(x=>x.trim()).filter(Boolean);
+    const seen=new Set(), out=[]; for(const p of parts){ const k=p.toLowerCase().replace(/\s+/g," "); if(!seen.has(k)){ seen.add(k); out.push(p);} }
+    return out.join(" ");
+  }
+  function cleanGreeting(s,name){
+    if(!s) return s;
+    const hi = name ? `Hola ${name}` : "Hola";
+    s = s.replace(/(^|\.\s+)\s*hola[^,]*,\s*hola/gi, `$1${hi}`);
+    s = s.replace(/^(\s*hola[^,]*,\s*)+/i, `${hi}, `);
+    s = s.replace(/\.?\s*hola[^,]*,\s*/gi, ". ");
+    return s;
+  }
+  function ensureOneHola(s,name){
+    const hi = name ? `Hola ${name}, ` : "Hola, ";
+    const t = (s||"").trim();
+    if(!/^hola\b/i.test(t)) return hi + t;
+    return t.replace(/^hola[^,]*,\s*/i, hi);
+  }
+  function tidyPunctuation(s){
+    if(!s) return s;
+    s = s.replace(/\s*:\s*/g,": ").replace(/\s*,\s*/g,", ").replace(/\s*\.\s*\.\s*/g,". ").replace(/\.\.+/g,".");
+    s = s.replace(/\b(\d{1,2})\s*:\s*(\d{2})\b/g,"$1:$2"); // 16: 00 -> 16:00
+    return s.trim();
+  }
+  function normalizeSpace(s){ return (s||"").replace(/\s{2,}/g," ").trim(); }
+  function limitLength(s,max){ if((s||"").length<=max) return s; return s.slice(0,max-1).replace(/\s\S*$/,"")+"…"; }
+
+  // Fetch con timeout
+  function fetchWithTimeout(url,opts={},ms=20000){
+    const ctrl = new AbortController(); const id=setTimeout(()=>ctrl.abort(), ms);
+    return fetch(url, {...opts, signal: ctrl.signal}).finally(()=> clearTimeout(id));
+  }
+
+  // Autofill selección del sistema (cuando se entra al panel y hay texto copiado)
+  try{
+    navigator.clipboard.readText().then(t=>{ if(t && !input.value) { input.value=t.trim(); showSentiment(t); } }).catch(()=>{});
+  }catch(_){}
+})();
+</script>
+</body>
+</html>
