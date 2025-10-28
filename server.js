@@ -112,8 +112,8 @@ Evita catálogos y listas largas.
       {role:"system", content: trainer.slice(0, 4000)},
       {role:"user", content: prompt}
     ],
-    temperature: 0.7,
-    max_tokens: 220
+    temperature: 0.4,
+    max_tokens: 450
   };
 
   const r = await fetch("https://api.openai.com/v1/chat/completions",{
