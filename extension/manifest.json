@@ -9,24 +9,18 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": [
-    "storage",
-    "clipboardWrite",
-    "activeTab",
-    "scripting"
-  ],
+  "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
   "host_permissions": [
-    "https://app.hilos.io/*",
+    "*://*.hilos.io/*",
+    "*://hilos.io/*",
     "https://ferbot-api.onrender.com/*"
   ],
   "content_scripts": [
     {
-      "matches": ["https://app.hilos.io/*"],
+      "matches": ["*://*.hilos.io/*", "*://hilos.io/*"],
       "js": ["contentScript.js"],
       "run_at": "document_idle"
     }
   ],
-  "action": {
-    "default_title": "FerBot"
-  }
+  "action": { "default_title": "FerBot" }
 }
