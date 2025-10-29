@@ -1,54 +1,55 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>FerBot · Panel</title>
-  <style>
-    :root{
-      --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --fg:#e2e8f0; --border:rgba(255,255,255,.08);
-      --green:#97C93E; --red:#ef4444; --yellow:#f59e0b; --good:#19c37d;
-    }
-    html,body{height:100%}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial; background:var(--bg); color:var(--fg); display:flex; align-items:center; justify-content:center; padding:24px}
-    .wrap{width:min(900px,95vw)}
-    .title{display:flex; align-items:center; gap:10px; margin-bottom:12px}
-    .title .dot{width:10px;height:10px;border-radius:999px;background:var(--green);box-shadow:0 0 12px rgba(151,201,62,.6)}
-    .sub{color:var(--muted); font-size:13px; margin-bottom:18px}
-    .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px}
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    label{font-size:12px; color:var(--muted); margin-bottom:6px; display:block}
-    input,select,textarea{width:100%; background:#0b1220; color:var(--fg); border:1px solid var(--border); border-radius:10px; padding:10px; font-size:14px; outline:none}
-    textarea{min-height:100px; resize:vertical}
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .btn{padding:10px 14px; border:0; border-radius:10px; font-weight:700; cursor:pointer}
-    .btn-primary{background:var(--green); color:#041106}
-    .btn-ghost{background:#1b2333; color:#cbd5e1}
-    .meter{display:flex; align-items:center; gap:10px}
-    .bubble{min-width:64px; text-align:center; padding:6px 10px; border-radius:999px; font-weight:800; font-variant-numeric:tabular-nums; background:#111827; border:1px solid var(--border)}
-    .bubble.red{color:#fff; background:var(--red)}
-    .bubble.yellow{color:#231500; background:var(--yellow)}
-    .bubble.green{color:#062d1f; background:var(--good)}
-    .pill{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
-    .result{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px}
-    .foot{display:flex; gap:8px; margin-top:10px; align-items:center}
-    .hidden{display:none !important}
-    .love{margin-top:12px; color:var(--muted); font-size:12px}
-    .love b{color:var(--green)}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FerBot — Panel</title>
+<style>
+  :root{
+    --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --ink:#e2e8f0; --line:rgba(255,255,255,.10);
+    --green:#19c37d; --platzi:#97C93E; --yellow:#f59e0b; --red:#ef4444;
+  }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto}
+  .wrap{max-width:880px;margin:24px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+  h1{margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .col{flex:1;min-width:240px}
+  label{font-size:12px;color:var(--muted);display:block;margin:10px 0 6px}
+  input,select,textarea{
+    width:100%;background:#0f1524;color:#dbeafe;border:1px solid var(--line);border-radius:10px;
+    padding:9px 11px;outline:none;font-size:14px
+  }
+  textarea{min-height:110px;resize:vertical}
+  .footer{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .btn{border:0;border-radius:9px;padding:9px 12px;cursor:pointer;font-weight:800}
+  .primary{background:var(--platzi);color:#0b0f19}
+  .ghost{background:#1b2333;color:#cbd5e1}
+  .good{background:var(--green);color:#062d1f}
+  .warn{background:var(--yellow);color:#231500}
+  .bad{background:var(--red);color:#fff}
+  .pill{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#0e1424;color:#cbd5e1}
+  .timer{min-width:72px;text-align:center;font-variant-numeric:tabular-nums;font-weight:800;padding:8px 10px;border-radius:999px;border:1px solid var(--line)}
+  .timer.red{background:var(--red);color:#fff}
+  .timer.yellow{background:var(--yellow);color:#231500}
+  .timer.green{background:var(--green);color:#062d1f}
+  .muted{color:var(--muted);font-size:12px}
+  .error{margin-top:8px;color:#fff;background:#7f1d1d;border:1px solid #b91c1c;padding:8px 10px;border-radius:10px;display:none;white-space:pre-wrap}
+  .ok{display:inline-flex;align-items:center;gap:6px}
+  .hint{font-size:12px;opacity:.85}
+</style>
 </head>
 <body>
   <div class="wrap">
-    <div class="title"><div class="dot"></div><h2 style="margin:0">FerBot · Panel de emergencia</h2></div>
-    <div class="sub">Consulta rápida sin extensión. Usa el backend configurado en <code>localStorage.ferbot_api_base</code> o Render por defecto.</div>
-
     <div class="card">
-      <div class="grid">
-        <div>
+      <h1>🤖 FerBot — Panel <span class="hint">· hecho con amor 💚</span></h1>
+
+      <div class="row">
+        <div class="col">
           <label>Nombre del cliente</label>
-          <input id="name" placeholder="Ej. Laura">
+          <input id="name" placeholder="Ej. Laura"/>
         </div>
-        <div>
+        <div class="col">
           <label>Etapa</label>
           <select id="stage">
             <option value="integracion">Integración</option>
@@ -58,186 +59,206 @@
             <option value="cierre">Cierre</option>
           </select>
         </div>
-      </div>
-
-      <div class="grid" style="margin-top:12px">
-        <div>
-          <label>Contexto (opcional)</label>
-          <input id="context" placeholder="Ej. solo 10 min/día; busca certificación">
-        </div>
-        <div>
-          <label>Mensaje del cliente</label>
-          <input id="question" placeholder="Escribe la objeción o pega el texto seleccionado">
+        <div class="col" style="max-width:180px">
+          <label>Sentimiento</label>
+          <div id="sent" class="pill">Neutro</div>
         </div>
       </div>
 
-      <div class="row" style="margin-top:12px">
-        <button id="go" class="btn btn-primary">Generar</button>
-        <button id="clear" class="btn btn-ghost">Clear</button>
+      <label>Contexto (opcional, para el bot)</label>
+      <input id="ctx" placeholder="Ej. certificaciones; poco tiempo al día">
 
-        <div class="meter">
-          <span class="pill">Tiempo</span>
-          <span id="timer" class="bubble">00.0s</span>
-        </div>
+      <label style="margin-top:8px">Texto del cliente</label>
+      <textarea id="input" placeholder="Escribe la frase o pega texto del cliente…"></textarea>
 
-        <div id="rated_once_helper" class="pill hidden">Calificado ✓</div>
-      </div>
+      <label>Explicación (POR QUÉ + SIGUIENTE PASO)</label>
+      <textarea id="guide" placeholder="Aquí el bot te enseña…" readonly></textarea>
 
-      <div class="result">
-        <div>
-          <label>Respuesta (para pegar)</label>
-          <textarea id="reply" readonly placeholder="—"></textarea>
-        </div>
-        <div>
-          <label>POR QUÉ / SIGUIENTE PASO (para el asesor)</label>
-          <textarea id="guide" readonly placeholder="—"></textarea>
-        </div>
-      </div>
+      <label>Respuesta (lista para pegar)</label>
+      <textarea id="out" placeholder="Se generará aquí…" readonly></textarea>
 
-      <div id="ratingRow" class="foot hidden">
+      <div id="err" class="error"></div>
+
+      <div class="footer">
+        <button id="gen"   class="btn primary">Generar</button>
+        <button id="clear" class="btn ghost">Clear</button>
+
+        <span class="pill">Tiempo</span>
+        <span id="timer" class="timer">00.0s</span>
+
+        <span style="flex:1"></span>
+
         <span class="pill">¿Te gustó esta respuesta?</span>
-        <button id="rGood" class="btn" style="background:#19c37d;color:#062d1f">👍 Buena</button>
-        <button id="rRegular" class="btn" style="background:#fbbf24;color:#332200">😐 Regular</button>
-        <button id="rBad" class="btn" style="background:#ef4444;color:#fff">👎 Mala</button>
+        <button id="rate-good" class="btn good"   style="display:none">👍 Buena</button>
+        <button id="rate-reg"  class="btn warn"   style="display:none">😐 Regular</button>
+        <button id="rate-bad"  class="btn bad"    style="display:none">👎 Mala</button>
+        <span id="rated" class="pill" style="display:none">¡Gracias por calificar!</span>
       </div>
 
-      <div class="love">Hecho con <b>amor</b> 💚</div>
+      <div class="muted" style="margin-top:10px">
+        API: <code id="apiLabel"></code>
+        · <span id="health" class="ok"></span>
+      </div>
     </div>
   </div>
 
-  <script>
-    // ====== BASE del backend ======
-    const BASE = localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
+<script>
+(function(){
+  // ---------- BASE de la API ----------
+  const urlParam = new URLSearchParams(location.search).get("api");
+  const BASE = urlParam || localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
+  document.getElementById("apiLabel").textContent = BASE;
+  // Guarda si vino por query
+  if (urlParam) localStorage.setItem("ferbot_api_base", urlParam);
 
-    // ====== Refs
-    const el = (id)=> document.getElementById(id);
-    const nameEl   = el("name");
-    const stageEl  = el("stage");
-    const ctxEl    = el("context");
-    const qEl      = el("question");
-    const goBtn    = el("go");
-    const clearBtn = el("clear");
-    const timerEl  = el("timer");
-    const replyEl  = el("reply");
-    const guideEl  = el("guide");
-    const ratingRow= el("ratingRow");
-    const rGood    = el("rGood");
-    const rRegular = el("rRegular");
-    const rBad     = el("rBad");
-    const ratedOnceHelper = el("rated_once_helper");
+  // ---------- Refs ----------
+  const nameEl = document.getElementById("name");
+  const stageEl= document.getElementById("stage");
+  const ctxEl  = document.getElementById("ctx");
+  const inEl   = document.getElementById("input");
+  const outEl  = document.getElementById("out");
+  const guideEl= document.getElementById("guide");
+  const errBox = document.getElementById("err");
+  const sentEl = document.getElementById("sent");
+  const tEl    = document.getElementById("timer");
+  const btnGen = document.getElementById("gen");
+  const btnClr = document.getElementById("clear");
+  const rGood  = document.getElementById("rate-good");
+  const rReg   = document.getElementById("rate-reg");
+  const rBad   = document.getElementById("rate-bad");
+  const rated  = document.getElementById("rated");
+  const health = document.getElementById("health");
 
-    // ====== Countdown (color y segundos)
-    let t0=0, tid=null;
-    function startTimer(){
-      stopTimer();
-      t0 = performance.now();
-      timerEl.classList.remove("green","yellow"); // arranca "rojo" por CSS base
-      timerEl.classList.add("red");
-      tid = setInterval(()=>{
-        const s = (performance.now()-t0)/1000;
-        timerEl.textContent = s.toFixed(1)+"s";
-        // Colores aproximados por tiempo
-        if (s >= 1.5 && s < 3) {
-          timerEl.classList.remove("red","green");
-          timerEl.classList.add("yellow");
-        } else if (s >= 3) {
-          timerEl.classList.remove("red","yellow");
-          timerEl.classList.add("green");
-        }
-      }, 100);
-    }
-    function stopTimer(){
-      if (tid) clearInterval(tid);
-      tid=null;
-    }
-    function markDone(){
-      stopTimer();
+  nameEl.value = localStorage.getItem("ferbot_name") || "";
+  nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_name", nameEl.value.trim()));
+
+  // ---------- Health ----------
+  fetch(`${BASE}/health`).then(r=>r.json()).then(j=>{
+    health.textContent = j.ok ? `ok: true, model_env: "${j.model_env}"` : "ok: false";
+  }).catch(_=> { health.textContent = "sin respuesta"; });
+
+  // ---------- Sentimiento simple ----------
+  function updateSentiment(text=""){
+    const s = (text||"").toLowerCase();
+    const neg = /(no tengo tiempo|caro|no puedo|difícil|no me sirve|muy caro)/.test(s);
+    const pos = /(me interesa|me gusta|quiero|perfecto|genial|excelente|sí|si)/.test(s);
+    let label = "Neutro", color = "#94a3b8";
+    if (neg && !pos) { label="Negativo"; color="#ef4444"; }
+    else if (pos && !neg) { label="Positivo"; color="#19c37d"; }
+    sentEl.textContent = label;
+    sentEl.style.borderColor = color;
+    sentEl.style.color = color;
+  }
+  inEl.addEventListener("input", ()=> updateSentiment(inEl.value));
+
+  // ---------- Timer ----------
+  let t0=0, tid=null;
+  function startTimer(){
+    stopTimer();
+    t0 = performance.now();
+    tEl.classList.remove("green","yellow");
+    tEl.classList.add("red");
+    tid = setInterval(()=>{
       const s = (performance.now()-t0)/1000;
-      timerEl.textContent = s.toFixed(1)+"s";
-      timerEl.classList.remove("red","yellow");
-      timerEl.classList.add("green");
-    }
+      tEl.textContent = s.toFixed(1)+"s";
+      if (s >= 1.5 && s < 3) { tEl.classList.remove("red","green"); tEl.classList.add("yellow"); }
+      else if (s >= 3)     { tEl.classList.remove("red","yellow"); tEl.classList.add("green"); }
+    },100);
+  }
+  function stopTimer(){ if (tid) clearInterval(tid); tid=null; }
+  function doneTimer(){
+    stopTimer();
+    const s = (performance.now()-t0)/1000;
+    tEl.textContent = s.toFixed(1)+"s";
+    tEl.classList.remove("red","yellow"); tEl.classList.add("green");
+  }
 
-    function sanitize(s){ return String(s||"").replace(/\s+/g," ").trim(); }
+  function showError(msg){
+    errBox.style.display = "block";
+    errBox.textContent = msg;
+  }
+  function clearError(){
+    errBox.style.display = "none";
+    errBox.textContent = "";
+  }
 
-    // ====== Llamada principal
-    goBtn.onclick = async () => {
-      const question = sanitize(qEl.value);
-      if (!question){ alert("Escribe el mensaje/objeción del cliente"); qEl.focus(); return; }
+  function showRating(){
+    rGood.style.display = rReg.style.display = rBad.style.display = "inline-block";
+    rated.style.display = "none";
+  }
+  function hideRating(){
+    rGood.style.display = rReg.style.display = rBad.style.display = "none";
+  }
 
-      replyEl.value = ""; guideEl.value = "";
-      ratingRow.classList.add("hidden");
-      ratedOnceHelper.classList.add("hidden");
+  // ---------- Generar ----------
+  btnGen.addEventListener("click", async ()=>{
+    clearError();
+    hideRating();
+    outEl.value = ""; guideEl.value = "";
+    const question = (inEl.value || "").trim();
+    if (!question) { showError("Escribe el texto del cliente primero."); return; }
 
-      startTimer();
-      try{
-        const res = await fetch(BASE + "/assist_trainer", {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({
-            question,
-            customerName: sanitize(nameEl.value) || "Cliente",
-            stage: stageEl.value,
-            context: sanitize(ctxEl.value)
-          })
-        });
-        if(!res.ok){
-          const txt = await res.text().catch(()=> "");
-          alert("No se pudo generar (HTTP "+res.status+"). " + txt);
-          markDone();
-          return;
-        }
-        const json = await res.json();
+    const payload = {
+      question,
+      customerName: nameEl.value.trim() || "Cliente",
+      stage: stageEl.value,
+      context: ctxEl.value.trim()
+    };
 
-        const reply = (json?.result?.reply || json?.text || "").trim();
-        const why   = (json?.result?.why   || "").trim();
-        const next  = (json?.result?.next  || "").trim();
-
-        replyEl.value = reply || "—";
-        guideEl.value = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
-
-        // mostrar rating UNA sola vez por respuesta
-        ratingRow.classList.remove("hidden");
-
-      }catch(e){
-        alert("No se pudo generar. ¿API vigente?");
-      }finally{
-        markDone();
+    startTimer();
+    try{
+      const res = await fetch(`${BASE}/assist_trainer`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(()=> "");
+        showError(`No se pudo generar (HTTP ${res.status}). ${txt}`);
+        doneTimer();
+        return;
       }
-    };
+      const j = await res.json();
+      const reply = (j?.result?.reply || j?.text || "").trim();
+      const why   = (j?.result?.why   || "").trim();
+      const next  = (j?.result?.next  || "").trim();
 
-    // ====== Clear
-    clearBtn.onclick = () => {
-      replyEl.value = "";
-      guideEl.value = "";
-      ratingRow.classList.add("hidden");
-      ratedOnceHelper.classList.add("hidden");
-      timerEl.textContent = "00.0s";
-      timerEl.classList.remove("red","yellow","green");
-    };
-
-    // ====== Rating (se oculta después de enviar)
-    async function sendRating(rating){
-      const utter = sanitize(replyEl.value);
-      if(!utter) return;
-      try{
-        await fetch(BASE + "/trackRate", {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({
-            intent: "_panel_",
-            stage: stageEl.value,
-            text: utter,
-            rating
-          })
-        });
-      }catch(_){}
-      ratingRow.classList.add("hidden");
-      ratedOnceHelper.classList.remove("hidden");
+      outEl.value   = reply || "";
+      guideEl.value = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
+      showRating();
+    }catch(e){
+      showError("Error de red: " + (e?.message || String(e)));
+    }finally{
+      doneTimer();
     }
-    rGood.onclick    = ()=> sendRating("good");
-    rRegular.onclick = ()=> sendRating("regular");
-    rBad.onclick     = ()=> sendRating("bad");
-  </script>
+  });
+
+  // ---------- Clear ----------
+  btnClr.addEventListener("click", ()=>{
+    outEl.value = ""; guideEl.value = "";
+    hideRating(); rated.style.display = "none";
+    tEl.textContent = "00.0s"; tEl.classList.remove("red","yellow","green");
+    clearError();
+  });
+
+  // ---------- Rating (se oculta tras votar) ----------
+  async function rate(kind){
+    const text = (outEl.value || "").trim(); if(!text) return;
+    try{
+      await fetch(`${BASE}/trackRate`, {
+        method:"POST", headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ intent: "_panel_", stage: stageEl.value, text, rating: kind })
+      });
+    }catch(_){}
+    hideRating(); rated.style.display = "inline-flex";
+  }
+  rGood.onclick = ()=> rate("good");
+  rReg.onclick  = ()=> rate("regular");
+  rBad.onclick  = ()=> rate("bad");
+
+  // Inicial
+  updateSentiment("");
+})();
+</script>
 </body>
 </html>
