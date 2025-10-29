@@ -2,43 +2,48 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
-  <title>FerBot · Panel de emergencia</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>FerBot · Panel</title>
   <style>
-    :root{ --bg:#0b0f19; --card:#0f1524; --fg:#e2e8f0; --muted:#94a3b8; --green:#97C93E; --yellow:#fbbf24; --red:#ef4444; }
-    body{ margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial; }
-    .wrap{ max-width:920px; margin:24px auto; padding:0 16px; }
-    h1{ margin:0 0 8px; font-size:20px; }
-    .sub{ color:var(--muted); font-size:12px; margin:0 0 16px; }
-    .card{ background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; }
-    label{ font-size:12px; color:var(--muted); display:block; margin:8px 0 6px; }
-    input, textarea, select{ width:100%; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:8px 10px; outline:none; }
-    textarea{ min-height:96px; resize:vertical; }
-    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .btns{ display:flex; gap:8px; margin-top:12px; }
-    .btn{ flex:1; padding:10px 12px; font-weight:800; border:0; border-radius:10px; cursor:pointer; }
-    .primary{ background:var(--green); color:#0b0f19; }
-    .ghost{ background:#1b2333; color:#cbd5e1; }
-    .health{ font-size:12px; margin-left:8px; }
-    .ok{ color:var(--green); } .warn{ color:var(--yellow); }
-    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .muted{ color:var(--muted); font-size:12px; }
+    :root{
+      --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --fg:#e2e8f0; --border:rgba(255,255,255,.08);
+      --green:#97C93E; --red:#ef4444; --yellow:#f59e0b; --good:#19c37d;
+    }
+    html,body{height:100%}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial; background:var(--bg); color:var(--fg); display:flex; align-items:center; justify-content:center; padding:24px}
+    .wrap{width:min(900px,95vw)}
+    .title{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+    .title .dot{width:10px;height:10px;border-radius:999px;background:var(--green);box-shadow:0 0 12px rgba(151,201,62,.6)}
+    .sub{color:var(--muted); font-size:13px; margin-bottom:18px}
+    .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px}
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    label{font-size:12px; color:var(--muted); margin-bottom:6px; display:block}
+    input,select,textarea{width:100%; background:#0b1220; color:var(--fg); border:1px solid var(--border); border-radius:10px; padding:10px; font-size:14px; outline:none}
+    textarea{min-height:100px; resize:vertical}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{padding:10px 14px; border:0; border-radius:10px; font-weight:700; cursor:pointer}
+    .btn-primary{background:var(--green); color:#041106}
+    .btn-ghost{background:#1b2333; color:#cbd5e1}
+    .meter{display:flex; align-items:center; gap:10px}
+    .bubble{min-width:64px; text-align:center; padding:6px 10px; border-radius:999px; font-weight:800; font-variant-numeric:tabular-nums; background:#111827; border:1px solid var(--border)}
+    .bubble.red{color:#fff; background:var(--red)}
+    .bubble.yellow{color:#231500; background:var(--yellow)}
+    .bubble.green{color:#062d1f; background:var(--good)}
+    .pill{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
+    .result{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px}
+    .foot{display:flex; gap:8px; margin-top:10px; align-items:center}
+    .hidden{display:none !important}
+    .love{margin-top:12px; color:var(--muted); font-size:12px}
+    .love b{color:var(--green)}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>FerBot · Panel de emergencia <span id="health" class="health">Comprobando…</span></h1>
-    <p class="sub">Usa este panel si la extensión no está disponible. Hecho con amor <span style="color:#97C93E">❤</span></p>
-
-    <div class="card" style="margin-bottom:12px;">
-      <label>API Base (opcional)</label>
-      <input id="base" placeholder="https://ferbot-api.onrender.com"/>
-      <div class="muted">Si lo dejas vacío, usamos <b>https://ferbot-api.onrender.com</b>. Puedes guardar otro en tu navegador.</div>
-      <div class="btns"><button id="saveBase" class="btn ghost">Guardar esta base</button></div>
-    </div>
+    <div class="title"><div class="dot"></div><h2 style="margin:0">FerBot · Panel de emergencia</h2></div>
+    <div class="sub">Consulta rápida sin extensión. Usa el backend configurado en <code>localStorage.ferbot_api_base</code> o Render por defecto.</div>
 
     <div class="card">
-      <div class="row">
+      <div class="grid">
         <div>
           <label>Nombre del cliente</label>
           <input id="name" placeholder="Ej. Laura">
@@ -55,116 +60,184 @@
         </div>
       </div>
 
-      <label style="margin-top:8px;">Contexto (opcional)</label>
-      <input id="context" placeholder="Ej. poco tiempo; quiere certificación; sector banca">
-
-      <label style="margin-top:8px;">Mensaje del cliente</label>
-      <textarea id="q" placeholder="Escribe o pega el texto del cliente…"></textarea>
-
-      <div class="btns">
-        <button id="gen" class="btn primary">Generar</button>
-        <button id="clear" class="btn ghost">Clear</button>
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Contexto (opcional)</label>
+          <input id="context" placeholder="Ej. solo 10 min/día; busca certificación">
+        </div>
+        <div>
+          <label>Mensaje del cliente</label>
+          <input id="question" placeholder="Escribe la objeción o pega el texto seleccionado">
+        </div>
       </div>
-    </div>
 
-    <div class="grid2" style="margin-top:12px;">
-      <div class="card">
-        <label>Explicación (POR QUÉ + SIGUIENTE PASO)</label>
-        <textarea id="guide" readonly placeholder="Aquí verás el por qué de la respuesta y el siguiente paso para el asesor."></textarea>
+      <div class="row" style="margin-top:12px">
+        <button id="go" class="btn btn-primary">Generar</button>
+        <button id="clear" class="btn btn-ghost">Clear</button>
+
+        <div class="meter">
+          <span class="pill">Tiempo</span>
+          <span id="timer" class="bubble">00.0s</span>
+        </div>
+
+        <div id="rated_once_helper" class="pill hidden">Calificado ✓</div>
       </div>
-      <div class="card">
-        <label>Respuesta (lista para pegar)</label>
-        <textarea id="reply" readonly placeholder="Mensaje corto para WhatsApp (≤2 frases)."></textarea>
+
+      <div class="result">
+        <div>
+          <label>Respuesta (para pegar)</label>
+          <textarea id="reply" readonly placeholder="—"></textarea>
+        </div>
+        <div>
+          <label>POR QUÉ / SIGUIENTE PASO (para el asesor)</label>
+          <textarea id="guide" readonly placeholder="—"></textarea>
+        </div>
       </div>
+
+      <div id="ratingRow" class="foot hidden">
+        <span class="pill">¿Te gustó esta respuesta?</span>
+        <button id="rGood" class="btn" style="background:#19c37d;color:#062d1f">👍 Buena</button>
+        <button id="rRegular" class="btn" style="background:#fbbf24;color:#332200">😐 Regular</button>
+        <button id="rBad" class="btn" style="background:#ef4444;color:#fff">👎 Mala</button>
+      </div>
+
+      <div class="love">Hecho con <b>amor</b> 💚</div>
     </div>
   </div>
 
-<script>
-(function(){
-  const baseInput = document.getElementById("base");
-  const nameEl = document.getElementById("name");
-  const stageEl = document.getElementById("stage");
-  const ctxEl = document.getElementById("context");
-  const qEl = document.getElementById("q");
-  const guideEl = document.getElementById("guide");
-  const replyEl = document.getElementById("reply");
-  const healthEl = document.getElementById("health");
+  <script>
+    // ====== BASE del backend ======
+    const BASE = localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
 
-  const savedBase = localStorage.getItem("ferbot_api_base") || "";
-  baseInput.value = savedBase;
+    // ====== Refs
+    const el = (id)=> document.getElementById(id);
+    const nameEl   = el("name");
+    const stageEl  = el("stage");
+    const ctxEl    = el("context");
+    const qEl      = el("question");
+    const goBtn    = el("go");
+    const clearBtn = el("clear");
+    const timerEl  = el("timer");
+    const replyEl  = el("reply");
+    const guideEl  = el("guide");
+    const ratingRow= el("ratingRow");
+    const rGood    = el("rGood");
+    const rRegular = el("rRegular");
+    const rBad     = el("rBad");
+    const ratedOnceHelper = el("rated_once_helper");
 
-  function getBASE(){
-    const b = baseInput.value.trim() || localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
-    return b.replace(/\/+$/,"");
-  }
-
-  async function checkHealth(){
-    try{
-      const r = await fetch(getBASE()+"/health", {cache:"no-store"});
-      const j = await r.json();
-      if (j?.ok) { healthEl.textContent = "API OK ✅"; healthEl.className = "health ok"; }
-      else { healthEl.textContent = "API en mantenimiento ⚠️"; healthEl.className = "health warn"; }
-    }catch{
-      healthEl.textContent = "API en mantenimiento ⚠️";
-      healthEl.className = "health warn";
+    // ====== Countdown (color y segundos)
+    let t0=0, tid=null;
+    function startTimer(){
+      stopTimer();
+      t0 = performance.now();
+      timerEl.classList.remove("green","yellow"); // arranca "rojo" por CSS base
+      timerEl.classList.add("red");
+      tid = setInterval(()=>{
+        const s = (performance.now()-t0)/1000;
+        timerEl.textContent = s.toFixed(1)+"s";
+        // Colores aproximados por tiempo
+        if (s >= 1.5 && s < 3) {
+          timerEl.classList.remove("red","green");
+          timerEl.classList.add("yellow");
+        } else if (s >= 3) {
+          timerEl.classList.remove("red","yellow");
+          timerEl.classList.add("green");
+        }
+      }, 100);
     }
-  }
-  checkHealth();
-  setInterval(checkHealth, 30000);
+    function stopTimer(){
+      if (tid) clearInterval(tid);
+      tid=null;
+    }
+    function markDone(){
+      stopTimer();
+      const s = (performance.now()-t0)/1000;
+      timerEl.textContent = s.toFixed(1)+"s";
+      timerEl.classList.remove("red","yellow");
+      timerEl.classList.add("green");
+    }
 
-  document.getElementById("saveBase").onclick = ()=>{
-    const v = baseInput.value.trim();
-    if (v) localStorage.setItem("ferbot_api_base", v);
-    else localStorage.removeItem("ferbot_api_base");
-    checkHealth();
-    alert("BASE guardada.");
-  };
+    function sanitize(s){ return String(s||"").replace(/\s+/g," ").trim(); }
 
-  document.getElementById("clear").onclick = ()=>{
-    guideEl.value = "";
-    replyEl.value = "";
-  };
+    // ====== Llamada principal
+    goBtn.onclick = async () => {
+      const question = sanitize(qEl.value);
+      if (!question){ alert("Escribe el mensaje/objeción del cliente"); qEl.focus(); return; }
 
-  document.getElementById("gen").onclick = async ()=>{
-    const question = qEl.value.trim();
-    if (!question) { alert("Escribe el mensaje del cliente."); return; }
-    const customerName = nameEl.value.trim() || "Cliente";
-    const stage = stageEl.value;
-    const context = ctxEl.value.trim();
-    const intent = guessIntent(question);
+      replyEl.value = ""; guideEl.value = "";
+      ratingRow.classList.add("hidden");
+      ratedOnceHelper.classList.add("hidden");
 
-    const payload = { question, customerName, stage, intent, context };
+      startTimer();
+      try{
+        const res = await fetch(BASE + "/assist_trainer", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({
+            question,
+            customerName: sanitize(nameEl.value) || "Cliente",
+            stage: stageEl.value,
+            context: sanitize(ctxEl.value)
+          })
+        });
+        if(!res.ok){
+          const txt = await res.text().catch(()=> "");
+          alert("No se pudo generar (HTTP "+res.status+"). " + txt);
+          markDone();
+          return;
+        }
+        const json = await res.json();
 
-    try{
-      const r = await fetch(getBASE()+"/assist_trainer", {
-        method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload)
-      });
-      if (!r.ok) {
-        const t = await r.text().catch(()=> "");
-        alert(`No se pudo generar (HTTP ${r.status}). ${t}`);
-        return;
+        const reply = (json?.result?.reply || json?.text || "").trim();
+        const why   = (json?.result?.why   || "").trim();
+        const next  = (json?.result?.next  || "").trim();
+
+        replyEl.value = reply || "—";
+        guideEl.value = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
+
+        // mostrar rating UNA sola vez por respuesta
+        ratingRow.classList.remove("hidden");
+
+      }catch(e){
+        alert("No se pudo generar. ¿API vigente?");
+      }finally{
+        markDone();
       }
-      const j = await r.json();
-      const reply = (j?.result?.reply || j?.text || "").trim();
-      const why   = (j?.result?.why   || "").trim();
-      const next  = (j?.result?.next  || "").trim();
-      replyEl.value = reply;
-      guideEl.value = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
-    }catch(e){
-      alert("No se pudo generar. Verifica la BASE y el estado del server.");
-    }
-  };
+    };
 
-  function guessIntent(s=""){
-    s = s.toLowerCase();
-    if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|no me da el tiempo)/.test(s)) return "tiempo";
-    if (/(precio|caro|costo|costoso|muy caro|vale|promoci|oferta|descuento)/.test(s)) return "precio";
-    if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
-    if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
-    if (/(pitch|qué es platzi|que es platzi|platzi)/.test(s)) return "pitch";
-    return "_default";
-  }
-})();
-</script>
+    // ====== Clear
+    clearBtn.onclick = () => {
+      replyEl.value = "";
+      guideEl.value = "";
+      ratingRow.classList.add("hidden");
+      ratedOnceHelper.classList.add("hidden");
+      timerEl.textContent = "00.0s";
+      timerEl.classList.remove("red","yellow","green");
+    };
+
+    // ====== Rating (se oculta después de enviar)
+    async function sendRating(rating){
+      const utter = sanitize(replyEl.value);
+      if(!utter) return;
+      try{
+        await fetch(BASE + "/trackRate", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({
+            intent: "_panel_",
+            stage: stageEl.value,
+            text: utter,
+            rating
+          })
+        });
+      }catch(_){}
+      ratingRow.classList.add("hidden");
+      ratedOnceHelper.classList.remove("hidden");
+    }
+    rGood.onclick    = ()=> sendRating("good");
+    rRegular.onclick = ()=> sendRating("regular");
+    rBad.onclick     = ()=> sendRating("bad");
+  </script>
 </body>
 </html>
