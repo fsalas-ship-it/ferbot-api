@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>FerBot · Panel de emergencia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root{ --bg:#0b0f19; --card:#0f1524; --fg:#e2e8f0; --muted:#94a3b8; --green:#97C93E; --yellow:#fbbf24; --red:#ef4444; }
+    body{ margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial; }
+    .wrap{ max-width:920px; margin:24px auto; padding:0 16px; }
+    h1{ margin:0 0 8px; font-size:20px; }
+    .sub{ color:var(--muted); font-size:12px; margin:0 0 16px; }
+    .card{ background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; }
+    label{ font-size:12px; color:var(--muted); display:block; margin:8px 0 6px; }
+    input, textarea, select{ width:100%; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:8px 10px; outline:none; }
+    textarea{ min-height:96px; resize:vertical; }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .btns{ display:flex; gap:8px; margin-top:12px; }
+    .btn{ flex:1; padding:10px 12px; font-weight:800; border:0; border-radius:10px; cursor:pointer; }
+    .primary{ background:var(--green); color:#0b0f19; }
+    .ghost{ background:#1b2333; color:#cbd5e1; }
+    .health{ font-size:12px; margin-left:8px; }
+    .ok{ color:var(--green); } .warn{ color:var(--yellow); }
+    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .muted{ color:var(--muted); font-size:12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>FerBot · Panel de emergencia <span id="health" class="health">Comprobando…</span></h1>
+    <p class="sub">Usa este panel si la extensión no está disponible. Hecho con amor <span style="color:#97C93E">❤</span></p>
+
+    <div class="card" style="margin-bottom:12px;">
+      <label>API Base (opcional)</label>
+      <input id="base" placeholder="https://ferbot-api.onrender.com"/>
+      <div class="muted">Si lo dejas vacío, usamos <b>https://ferbot-api.onrender.com</b>. Puedes guardar otro en tu navegador.</div>
+      <div class="btns"><button id="saveBase" class="btn ghost">Guardar esta base</button></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>Nombre del cliente</label>
+          <input id="name" placeholder="Ej. Laura">
+        </div>
+        <div>
+          <label>Etapa</label>
+          <select id="stage">
+            <option value="integracion">Integración</option>
+            <option value="sondeo">Sondeo</option>
+            <option value="pre_cierre">Pre-cierre</option>
+            <option value="rebatir" selected>Rebatir</option>
+            <option value="cierre">Cierre</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="margin-top:8px;">Contexto (opcional)</label>
+      <input id="context" placeholder="Ej. poco tiempo; quiere certificación; sector banca">
+
+      <label style="margin-top:8px;">Mensaje del cliente</label>
+      <textarea id="q" placeholder="Escribe o pega el texto del cliente…"></textarea>
+
+      <div class="btns">
+        <button id="gen" class="btn primary">Generar</button>
+        <button id="clear" class="btn ghost">Clear</button>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px;">
+      <div class="card">
+        <label>Explicación (POR QUÉ + SIGUIENTE PASO)</label>
+        <textarea id="guide" readonly placeholder="Aquí verás el por qué de la respuesta y el siguiente paso para el asesor."></textarea>
+      </div>
+      <div class="card">
+        <label>Respuesta (lista para pegar)</label>
+        <textarea id="reply" readonly placeholder="Mensaje corto para WhatsApp (≤2 frases)."></textarea>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const baseInput = document.getElementById("base");
+  const nameEl = document.getElementById("name");
+  const stageEl = document.getElementById("stage");
+  const ctxEl = document.getElementById("context");
+  const qEl = document.getElementById("q");
+  const guideEl = document.getElementById("guide");
+  const replyEl = document.getElementById("reply");
+  const healthEl = document.getElementById("health");
+
+  const savedBase = localStorage.getItem("ferbot_api_base") || "";
+  baseInput.value = savedBase;
+
+  function getBASE(){
+    const b = baseInput.value.trim() || localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
+    return b.replace(/\/+$/,"");
+  }
+
+  async function checkHealth(){
+    try{
+      const r = await fetch(getBASE()+"/health", {cache:"no-store"});
+      const j = await r.json();
+      if (j?.ok) { healthEl.textContent = "API OK ✅"; healthEl.className = "health ok"; }
+      else { healthEl.textContent = "API en mantenimiento ⚠️"; healthEl.className = "health warn"; }
+    }catch{
+      healthEl.textContent = "API en mantenimiento ⚠️";
+      healthEl.className = "health warn";
+    }
+  }
+  checkHealth();
+  setInterval(checkHealth, 30000);
+
+  document.getElementById("saveBase").onclick = ()=>{
+    const v = baseInput.value.trim();
+    if (v) localStorage.setItem("ferbot_api_base", v);
+    else localStorage.removeItem("ferbot_api_base");
+    checkHealth();
+    alert("BASE guardada.");
+  };
+
+  document.getElementById("clear").onclick = ()=>{
+    guideEl.value = "";
+    replyEl.value = "";
+  };
+
+  document.getElementById("gen").onclick = async ()=>{
+    const question = qEl.value.trim();
+    if (!question) { alert("Escribe el mensaje del cliente."); return; }
+    const customerName = nameEl.value.trim() || "Cliente";
+    const stage = stageEl.value;
+    const context = ctxEl.value.trim();
+    const intent = guessIntent(question);
+
+    const payload = { question, customerName, stage, intent, context };
+
+    try{
+      const r = await fetch(getBASE()+"/assist_trainer", {
+        method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload)
+      });
+      if (!r.ok) {
+        const t = await r.text().catch(()=> "");
+        alert(`No se pudo generar (HTTP ${r.status}). ${t}`);
+        return;
+      }
+      const j = await r.json();
+      const reply = (j?.result?.reply || j?.text || "").trim();
+      const why   = (j?.result?.why   || "").trim();
+      const next  = (j?.result?.next  || "").trim();
+      replyEl.value = reply;
+      guideEl.value = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
+    }catch(e){
+      alert("No se pudo generar. Verifica la BASE y el estado del server.");
+    }
+  };
+
+  function guessIntent(s=""){
+    s = s.toLowerCase();
+    if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|no me da el tiempo)/.test(s)) return "tiempo";
+    if (/(precio|caro|costo|costoso|muy caro|vale|promoci|oferta|descuento)/.test(s)) return "precio";
+    if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
+    if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
+    if (/(pitch|qué es platzi|que es platzi|platzi)/.test(s)) return "pitch";
+    return "_default";
+  }
+})();
+</script>
+</body>
+</html>
