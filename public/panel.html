@@ -1,55 +1,63 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>FerBot — Panel</title>
-<style>
-  :root{
-    --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --ink:#e2e8f0; --line:rgba(255,255,255,.10);
-    --green:#19c37d; --platzi:#97C93E; --yellow:#f59e0b; --red:#ef4444;
-  }
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto}
-  .wrap{max-width:880px;margin:24px auto;padding:0 16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
-  h1{margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  .col{flex:1;min-width:240px}
-  label{font-size:12px;color:var(--muted);display:block;margin:10px 0 6px}
-  input,select,textarea{
-    width:100%;background:#0f1524;color:#dbeafe;border:1px solid var(--line);border-radius:10px;
-    padding:9px 11px;outline:none;font-size:14px
-  }
-  textarea{min-height:110px;resize:vertical}
-  .footer{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
-  .btn{border:0;border-radius:9px;padding:9px 12px;cursor:pointer;font-weight:800}
-  .primary{background:var(--platzi);color:#0b0f19}
-  .ghost{background:#1b2333;color:#cbd5e1}
-  .good{background:var(--green);color:#062d1f}
-  .warn{background:var(--yellow);color:#231500}
-  .bad{background:var(--red);color:#fff}
-  .pill{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#0e1424;color:#cbd5e1}
-  .timer{min-width:72px;text-align:center;font-variant-numeric:tabular-nums;font-weight:800;padding:8px 10px;border-radius:999px;border:1px solid var(--line)}
-  .timer.red{background:var(--red);color:#fff}
-  .timer.yellow{background:var(--yellow);color:#231500}
-  .timer.green{background:var(--green);color:#062d1f}
-  .muted{color:var(--muted);font-size:12px}
-  .error{margin-top:8px;color:#fff;background:#7f1d1d;border:1px solid #b91c1c;padding:8px 10px;border-radius:10px;display:none;white-space:pre-wrap}
-  .ok{display:inline-flex;align-items:center;gap:6px}
-  .hint{font-size:12px;opacity:.85}
-</style>
+  <meta charset="utf-8"/>
+  <title>FerBot · Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root{
+      --green:#97C93E; --dark:#0b0f19; --panel:#0b0f19CC; --ink:#e2e8f0; --muted:#94a3b8;
+      --ok:#19c37d; --warn:#fbbf24; --bad:#ef4444;
+    }
+    body{margin:0;background:var(--dark);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;}
+    .wrap{max-width:860px;margin:32px auto;padding:0 16px;}
+    h1{margin:0 0 8px;font-size:22px}
+    .sub{color:var(--muted);margin-bottom:16px}
+    .card{background:#0f1524;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+    input,select,textarea{
+      width:100%;padding:9px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);
+      background:#0f1524;color:#dbeafe;outline:none;font-size:14px;
+    }
+    textarea{min-height:90px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btns{display:flex;gap:8px;align-items:center;margin-top:12px}
+    button{
+      padding:8px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer;
+    }
+    .primary{background:var(--green);color:#0b0f19}
+    .ghost{background:#1b2333;color:#cbd5e1}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;
+      background:#1b2333;color:#cbd5e1;font-size:12px;border:1px solid rgba(255,255,255,.08)
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--bad);box-shadow:0 0 10px var(--bad)}
+    .dot.warn{background:var(--warn);box-shadow:0 0 10px var(--warn)}
+    .dot.ok{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+    .outbox{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:#cbd5e1}
+    .rate{display:none;gap:6px;margin-top:8px}
+    .rate.show{display:flex}
+    .rate button{font-size:12px}
+    .love{margin-top:14px;color:var(--muted);font-size:12px}
+    .love b{color:var(--green)}
+  </style>
 </head>
 <body>
   <div class="wrap">
+    <h1>FerBot · Panel</h1>
+    <div class="sub">Emergencia/consulta rápida — usa el mismo backend que la extensión.</div>
+
     <div class="card">
-      <h1>🤖 FerBot — Panel <span class="hint">· hecho con amor 💚</span></h1>
+      <label>API Base (opcional, se guarda)</label>
+      <input id="base" placeholder="https://ferbot-api.onrender.com"/>
 
       <div class="row">
-        <div class="col">
+        <div>
           <label>Nombre del cliente</label>
           <input id="name" placeholder="Ej. Laura"/>
         </div>
-        <div class="col">
+        <div>
           <label>Etapa</label>
           <select id="stage">
             <option value="integracion">Integración</option>
@@ -59,206 +67,178 @@
             <option value="cierre">Cierre</option>
           </select>
         </div>
-        <div class="col" style="max-width:180px">
-          <label>Sentimiento</label>
-          <div id="sent" class="pill">Neutro</div>
+      </div>
+
+      <label>Contexto (opcional)</label>
+      <input id="ctx" placeholder="Ej. trabaja y solo puede 10 min al día"/>
+
+      <label>Texto del cliente (selección o pega aquí)</label>
+      <textarea id="q" placeholder="No tengo tiempo para estudiar…"></textarea>
+
+      <div class="btns">
+        <button id="go" class="primary">Generar</button>
+        <button id="clear" class="ghost">Clear</button>
+        <span id="pulse" class="pill" style="display:none">
+          <span class="dot" id="dot"></span>
+          <span id="tlabel">Generando… 0.0s</span>
+        </span>
+      </div>
+
+      <div class="outbox">
+        <div>
+          <label>POR QUÉ</label>
+          <textarea id="why" readonly></textarea>
         </div>
+        <div>
+          <label>SIGUIENTE PASO</label>
+          <textarea id="next" readonly></textarea>
+        </div>
+        <div>
+          <label>Respuesta para pegar</label>
+          <textarea id="reply" readonly></textarea>
+          <div id="rate" class="rate">
+            <button id="r-good" class="primary">👍 Buena</button>
+            <button id="r-regular" class="ghost">😐 Regular</button>
+            <button id="r-bad" class="ghost" style="background:#2a1c1c;color:#fff">👎 Mala</button>
+          </div>
+        </div>
+        <div class="mono" id="dbg"></div>
       </div>
 
-      <label>Contexto (opcional, para el bot)</label>
-      <input id="ctx" placeholder="Ej. certificaciones; poco tiempo al día">
-
-      <label style="margin-top:8px">Texto del cliente</label>
-      <textarea id="input" placeholder="Escribe la frase o pega texto del cliente…"></textarea>
-
-      <label>Explicación (POR QUÉ + SIGUIENTE PASO)</label>
-      <textarea id="guide" placeholder="Aquí el bot te enseña…" readonly></textarea>
-
-      <label>Respuesta (lista para pegar)</label>
-      <textarea id="out" placeholder="Se generará aquí…" readonly></textarea>
-
-      <div id="err" class="error"></div>
-
-      <div class="footer">
-        <button id="gen"   class="btn primary">Generar</button>
-        <button id="clear" class="btn ghost">Clear</button>
-
-        <span class="pill">Tiempo</span>
-        <span id="timer" class="timer">00.0s</span>
-
-        <span style="flex:1"></span>
-
-        <span class="pill">¿Te gustó esta respuesta?</span>
-        <button id="rate-good" class="btn good"   style="display:none">👍 Buena</button>
-        <button id="rate-reg"  class="btn warn"   style="display:none">😐 Regular</button>
-        <button id="rate-bad"  class="btn bad"    style="display:none">👎 Mala</button>
-        <span id="rated" class="pill" style="display:none">¡Gracias por calificar!</span>
-      </div>
-
-      <div class="muted" style="margin-top:10px">
-        API: <code id="apiLabel"></code>
-        · <span id="health" class="ok"></span>
-      </div>
+      <div class="love">Hecho con amor <b>💚</b></div>
     </div>
   </div>
 
-<script>
-(function(){
-  // ---------- BASE de la API ----------
-  const urlParam = new URLSearchParams(location.search).get("api");
-  const BASE = urlParam || localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
-  document.getElementById("apiLabel").textContent = BASE;
-  // Guarda si vino por query
-  if (urlParam) localStorage.setItem("ferbot_api_base", urlParam);
+  <script>
+    // === CONFIG BASE ===
+    const baseEl = document.getElementById('base');
+    const saved = localStorage.getItem('ferbot_api_base');
+    const BASE = (saved && saved.trim()) || 'https://ferbot-api.onrender.com';
+    baseEl.value = BASE;
+    baseEl.addEventListener('change', ()=>{
+      localStorage.setItem('ferbot_api_base', baseEl.value.trim());
+    });
 
-  // ---------- Refs ----------
-  const nameEl = document.getElementById("name");
-  const stageEl= document.getElementById("stage");
-  const ctxEl  = document.getElementById("ctx");
-  const inEl   = document.getElementById("input");
-  const outEl  = document.getElementById("out");
-  const guideEl= document.getElementById("guide");
-  const errBox = document.getElementById("err");
-  const sentEl = document.getElementById("sent");
-  const tEl    = document.getElementById("timer");
-  const btnGen = document.getElementById("gen");
-  const btnClr = document.getElementById("clear");
-  const rGood  = document.getElementById("rate-good");
-  const rReg   = document.getElementById("rate-reg");
-  const rBad   = document.getElementById("rate-bad");
-  const rated  = document.getElementById("rated");
-  const health = document.getElementById("health");
+    // === REFS ===
+    const qEl = document.getElementById('q');
+    const nameEl = document.getElementById('name');
+    const stageEl = document.getElementById('stage');
+    const ctxEl = document.getElementById('ctx');
+    const whyEl = document.getElementById('why');
+    const nextEl = document.getElementById('next');
+    const replyEl = document.getElementById('reply');
+    const dbgEl = document.getElementById('dbg');
+    const rateBox = document.getElementById('rate');
+    const rGood = document.getElementById('r-good');
+    const rReg  = document.getElementById('r-regular');
+    const rBad  = document.getElementById('r-bad');
 
-  nameEl.value = localStorage.getItem("ferbot_name") || "";
-  nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_name", nameEl.value.trim()));
+    const pulse = document.getElementById('pulse');
+    const dot   = document.getElementById('dot');
+    const tlabel= document.getElementById('tlabel');
 
-  // ---------- Health ----------
-  fetch(`${BASE}/health`).then(r=>r.json()).then(j=>{
-    health.textContent = j.ok ? `ok: true, model_env: "${j.model_env}"` : "ok: false";
-  }).catch(_=> { health.textContent = "sin respuesta"; });
+    // === COUNTDOWN ===
+    let t0=0, tick=null;
+    function startPulse(){
+      t0=performance.now();
+      pulse.style.display='inline-flex';
+      dot.className='dot';
+      tlabel.textContent='Generando… 0.0s';
+      if (tick) clearInterval(tick);
+      tick=setInterval(()=>{
+        const dt=(performance.now()-t0)/1000;
+        tlabel.textContent=`Generando… ${dt.toFixed(1)}s`;
+        if (dt<2){ dot.className='dot'; }
+        else if (dt<5){ dot.className='dot warn'; }
+        else { dot.className='dot ok'; }
+      },100);
+    }
+    function stopPulse(){
+      if (tick) { clearInterval(tick); tick=null; }
+      const dt=(performance.now()-t0)/1000;
+      dot.className='dot ok';
+      tlabel.textContent=`Listo en ${dt.toFixed(1)}s`;
+      setTimeout(()=>{ pulse.style.display='none'; }, 1200);
+    }
 
-  // ---------- Sentimiento simple ----------
-  function updateSentiment(text=""){
-    const s = (text||"").toLowerCase();
-    const neg = /(no tengo tiempo|caro|no puedo|difícil|no me sirve|muy caro)/.test(s);
-    const pos = /(me interesa|me gusta|quiero|perfecto|genial|excelente|sí|si)/.test(s);
-    let label = "Neutro", color = "#94a3b8";
-    if (neg && !pos) { label="Negativo"; color="#ef4444"; }
-    else if (pos && !neg) { label="Positivo"; color="#19c37d"; }
-    sentEl.textContent = label;
-    sentEl.style.borderColor = color;
-    sentEl.style.color = color;
-  }
-  inEl.addEventListener("input", ()=> updateSentiment(inEl.value));
+    function guessIntent(s=''){
+      s=s.toLowerCase();
+      if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo)/.test(s)) return 'tiempo';
+      if (/(precio|caro|costo|vale|promoci|oferta|descuento)/.test(s)) return 'precio';
+      if (/(cert|certificado|certificacion|certificación)/.test(s)) return 'cert';
+      if (/(coursera|udemy|alura|competenc)/.test(s)) return 'competencia';
+      if (/(pitch|qué es platzi|que es platzi|platzi)/.test(s)) return 'pitch';
+      return '_default';
+    }
 
-  // ---------- Timer ----------
-  let t0=0, tid=null;
-  function startTimer(){
-    stopTimer();
-    t0 = performance.now();
-    tEl.classList.remove("green","yellow");
-    tEl.classList.add("red");
-    tid = setInterval(()=>{
-      const s = (performance.now()-t0)/1000;
-      tEl.textContent = s.toFixed(1)+"s";
-      if (s >= 1.5 && s < 3) { tEl.classList.remove("red","green"); tEl.classList.add("yellow"); }
-      else if (s >= 3)     { tEl.classList.remove("red","yellow"); tEl.classList.add("green"); }
-    },100);
-  }
-  function stopTimer(){ if (tid) clearInterval(tid); tid=null; }
-  function doneTimer(){
-    stopTimer();
-    const s = (performance.now()-t0)/1000;
-    tEl.textContent = s.toFixed(1)+"s";
-    tEl.classList.remove("red","yellow"); tEl.classList.add("green");
-  }
+    function showRatingOnce(){
+      rateBox.classList.add('show');
+      const disableAll=()=>{
+        rateBox.classList.remove('show');
+        rGood.disabled=rReg.disabled=rBad.disabled=true;
+        setTimeout(()=>{ rGood.disabled=rReg.disabled=rBad.disabled=false; }, 800); // rearmar para la próxima generación
+      };
+      rGood.onclick = ()=> { sendRate('good'); disableAll(); };
+      rReg.onclick  = ()=> { sendRate('regular'); disableAll(); };
+      rBad.onclick  = ()=> { sendRate('bad'); disableAll(); };
+    }
 
-  function showError(msg){
-    errBox.style.display = "block";
-    errBox.textContent = msg;
-  }
-  function clearError(){
-    errBox.style.display = "none";
-    errBox.textContent = "";
-  }
+    async function sendRate(rating){
+      const intent = guessIntent(qEl.value||'');
+      const stage  = stageEl.value;
+      const text   = (replyEl.value||'').trim();
+      if (!text) return;
+      try{
+        await fetch((baseEl.value||'') + '/trackRate', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ intent, stage, text, rating })
+        });
+      }catch(_){}
+    }
 
-  function showRating(){
-    rGood.style.display = rReg.style.display = rBad.style.display = "inline-block";
-    rated.style.display = "none";
-  }
-  function hideRating(){
-    rGood.style.display = rReg.style.display = rBad.style.display = "none";
-  }
+    document.getElementById('go').onclick = async ()=>{
+      const base = (baseEl.value||'').trim();
+      const q = (qEl.value||'').trim();
+      if (!q){ alert('Escribe el texto del cliente.'); return; }
 
-  // ---------- Generar ----------
-  btnGen.addEventListener("click", async ()=>{
-    clearError();
-    hideRating();
-    outEl.value = ""; guideEl.value = "";
-    const question = (inEl.value || "").trim();
-    if (!question) { showError("Escribe el texto del cliente primero."); return; }
+      whyEl.value = ''; nextEl.value=''; replyEl.value=''; dbgEl.textContent='';
+      showRatingOnce(); // se mostrará; se ocultará al calificar
+      startPulse();
 
-    const payload = {
-      question,
-      customerName: nameEl.value.trim() || "Cliente",
-      stage: stageEl.value,
-      context: ctxEl.value.trim()
+      try{
+        const res = await fetch(base + '/assist_trainer', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            question: q,
+            customerName: (nameEl.value||'').trim() || 'Cliente',
+            stage: stageEl.value,
+            context: (ctxEl.value||'').trim()
+          })
+        });
+        const json = await res.json().catch(()=> ({}));
+        stopPulse();
+
+        // parse
+        const why  = (json?.result?.why  || json?.result?.guide || '').toString().trim();
+        const next = (json?.result?.next || '').toString().trim();
+        const rep  = (json?.result?.reply|| json?.text || '').toString().trim();
+
+        whyEl.value  = why || '-';
+        nextEl.value = next || '-';
+        replyEl.value= rep  || '-';
+
+        dbgEl.textContent = JSON.stringify({intent: json?.result?.intent, model: json?.result?.model}, null, 2);
+      }catch(e){
+        stopPulse();
+        dbgEl.textContent = 'Error: ' + (e?.message||e);
+        alert('No se pudo generar. ¿API vigente?');
+      }
     };
 
-    startTimer();
-    try{
-      const res = await fetch(`${BASE}/assist_trainer`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const txt = await res.text().catch(()=> "");
-        showError(`No se pudo generar (HTTP ${res.status}). ${txt}`);
-        doneTimer();
-        return;
-      }
-      const j = await res.json();
-      const reply = (j?.result?.reply || j?.text || "").trim();
-      const why   = (j?.result?.why   || "").trim();
-      const next  = (j?.result?.next  || "").trim();
-
-      outEl.value   = reply || "";
-      guideEl.value = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
-      showRating();
-    }catch(e){
-      showError("Error de red: " + (e?.message || String(e)));
-    }finally{
-      doneTimer();
-    }
-  });
-
-  // ---------- Clear ----------
-  btnClr.addEventListener("click", ()=>{
-    outEl.value = ""; guideEl.value = "";
-    hideRating(); rated.style.display = "none";
-    tEl.textContent = "00.0s"; tEl.classList.remove("red","yellow","green");
-    clearError();
-  });
-
-  // ---------- Rating (se oculta tras votar) ----------
-  async function rate(kind){
-    const text = (outEl.value || "").trim(); if(!text) return;
-    try{
-      await fetch(`${BASE}/trackRate`, {
-        method:"POST", headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ intent: "_panel_", stage: stageEl.value, text, rating: kind })
-      });
-    }catch(_){}
-    hideRating(); rated.style.display = "inline-flex";
-  }
-  rGood.onclick = ()=> rate("good");
-  rReg.onclick  = ()=> rate("regular");
-  rBad.onclick  = ()=> rate("bad");
-
-  // Inicial
-  updateSentiment("");
-})();
-</script>
+    document.getElementById('clear').onclick = ()=>{
+      whyEl.value=nextEl.value=replyEl.value=''; dbgEl.textContent='';
+    };
+  </script>
 </body>
 </html>
+
