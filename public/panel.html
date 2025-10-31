@@ -2,226 +2,173 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
-  <title>FerBot · Panel</title>
+  <title>FerBot · Usabilidad ⚡</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root{
-      --green:#97C93E; --dark:#0b0f19; --panel:#0b0f19CC; --ink:#e2e8f0; --muted:#94a3b8;
-      --ok:#19c37d; --warn:#fbbf24; --bad:#ef4444;
-    }
-    body{margin:0;background:var(--dark);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;}
-    .wrap{max-width:860px;margin:32px auto;padding:0 16px;}
-    .card{background:#0f1524;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
-    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
-    input,select,textarea{
-      width:100%;padding:9px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);
-      background:#0f1524;color:#dbeafe;outline:none;font-size:14px
-    }
-    textarea{min-height:100px;resize:vertical;white-space:pre-wrap} /* <- muestra todo */
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .btns{display:flex;gap:8px;align-items:center;margin-top:12px}
-    button{padding:8px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-    .primary{background:var(--green);color:#0b0f19}
-    .ghost{background:#1b2333;color:#cbd5e1}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:#101727}
-    .dot{width:8px;height:8px;border-radius:999px;background:#64748b}
-    .pos .dot{background:#19c37d} .neu .dot{background:#f59e0b} .neg .dot{background:#ef4444}
-    .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-    .timer{font-variant-numeric:tabular-nums;opacity:.85}
+    :root{ --ink:#e2e8f0; --muted:#94a3b8; --bg:#0b0f19; --panel:#0f1524; --line:rgba(255,255,255,.1); --green:#97C93E; }
+    *{ box-sizing:border-box }
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+    h1{font-size:18px;margin:0}
+    .muted{color:var(--muted);font-size:12px}
+    .wrap{padding:16px;max-width:1400px;margin:0 auto}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .card h3{margin:0 0 4px;font-size:12px;color:var(--muted)}
+    .card .val{font-size:22px;font-weight:800}
+    .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:16px}
+    canvas{height:280px !important;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
+    table{width:100%;border-collapse:collapse;margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px}
+    th{background:rgba(255,255,255,.05);text-align:left;color:var(--ink)}
+    tr:hover{background:rgba(255,255,255,.03)}
+    footer{padding:8px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;text-align:center;margin-top:16px}
+    .pill{display:inline-flex;gap:8px;align-items:center}
+    .dot{width:8px;height:8px;border-radius:999px;background:#10b981}
   </style>
 </head>
 <body>
+  <header>
+    <h1>FerBot · Usabilidad ⚡</h1>
+    <div class="muted"><span id="status">Conectando…</span> · auto-refresh <b>5s</b></div>
+  </header>
+
   <div class="wrap">
-    <div class="hdr">
-      <h2 style="margin:0">FerBot — Panel</h2>
-      <div class="pill"><span id="dot" class="dot"></span><span id="timer" class="timer">0.0s</span></div>
-    </div>
+    <section class="cards" id="cards">
+      <div class="card"><h3>Respuestas mostradas</h3><div id="c_shown" class="val">0</div></div>
+      <div class="card"><h3>Winrate compuesto</h3><div id="c_wr" class="val">0%</div></div>
+      <div class="card"><h3>👍 Buenas</h3><div id="c_good" class="val">0</div></div>
+      <div class="card"><h3>😐 Regulares</h3><div id="c_regular" class="val">0</div></div>
+      <div class="card"><h3>👎 Malas</h3><div id="c_bad" class="val">0</div></div>
+      <div class="card"><h3>Activos 5m</h3><div id="c_act5" class="val">0</div></div>
+      <div class="card"><h3>Activos hoy</h3><div id="c_actDay" class="val">0</div></div>
+      <div class="card"><h3>⏱️ Prom. respuesta</h3><div id="c_avg" class="val">0 ms</div></div>
+      <div class="card"><h3>p95 respuesta</h3><div id="c_p95" class="val">0 ms</div></div>
+      <div class="card"><h3>Duración sesión prom.</h3><div id="c_sess" class="val">0 min</div></div>
+    </section>
 
-    <div class="card">
-      <div class="row">
-        <div>
-          <label>Nombre del cliente</label>
-          <input id="name" placeholder="Ej. Laura"/>
-        </div>
-        <div>
-          <label>Etapa</label>
-          <select id="stage">
-            <option value="integracion">Integración</option>
-            <option value="sondeo">Sondeo</option>
-            <option value="pre_cierre">Pre-cierre</option>
-            <option value="rebatir" selected>Rebatir</option>
-            <option value="cierre">Cierre</option>
-          </select>
-        </div>
-      </div>
+    <section class="charts">
+      <canvas id="ch_stage"></canvas>
+      <canvas id="ch_intent"></canvas>
+      <canvas id="ch_hour" style="grid-column:1/-1"></canvas>
+      <canvas id="ch_dist" style="grid-column:1/-1"></canvas>
+    </section>
 
-      <label style="margin-top:8px">Contexto (opcional, para el bot)</label>
-      <input id="context" placeholder="Notas breves: certificaciones, poco tiempo, habló de inglés..."/>
-
-      <div class="row" style="align-items:end;margin-top:8px">
-        <div>
-          <label>Texto del cliente</label>
-          <textarea id="input" placeholder="Escribe aquí lo que dijo el cliente…"></textarea>
-        </div>
-        <div>
-          <label>Sentimiento</label>
-          <div id="sent" class="pill neu"><span class="dot"></span><span id="sentText">Neutral</span></div>
-        </div>
-      </div>
-
-      <label style="margin-top:8px">Explicación (POR QUÉ + SIGUIENTE PASO)</label>
-      <textarea id="guide" placeholder="Aquí el bot te enseña…"></textarea>
-
-      <label style="margin-top:8px">Respuesta (lista para pegar)</label>
-      <textarea id="output" placeholder="Se generará aquí…"></textarea>
-
-      <div class="btns">
-        <button id="gen"  class="primary">Generar</button>
-        <button id="clr"  class="ghost">Clear</button>
-        <button id="good" class="ghost" style="display:none">👍 Buena</button>
-        <button id="reg"  class="ghost" style="display:none">😐 Regular</button>
-        <button id="bad"  class="ghost" style="display:none">👎 Mala</button>
-      </div>
-    </div>
+    <h3 style="margin-top:16px">Top respuestas (efectivas)</h3>
+    <table id="tbl">
+      <thead><tr><th>Intent</th><th>Stage</th><th>Texto</th><th>Shown</th><th>Wins</th><th>Winrate</th></tr></thead>
+      <tbody></tbody>
+    </table>
   </div>
 
+  <footer>FerBot Dashboard — Datos en vivo desde <span id="base"></span></footer>
+
   <script>
-    // ===== BASE de la API =====
     const BASE = (localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com").replace(/\/+$/,"");
+    document.getElementById("base").textContent = BASE;
 
-    // ===== refs
-    const nameEl = document.getElementById('name');
-    const stageEl= document.getElementById('stage');
-    const ctxEl  = document.getElementById('context');
-    const inEl   = document.getElementById('input');
-    const outEl  = document.getElementById('output');
-    const guideEl= document.getElementById('guide');
+    const ctxStage  = document.getElementById("ch_stage").getContext("2d");
+    const ctxIntent = document.getElementById("ch_intent").getContext("2d");
+    const ctxHour   = document.getElementById("ch_hour").getContext("2d");
+    const ctxDist   = document.getElementById("ch_dist").getContext("2d");
 
-    const genBtn = document.getElementById('gen');
-    const clrBtn = document.getElementById('clr');
+    let chStage, chIntent, chHour, chDist;
 
-    const goodBtn= document.getElementById('good');
-    const regBtn = document.getElementById('reg');
-    const badBtn = document.getElementById('bad');
-
-    const dot    = document.getElementById('dot');
-    const timer  = document.getElementById('timer');
-
-    // ===== helpers UI
-    function setDot(c){ dot.style.background = c; }
-    function autoResize(t){ if(!t) return; t.style.height="auto"; t.style.height=(t.scrollHeight+4)+"px"; }
-
-    function guessIntent(q=""){
-      const s = (q||"").toLowerCase();
-      if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|ocupad)/.test(s)) return "tiempo";
-      if (/(precio|caro|costo|costoso|vale|promoci|oferta|descuento)/.test(s)) return "precio";
-      if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
-      if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
-      if (/(qué es platzi|que es platzi|platzi|pitch)/.test(s)) return "pitch";
-      return "_panel";
+    function colors(n){
+      const base = ['#97C93E','#60A5FA','#F59E0B','#10B981','#8B5CF6','#EF4444','#0EA5E9','#EAB308','#EC4899','#22C55E'];
+      const out = []; for (let i=0;i<n;i++) out.push(base[i % base.length]); return out;
     }
 
-    function updateSentimentBadge(text){
-      const s = (text||"").toLowerCase();
-      const positive = /(gracias|excelente|me interesa|bien|listo|perfecto|genial)/i.test(s);
-      const negative = /(no puedo|caro|dificil|malo|no me gusta|no sirve|no tengo tiempo|no sé|no se)/i.test(s);
-      const pill = document.getElementById('sent');
-      const label= document.getElementById('sentText');
-      pill.classList.remove('pos','neu','neg');
-      if (negative){ pill.classList.add('neg'); label.textContent="Negativo"; }
-      else if (positive){ pill.classList.add('pos'); label.textContent="Positivo"; }
-      else { pill.classList.add('neu'); label.textContent="Neutral"; }
-    }
-    inEl.addEventListener('input', ()=> updateSentimentBadge(inEl.value));
-
-    // ===== contador
-    let t0=0, iv=null;
-    function startTimer(){
-      stopTimer(); t0=performance.now();
-      iv = setInterval(()=>{
-        const dt=(performance.now()-t0)/1000;
-        timer.textContent = dt.toFixed(1)+"s";
-        if (dt<2) setDot("#ef4444");
-        else if (dt<4) setDot("#f59e0b");
-        else setDot("#22c55e");
-      },100);
-    }
-    function stopTimer(){ if (iv){ clearInterval(iv); iv=null; } }
-
-    // ===== Rating toggle
-    function toggleRatings(show){
-      goodBtn.style.display = show ? "inline-block" : "none";
-      regBtn.style.display  = show ? "inline-block" : "none";
-      badBtn.style.display  = show ? "inline-block" : "none";
-    }
-    toggleRatings(false);
-
-    // ===== Evento: Generar
-    genBtn.onclick = async () => {
-      const q = (inEl.value || "").trim();
-      if (!q){ alert("Escribe el texto del cliente primero."); return; }
-      const name = (nameEl.value || "Cliente").trim();
-      const stage= stageEl.value;
-      const context=(ctxEl.value || "").trim();
-
-      outEl.value = ""; guideEl.value=""; autoResize(outEl); autoResize(guideEl);
-      toggleRatings(false);
-
-      // contador
-      startTimer(); setDot("#ef4444");
-
+    async function load(){
       try{
-        const res = await fetch(`${BASE}/assist_trainer`, {
-          method:"POST", headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ question:q, customerName:name, stage, context, intent:guessIntent(q) })
-        });
-        stopTimer(); setDot("#22c55e");
-
-        if (!res.ok){
-          const txt = await res.text().catch(()=> "");
-          alert(`No se pudo generar (HTTP ${res.status}). ${txt || ""}`);
-          return;
-        }
-        const json = await res.json();
-        const reply = (json?.result?.reply || json?.text || "").trim();
-        const why   = (json?.result?.why  || "").trim();
-        const next  = (json?.result?.next || "").trim();
-
-        outEl.value  = reply;
-        guideEl.value= `POR QUÉ: ${why}\nSIGUIENTE PASO: ${next}`;
-        autoResize(outEl); autoResize(guideEl);
-
-        // mostramos rating
-        const intent = guessIntent(q);
-        goodBtn.onclick = ()=> sendRate("good", intent, stage, reply);
-        regBtn.onclick  = ()=> sendRate("regular", intent, stage, reply);
-        badBtn.onclick  = ()=> sendRate("bad", intent, stage, reply);
-        toggleRatings(true);
+        const r = await fetch(`${BASE}/metrics`);
+        if(!r.ok) throw new Error("metrics");
+        const j = await r.json();
+        document.getElementById("status").textContent = "Online ✅";
+        render(j);
       }catch(e){
-        stopTimer(); setDot("#ef4444");
-        alert("No se pudo generar. Verifica que la API esté arriba.");
+        document.getElementById("status").textContent = "Offline ❌";
       }
-    };
-
-    async function sendRate(rating, intent, stage, text){
-      try{
-        await fetch(`${BASE}/trackRate`, {
-          method:"POST", headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ intent, stage, text, rating })
-        });
-      }catch(_){}
-      toggleRatings(false);
     }
 
-    // ===== Clear
-    clrBtn.onclick = ()=>{
-      outEl.value=""; guideEl.value=""; autoResize(outEl); autoResize(guideEl);
-      stopTimer(); timer.textContent="0.0s"; setDot("#64748b");
-      toggleRatings(false);
-    };
+    function render(m){
+      const s = m.summary || {};
+      set("c_shown", s.shown);
+      set("c_wr", (s.winrate||0)+"%");
+      set("c_good", s.good||0);
+      set("c_regular", s.regular||0);
+      set("c_bad", s.bad||0);
+      set("c_act5", s.active_5m||0);
+      set("c_actDay", s.active_today||0);
+      set("c_avg", (s.avg_response_ms||0)+" ms");
+      set("c_p95", (s.p95_response_ms||0)+" ms");
+      set("c_sess", (s.avg_session_min||0)+" min");
 
-    // ===== saludito de Health (opcional)
-    fetch(`${BASE}/health`).then(r=>r.json()).then(j=>console.log("health:", j)).catch(()=>{});
+      const rows = m.rows||[];
+      // charts: por etapa / por intento
+      const stageMap = {}; const intentMap = {};
+      rows.forEach(r => {
+        stageMap[r.stage]  = (stageMap[r.stage]||0) + r.shown;
+        intentMap[r.intent]= (intentMap[r.intent]||0) + r.shown;
+      });
+
+      doughnut(chStage, stageMap, "Por etapa", v => chStage=v);
+      doughnut(chIntent, intentMap, "Por intento", v => chIntent=v);
+
+      // por hora
+      const labels = (m.per_hour||[]).map(x=>x.label);
+      const counts = (m.per_hour||[]).map(x=>x.count);
+      if (chHour) chHour.destroy();
+      chHour = new Chart(ctxHour, {
+        type:'line',
+        data:{ labels, datasets:[{ label:"Consultas por hora (24h)", data:counts, tension:.3, fill:true }]},
+        options:{ plugins:{ legend:{ labels:{ color:'#cbd5e1'} }, title:{display:true,text:'Consultas por hora (24h)', color:'#fff'}},
+                  scales:{ x:{ ticks:{ color:'#cbd5e1'} }, y:{ ticks:{ color:'#cbd5e1'} } } }
+      });
+
+      // dist calificaciones
+      const g = rows.reduce((acc,r)=>{acc.g+=r.good||0; acc.r+=r.regular||0; acc.b+=r.bad||0; return acc;},{g:0,r:0,b:0});
+      if (chDist) chDist.destroy();
+      chDist = new Chart(ctxDist, {
+        type:'bar',
+        data:{ labels:['Buenas','Regulares','Malas'], datasets:[{ data:[g.g,g.r,g.b], backgroundColor:['#22c55e','#fbbf24','#ef4444']}] },
+        options:{ plugins:{ legend:{ display:false }, title:{ display:true, text:'Distribución de calificaciones', color:'#fff' }},
+                  scales:{ x:{ ticks:{ color:'#cbd5e1'} }, y:{ ticks:{ color:'#cbd5e1'} } } }
+      });
+
+      // tabla
+      const tbody = document.querySelector("#tbl tbody");
+      tbody.innerHTML = rows.slice(0,30).map(r=>`
+        <tr>
+          <td>${r.intent}</td>
+          <td>${r.stage}</td>
+          <td>${r.text}</td>
+          <td>${r.shown}</td>
+          <td>${r.wins}</td>
+          <td>${(r.winrate*100).toFixed(1)}%</td>
+        </tr>
+      `).join("");
+    }
+
+    function set(id,val){ document.getElementById(id).textContent = val; }
+
+    function doughnut(ref, map, title, setter){
+      const labels = Object.keys(map);
+      const data = Object.values(map);
+      if (ref) ref.destroy();
+      const c = new Chart(
+        title==="Por etapa"?ctxStage:ctxIntent,
+        { type:'doughnut',
+          data:{ labels, datasets:[{ data, backgroundColor:colors(labels.length) }] },
+          options:{ plugins:{ legend:{ labels:{ color:'#cbd5e1'} }, title:{ display:true, text:title, color:'#fff' } } }
+        }
+      );
+      setter(c);
+    }
+
+    load();
+    setInterval(load, 5000);
   </script>
 </body>
 </html>
