@@ -1,4 +1,4 @@
-// server.js — FerBot API (offline, OpenAI, Trainer con WHY/NEXT, respuestas cortas)
+// server.js — FerBot API (offline, OpenAI, Trainer con WHY/NEXT, respuestas cortas) + USAGE DASHBOARD
 // ---------------------------------------------------------------------------------
 require("dotenv").config();
 
@@ -8,15 +8,13 @@ const fs = require("fs/promises");
 const fssync = require("fs");
 const path = require("path");
 
-// Node >=18 tiene fetch global
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// Rutas estáticas (panel, agent, etc.)
+// Rutas base
 const ROOT_DIR = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
-if (!fssync.existsSync(PUBLIC_DIR)) fssync.mkdirSync(PUBLIC_DIR, { recursive: true });
 app.use(express.static(PUBLIC_DIR));
 
 // ----------------------------
@@ -25,9 +23,10 @@ app.use(express.static(PUBLIC_DIR));
 const DATA_DIR       = path.join(ROOT_DIR, "data");
 const MEMORY_PATH    = path.join(DATA_DIR, "memory.json");              // KB (objeciones)
 const VARIANTS_PATH  = path.join(DATA_DIR, "variants.json");            // variants por intent::stage
-const STATS_PATH     = path.join(DATA_DIR, "stats.json");               // métricas
+const STATS_PATH     = path.join(DATA_DIR, "stats.json");               // métricas agregadas
 const TRAINER_TXT    = path.join(DATA_DIR, "trainer_identity.txt");     // identidad del trainer
 const TRAINER_KNOW   = path.join(DATA_DIR, "trainer_knowledge");        // carpeta .txt/.md (opcional)
+const USAGE_LOG_PATH = path.join(DATA_DIR, "usage.ndjson");             // eventos atómicos (shown/rating/etc)
 
 for (const p of [DATA_DIR]) {
   if (!fssync.existsSync(p)) fssync.mkdirSync(p, { recursive: true });
@@ -37,9 +36,10 @@ if (!fssync.existsSync(VARIANTS_PATH))  fssync.writeFileSync(VARIANTS_PATH, JSON
 if (!fssync.existsSync(STATS_PATH))     fssync.writeFileSync(STATS_PATH,    JSON.stringify({ byKey: {} }, null, 2));
 if (!fssync.existsSync(TRAINER_KNOW))   fssync.mkdirSync(TRAINER_KNOW, { recursive: true });
 if (!fssync.existsSync(TRAINER_TXT))    fssync.writeFileSync(TRAINER_TXT, "");
+if (!fssync.existsSync(USAGE_LOG_PATH)) fssync.writeFileSync(USAGE_LOG_PATH, "");
 
 // ----------------------------
-// Helpers básicos
+// Helpers
 // ----------------------------
 async function readJsonSafe(file, fallback) {
   try { return JSON.parse(await fs.readFile(file, "utf8")); }
@@ -47,6 +47,12 @@ async function readJsonSafe(file, fallback) {
 }
 async function writeJsonPretty(file, obj) {
   await fs.writeFile(file, JSON.stringify(obj, null, 2), "utf8");
+}
+function appendUsage(event) {
+  try {
+    const line = JSON.stringify({ ts: new Date().toISOString(), ...event }) + "\n";
+    fssync.appendFileSync(USAGE_LOG_PATH, line);
+  } catch {}
 }
 function normalizeSpaces(s = "") {
   return String(s).replace(/\s+/g, " ").replace(/ ,/g, ",").replace(/ \./g, ".").trim();
@@ -62,9 +68,7 @@ function clampReplyToWhatsApp(text, maxChars=220) {
   return t;
 }
 
-// ----------------------------
 // Variants cache (modo offline)
-// ----------------------------
 let VAR_CACHE = { byKey: {} };
 async function loadVariants() {
   const v = await readJsonSafe(VARIANTS_PATH, { byKey: {} });
@@ -75,7 +79,7 @@ function pickVariant(intent, stage, name) {
   const block = VAR_CACHE.byKey[key];
   if (!block || !Array.isArray(block.variants) || block.variants.length === 0) {
     const fb = VAR_CACHE.byKey[`_default::${stage}`] || VAR_CACHE.byKey[`_default::rebatir`];
-    const v = fb?.variants?.[0]?.text || `Hola ${name}, ¿te explico cómo lo hacemos fácil y rápido?`;
+    const v = fb?.variants?.[0]?.text || `Hola ${name}, ¿Te explico cómo lo hacemos fácil y rápido?`;
     return v.replace(/{name}/g, name);
   }
   let list = block.variants;
@@ -123,6 +127,7 @@ async function trackShown(intent, stage, replyText) {
   const { key, t } = ensureStatEntry(stats, intent, stage, replyText);
   stats.byKey[key][t].shown += 1;
   await writeJsonPretty(STATS_PATH, stats);
+  appendUsage({ type: "shown", intent, stage, text: replyText });
 }
 async function trackWinLose(intent, stage, replyText, won) {
   const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
@@ -135,6 +140,7 @@ async function trackWinLose(intent, stage, replyText, won) {
     stats.byKey[key][t].bad += 1;
   }
   await writeJsonPretty(STATS_PATH, stats);
+  appendUsage({ type: "winlose", won: !!won, intent, stage, text: replyText });
 }
 async function trackRating(intent, stage, replyText, rating) {
   const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
@@ -150,6 +156,7 @@ async function trackRating(intent, stage, replyText, rating) {
     stats.byKey[key][t].bad += 1;
   }
   await writeJsonPretty(STATS_PATH, stats);
+  appendUsage({ type: "rating", rating, intent, stage, text: replyText });
 }
 
 // ----------------------------
@@ -195,101 +202,6 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// =====================================================
-//  OPENAI CLIENT (Chat → fallback Responses automáticamente)
-// =====================================================
-const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
-const OPENAI_MODEL    = process.env.OPENAI_MODEL || "gpt-4o-mini";
-const OPENAI_KEY      = process.env.OPENAI_API_KEY;
-
-// Utilidad: ¿el error sugiere usar max_completion/max_output tokens?
-function suggestsResponsesSwitch(errText=""){
-  const t = (errText || "").toLowerCase();
-  return t.includes("unsupported parameter") && (t.includes("max_completion_tokens") || t.includes("max output tokens") || t.includes("max_output_tokens"));
-}
-
-// Llama a Chat Completions; si falla por el parámetro de tokens, reintenta con Responses API.
-async function openaiChatCompat(messages, { system="", maxTokens=220 } = {}){
-  if (!OPENAI_KEY) throw new Error("missing_openai_api_key");
-
-  // 1) Chat Completions
-  const chatPayload = {
-    model: OPENAI_MODEL,
-    messages: [
-      ...(system ? [{ role:"system", content: system }] : []),
-      ...messages
-    ],
-    // sin max_tokens para mejor compatibilidad; si quieres forzar, descomenta:
-    // max_tokens: maxTokens,
-  };
-
-  let resp = await fetch(`${OPENAI_BASE_URL}/chat/completions`, {
-    method: "POST",
-    headers: { "Content-Type":"application/json", "Authorization":`Bearer ${OPENAI_KEY}` },
-    body: JSON.stringify(chatPayload)
-  });
-
-  if (resp.ok) {
-    const data = await resp.json();
-    const text = data?.choices?.[0]?.message?.content ?? "";
-    return { ok: true, text, raw: data, api: "chat" };
-  }
-
-  const errText = await resp.text().catch(()=> "");
-  // Si el backend pide max_completion_tokens / responses, reintentamos con Responses API
-  if (resp.status >= 400 && suggestsResponsesSwitch(errText)) {
-    // 2) Responses API
-    const prompt = [
-      ...(system ? [{ role:"system", content: system }] : []),
-      ...messages
-    ];
-
-    // Algunas cuentas piden 'max_output_tokens', otras toleran 'max_completion_tokens'
-    const responsesPayloadA = {
-      model: OPENAI_MODEL,
-      input: prompt,
-      max_output_tokens: maxTokens
-    };
-    let resp2 = await fetch(`${OPENAI_BASE_URL}/responses`, {
-      method: "POST",
-      headers: { "Content-Type":"application/json", "Authorization":`Bearer ${OPENAI_KEY}` },
-      body: JSON.stringify(responsesPayloadA)
-    });
-
-    if (!resp2.ok) {
-      // intento B con max_completion_tokens (por si la cuenta lo exige)
-      const responsesPayloadB = {
-        model: OPENAI_MODEL,
-        input: prompt,
-        max_completion_tokens: maxTokens
-      };
-      resp2 = await fetch(`${OPENAI_BASE_URL}/responses`, {
-        method: "POST",
-        headers: { "Content-Type":"application/json", "Authorization":`Bearer ${OPENAI_KEY}` },
-        body: JSON.stringify(responsesPayloadB)
-      });
-    }
-
-    if (resp2.ok) {
-      const data2 = await resp2.json();
-      // Responses API puede responder en data.output[0].content[0].text
-      let text = "";
-      try {
-        text = data2?.output?.[0]?.content?.[0]?.text ?? "";
-      } catch {}
-      if (!text && data2?.choices?.[0]?.message?.content) {
-        text = data2.choices[0].message.content;
-      }
-      return { ok: true, text: text || "", raw: data2, api: "responses" };
-    }
-
-    const err2 = await resp2.text().catch(()=> "");
-    return { ok: false, error: `OpenAI responses failed: ${err2 || "(no body)"}`, status: resp2.status };
-  }
-
-  return { ok: false, error: `OpenAI chat failed: ${errText || "(no body)"}`, status: resp.status };
-}
-
 // ----------------------------
 // ASSIST offline (variants + KB)
 // ----------------------------
@@ -333,7 +245,7 @@ app.post("/assist", async (req, res) => {
 // ----------------------------
 app.post("/assist_openai", async (req, res) => {
   try {
-    const { question = "", customerName = "Cliente", stage = "rebatir", context = "" } = req.body || {};
+    const { question = "", customerName = "Cliente", stage = "rebatir" } = req.body || {};
     const name = customerName || "Cliente";
     const intent = inferIntent(question);
 
@@ -347,20 +259,33 @@ app.post("/assist_openai", async (req, res) => {
       `Guía de contexto: ${guidePoints}`
     ].join("\n");
 
-    const user = `Cliente: ${name}\nStage: ${stage}\nIntent: ${intent}\n${context ? "Contexto: " + context + "\n" : ""}Pregunta: ${question}\nEntrega solo el mensaje final para WhatsApp.`;
+    const user = `Cliente: ${name}\nStage: ${stage}\nPregunta: ${question}\nIntent: ${intent}\nEntrega solo el mensaje final para WhatsApp.`;
 
-    if (!OPENAI_KEY) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
+    const apiKey = process.env.OPENAI_API_KEY;
+    const model  = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    if (!apiKey) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
 
-    const r = await openaiChatCompat(
-      [{ role: "user", content: user }],
-      { system, maxTokens: 220 }
-    );
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user }
+        ]
+      })
+    });
 
     if (!r.ok) {
-      return res.status(500).json({ ok:false, error: "openai_failed", detail: r.error || `status ${r.status}` });
+      const errText = await r.text().catch(()=> "");
+      return res.status(500).json({ ok:false, error: "openai_failed", detail: errText });
     }
-
-    const raw = (r.text || "").trim() || `Hola ${name}, ¿te explico cómo lo hacemos fácil y rápido?`;
+    const data = await r.json();
+    const raw = data?.choices?.[0]?.message?.content?.trim() || `Hola ${name}, ¿Te explico cómo lo hacemos fácil y rápido?`;
     const reply = clampReplyToWhatsApp(raw);
 
     trackShown(intent, stage, reply).catch(()=>{});
@@ -375,7 +300,7 @@ app.post("/assist_openai", async (req, res) => {
         guide: `Hola ${name}, ${guidePoints}`,
         reply,
         sections: { [stage]: reply },
-        model: OPENAI_MODEL,
+        model,
         confidence: 0.85,
         intent,
         stage,
@@ -421,15 +346,15 @@ app.post("/assist_trainer", async (req, res) => {
     const intent = intentIn || inferIntent(question);
 
     const rules = [
-      "Hablas como Ferney (cálido, claro, directo). Español.",
+      "Hablas como asesor comercial de Platzi (español Colombia), claro y enérgico.",
       "WhatsApp-friendly: ≤220 caracteres y máximo 2 frases.",
-      "Sin clases gratis ni beneficios no confirmados.",
+      "Sin clases gratis ni beneficios no confirmados. No digas 'soy <nombre>'.",
       "Respeta el stage: sondeo, rebatir, pre_cierre, cierre, integracion.",
       "Si falta info, pide 1 dato clave y da micro-CTA.",
       "FORMATO ESTRICTO (3 líneas):",
-      "REPLY: <mensaje para WhatsApp (puede empezar con el nombre si está disponible)>",
-      "WHY: <por qué esta respuesta (≤100 caracteres)>",
-      "NEXT: <siguiente paso para el asesor (≤100 caracteres)>"
+      "REPLY: <mensaje para WhatsApp (máx 220c)>",
+      "WHY: <por qué esta respuesta (≤100c, pedagógica)>",
+      "NEXT: <siguiente paso para el asesor (≤100c)>"
     ].join("\n");
 
     const system = [
@@ -447,18 +372,31 @@ app.post("/assist_trainer", async (req, res) => {
       "Recuerda el FORMATO estricto REPLY/WHY/NEXT."
     ].filter(Boolean).join("\n");
 
-    if (!OPENAI_KEY) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
+    const apiKey = process.env.OPENAI_API_KEY;
+    const model  = process.env.OPENAI_MODEL || "gpt-5";
+    if (!apiKey) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
 
-    const r = await openaiChatCompat(
-      [{ role: "user", content: user }],
-      { system, maxTokens: 300 } // un poco más para incluir WHY/NEXT, igual filtramos abajo
-    );
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user }
+        ]
+      })
+    });
 
     if (!r.ok) {
-      return res.status(500).json({ ok:false, error: "openai_failed", detail: r.error || `status ${r.status}` });
+      const errText = await r.text().catch(()=> "");
+      return res.status(500).json({ ok:false, error: "openai_failed", detail: errText });
     }
-
-    const content = (r.text || "").trim();
+    const data = await r.json();
+    const content = data?.choices?.[0]?.message?.content || "";
 
     // Parse REPLY / WHY / NEXT
     const mReply = content.match(/REPLY:\s*([\s\S]*?)(?:\n+WHY:|\n+NEXT:|$)/i);
@@ -488,7 +426,7 @@ app.post("/assist_trainer", async (req, res) => {
         next,
         guide: `Por qué: ${why} · Siguiente paso: ${next}`,
         sections: { [stage]: reply },
-        model: OPENAI_MODEL,
+        model,
         confidence: 0.9,
         intent,
         stage,
@@ -577,45 +515,8 @@ app.post("/admin/importFerney", async (_req, res) => {
 });
 
 // ----------------------------
-// Dashboard + stats
+// Stats JSON plano (existente)
 // ----------------------------
-app.post("/trackShow", async (req, res) => {
-  try {
-    const { intent = "_default", stage = "rebatir", text = "" } = req.body || {};
-    if (!text) return res.status(400).json({ ok: false, error: "missing_text" });
-    await trackShown(intent, stage, text);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error("trackShow error", err);
-    res.status(500).json({ ok: false, error: "track_show_failed" });
-  }
-});
-app.post("/trackWin", async (req, res) => {
-  try {
-    const { intent = "_default", stage = "rebatir", text = "", won = false } = req.body || {};
-    if (!text) return res.status(400).json({ ok: false, error: "missing_text" });
-    await trackWinLose(intent, stage, text, !!won);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error("trackWin error", err);
-    res.status(500).json({ ok: false, error: "track_win_failed" });
-  }
-});
-app.post("/trackRate", async (req, res) => {
-  try {
-    const { intent = "_default", stage = "rebatir", text = "", rating = "regular" } = req.body || {};
-    if (!text)   return res.status(400).json({ ok: false, error: "missing_text" });
-    if (!["good","regular","bad"].includes(rating)) {
-      return res.status(400).json({ ok: false, error: "invalid_rating" });
-    }
-    await trackRating(intent, stage, text, rating);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error("trackRate error", err);
-    res.status(500).json({ ok: false, error: "track_rate_failed" });
-  }
-});
-
 app.get("/stats", async (_req, res) => {
   try {
     const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
@@ -644,6 +545,9 @@ app.get("/stats", async (_req, res) => {
   }
 });
 
+// ----------------------------
+// Dashboard sencillo (existente)
+// ----------------------------
 app.get("/admin/dashboard", async (_req, res) => {
   try {
     const resp = await (await fetchLocalStats()).json();
@@ -715,6 +619,240 @@ async function fetchLocalStats(){
   return { json: async () => ({ ok:true, rows: out }) };
 }
 
+// ----------------------------
+// NUEVO: JSON agregado para panel de usabilidad
+// ----------------------------
+app.get("/stats_full", async (_req, res) => {
+  try {
+    const raw = await readJsonSafe(STATS_PATH, { byKey: {} });
+    const rows = [];
+    const perIntent = {};
+    const perStage  = {};
+    let totals = { shown:0, wins:0, good:0, regular:0, bad:0 };
+
+    for (const key of Object.keys(raw.byKey || {})) {
+      const [intent, stage] = key.split("::");
+      const map = raw.byKey[key];
+
+      for (const text of Object.keys(map)) {
+        const r = map[text];
+        const shown = Number(r.shown || 0);
+        const wins = Number(r.wins || 0);
+        const good = Number(r.good || 0);
+        const regular = Number(r.regular || 0);
+        const bad = Number(r.bad || 0);
+        const winrate = shown>0 ? +(wins/shown).toFixed(3) : 0;
+
+        rows.push({ intent, stage, text, shown, wins, good, regular, bad, winrate });
+
+        // Totales
+        totals.shown += shown; totals.wins += wins; totals.good += good; totals.regular += regular; totals.bad += bad;
+
+        // Intent
+        if (!perIntent[intent]) perIntent[intent] = { shown:0, wins:0, good:0, regular:0, bad:0 };
+        perIntent[intent].shown += shown; perIntent[intent].wins += wins;
+        perIntent[intent].good  += good;  perIntent[intent].regular += regular; perIntent[intent].bad  += bad;
+
+        // Stage
+        if (!perStage[stage]) perStage[stage] = { shown:0, wins:0, good:0, regular:0, bad:0 };
+        perStage[stage].shown += shown; perStage[stage].wins += wins;
+        perStage[stage].good  += good;  perStage[stage].regular += regular; perStage[stage].bad  += bad;
+      }
+    }
+
+    // Top respuestas por winrate ponderado
+    const top = [...rows].sort((a,b)=> (b.winrate - a.winrate) || (b.shown - a.shown)).slice(0,20);
+
+    res.json({
+      ok:true,
+      totals: {
+        ...totals,
+        winrate: totals.shown>0 ? +(totals.wins/totals.shown).toFixed(3) : 0
+      },
+      perIntent: Object.fromEntries(Object.entries(perIntent).map(([k,v])=>[
+        k, { ...v, winrate: v.shown>0? +(v.wins/v.shown).toFixed(3):0 }
+      ])),
+      perStage: Object.fromEntries(Object.entries(perStage).map(([k,v])=>[
+        k, { ...v, winrate: v.shown>0? +(v.wins/v.shown).toFixed(3):0 }
+      ])),
+      top
+    });
+  } catch (e) {
+    console.error("stats_full error", e);
+    res.status(500).json({ ok:false, error:"stats_full_failed" });
+  }
+});
+
+// ----------------------------
+// NUEVO: Panel de usabilidad (gráficos y live refresh)
+// ----------------------------
+app.get("/admin/usage", (_req, res) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.end(`<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FerBot · Usabilidad</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<style>
+  :root{ --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --fg:#e2e8f0; --accent:#97C93E; }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial }
+  header{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03) }
+  h1{ font-size:18px; margin:0; display:flex; gap:8px; align-items:center; }
+  .pill{ font-size:12px; color:var(--muted); display:inline-flex; align-items:center; gap:8px; background:#101827; border:1px solid rgba(255,255,255,.08); padding:6px 10px; border-radius:999px }
+  main{ padding:18px; display:grid; grid-template-columns: 1.2fr 1fr; gap:16px }
+  .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap:16px }
+  .card{ background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.25) }
+  .card h2{ font-size:14px; margin:0 0 8px; color:#cbd5e1 }
+  .kpis{ display:grid; grid-template-columns: repeat(4,1fr); gap:12px }
+  .kpi{ background:#101827; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:12px }
+  .kpi .v{ font-size:20px; font-weight:800 }
+  .kpi .l{ font-size:11px; color:var(--muted) }
+  table{ width:100%; border-collapse:collapse }
+  th,td{ font-size:12px; padding:8px; border-bottom:1px solid rgba(255,255,255,.06) }
+  th{ text-align:left; color:#cbd5e1; background:rgba(255,255,255,.03) }
+  tr:hover{ background:rgba(255,255,255,.02) }
+  footer{ padding:14px 18px; color:var(--muted) }
+  .accent{ color:var(--accent) }
+</style>
+</head>
+<body>
+  <header>
+    <h1>FerBot · Usabilidad <span class="accent">⚡</span></h1>
+    <div class="pill"><span id="ts">—</span> · auto-refresh 5s</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="k_shown">0</div><div class="l">Respuestas mostradas</div></div>
+        <div class="kpi"><div class="v" id="k_winrate">0%</div><div class="l">Winrate compuesto</div></div>
+        <div class="kpi"><div class="v" id="k_good">0</div><div class="l">👍 Buenas</div></div>
+        <div class="kpi"><div class="v" id="k_bad">0</div><div class="l">👎 Malas</div></div>
+      </div>
+      <div style="margin-top:12px" class="grid-2">
+        <div class="card"><h2>Por etapa</h2><canvas id="c_stage" height="160"></canvas></div>
+        <div class="card"><h2>Por intento</h2><canvas id="c_intent" height="160"></canvas></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Top respuestas (efectivas)</h2>
+      <table id="tbl_top">
+        <thead><tr><th>Intent</th><th>Stage</th><th>Texto</th><th>Shown</th><th>Wins</th><th>Winrate</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card" style="grid-column:1 / span 2">
+      <h2>Distribución de calificaciones</h2>
+      <canvas id="c_ratings" height="120"></canvas>
+    </section>
+  </main>
+
+  <footer>Hecho con ❤️ y <span class="accent">Platzi</span>.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    let chStage, chIntent, chRatings;
+    async function fetchStats(){
+      const r = await fetch('/stats_full');
+      if(!r.ok) throw new Error('stats_full fail');
+      return r.json();
+    }
+    function fmtPct(x){ return (x*100).toFixed(1)+'%'; }
+
+    function upKPIs(tot){
+      document.getElementById('k_shown').textContent   = tot.shown||0;
+      document.getElementById('k_winrate').textContent = fmtPct(tot.winrate||0);
+      document.getElementById('k_good').textContent    = tot.good||0;
+      document.getElementById('k_bad').textContent     = tot.bad||0;
+    }
+
+    function upTableTop(top){
+      const tb = document.querySelector('#tbl_top tbody');
+      tb.innerHTML = top.map(r=> \`
+        <tr>
+          <td>\${r.intent}</td>
+          <td>\${r.stage}</td>
+          <td>\${r.text.replace(/[<>]/g, s=>({ '<':'&lt;','>':'&gt;' }[s]))}</td>
+          <td style="text-align:right">\${r.shown}</td>
+          <td style="text-align:right">\${r.wins}</td>
+          <td style="text-align:right">\${(r.winrate*100).toFixed(1)}%</td>
+        </tr>\`
+      ).join('') || '<tr><td colspan="6" style="color:#94a3b8">Sin datos</td></tr>';
+    }
+
+    function dataToPie(obj){
+      const labels = Object.keys(obj);
+      const data   = labels.map(k=> obj[k].shown||0);
+      return { labels, data };
+    }
+    function dataToRatings(tot, perIntent){
+      const labels = Object.keys(perIntent);
+      const good = labels.map(k=> perIntent[k].good||0);
+      const regular = labels.map(k=> perIntent[k].regular||0);
+      const bad = labels.map(k=> perIntent[k].bad||0);
+      return { labels, good, regular, bad };
+    }
+
+    function ensureCharts(){
+      const ctxS = document.getElementById('c_stage').getContext('2d');
+      const ctxI = document.getElementById('c_intent').getContext('2d');
+      const ctxR = document.getElementById('c_ratings').getContext('2d');
+      if(!chStage){
+        chStage = new Chart(ctxS, { type:'doughnut', data:{labels:[], datasets:[{data:[]}]}, options:{ plugins:{legend:{labels:{color:'#e2e8f0'}}}}});
+      }
+      if(!chIntent){
+        chIntent = new Chart(ctxI, { type:'doughnut', data:{labels:[], datasets:[{data:[]}]}, options:{ plugins:{legend:{labels:{color:'#e2e8f0'}}}}});
+      }
+      if(!chRatings){
+        chRatings = new Chart(ctxR, { type:'bar', data:{labels:[], datasets:[
+          {label:'👍 Buenas', data:[]},
+          {label:'😐 Regulares', data:[]},
+          {label:'👎 Malas', data:[]}
+        ]}, options:{ responsive:true, plugins:{legend:{labels:{color:'#e2e8f0'}}}, scales:{
+          x:{ticks:{color:'#e2e8f0'}}, y:{ticks:{color:'#e2e8f0'}}
+        }}});
+      }
+    }
+
+    async function refresh(){
+      try{
+        const js = await fetchStats();
+        const { totals, perStage, perIntent, top } = js;
+        upKPIs(totals);
+        upTableTop(top);
+
+        ensureCharts();
+
+        const s = dataToPie(perStage);
+        chStage.data.labels = s.labels; chStage.data.datasets[0].data = s.data; chStage.update();
+
+        const i = dataToPie(perIntent);
+        chIntent.data.labels = i.labels; chIntent.data.datasets[0].data = i.data; chIntent.update();
+
+        const r = dataToRatings(totals, perIntent);
+        chRatings.data.labels = r.labels;
+        chRatings.data.datasets[0].data = r.good;
+        chRatings.data.datasets[1].data = r.regular;
+        chRatings.data.datasets[2].data = r.bad;
+        chRatings.update();
+
+        document.getElementById('ts').textContent = new Date().toLocaleTimeString();
+      }catch(e){
+        document.getElementById('ts').textContent = 'Error';
+      }
+    }
+    refresh();
+    setInterval(refresh, 5000);
+  </script>
+</body>
+</html>`);
+});
+
 // /agent → agent.html
 app.get("/agent", (_req,res)=> res.redirect("/agent.html"));
 
@@ -724,7 +862,7 @@ app.get("/agent", (_req,res)=> res.redirect("/agent.html"));
 (async () => {
   await loadVariants();
   await loadTrainerIdentity();
-  console.log("➡️  OpenAI habilitado:", !!OPENAI_KEY, "· modelo:", OPENAI_MODEL);
+  console.log("➡️  OpenAI habilitado.", !!process.env.OPENAI_API_KEY);
   const PORT = Number(process.env.PORT || 3005);
   app.listen(PORT, () => {
     console.log(`🔥 FerBot API escuchando en http://localhost:${PORT}`);
