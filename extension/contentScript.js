@@ -245,6 +245,7 @@
     // Rating: oculto hasta generar
     toggleRatings(false);
     let lastReplyForRating = null;
+    let ratedThisOutput = false;
 
     // Countdown helpers
     let t0 = 0, iv = null;
@@ -267,7 +268,6 @@
       bullet.classList.remove("ambar","verde");
       if (color==="ambar") bullet.classList.add("ambar");
       else if (color==="verde") bullet.classList.add("verde");
-      // rojo: clase base sin extra
     }
 
     // GENERAR
@@ -282,9 +282,11 @@
       guide.value = "";
       output.value = "";
       toggleRatings(false);
+      ratedThisOutput = false;
 
       // Timer ON
       startTimer();
+      btnGen.disabled = true;
 
       try{
         const body = { question:q, customerName:name, stage, context, intent: guessIntent(q) };
@@ -294,10 +296,17 @@
 
         // Timer OFF al finalizar
         stopTimer(); setBullet("verde");
+        btnGen.disabled = false;
 
         if (!res.ok) {
           const txt = await res.text().catch(()=> "");
-          alert(`No se pudo generar (HTTP ${res.status}). ${txt || ""}`);
+          if (res.status === 500 && /openai_rate_limited/i.test(txt)) {
+            alert("OpenAI con mucha demanda (429). Intenta de nuevo en breve.");
+          } else if (res.status === 500 && /openai_bad_param/i.test(txt)) {
+            alert("Modelo no acepta un parámetro. Ya lo manejamos: intenta de nuevo.");
+          } else {
+            alert(`No se pudo generar (HTTP ${res.status}). ${txt || ""}`);
+          }
           return;
         }
         const json = await res.json();
@@ -322,6 +331,7 @@
         btnBad.onclick  = () => doRateAndHide("bad", lastReplyForRating, stage);
       }catch(e){
         stopTimer();
+        btnGen.disabled = false;
         alert("No se pudo generar. Revisa que el servidor esté arriba.");
       }
     };
@@ -334,10 +344,16 @@
       stopTimer();
       setBullet("rojo");
       timerEl.textContent = "0.0s";
+      lastReplyForRating = null;
+      ratedThisOutput = false;
     };
 
     async function doRateAndHide(rating, replyText, stage){
+      if (ratedThisOutput) return;
+      ratedThisOutput = true;
       if (!replyText) return;
+      // Deshabilita botones para evitar doble click
+      [btnGood, btnReg, btnBad].forEach(b=> b.disabled = true);
       try{
         await fetch(`${BASE}/trackRate`, {
           method:"POST", headers:{ "Content-Type":"application/json" },
@@ -345,6 +361,7 @@
         });
       }catch(_){}
       toggleRatings(false);
+      [btnGood, btnReg, btnBad].forEach(b=> { b.disabled = false; });
     }
 
     function toggleRatings(show){
@@ -424,8 +441,8 @@
     } catch {}
   }
 
-  // Inyección y reinyección en SPAs
-  function ensureInjected(){ /* no-op, UI solo al abrir FAB */ }
+  // Inyección y reinyección en SPAs (no hace nada hasta abrir FAB)
+  function ensureInjected(){ /* no-op */ }
   if (document.readyState === "complete" || document.readyState === "interactive") {
     ensureInjected();
   } else {
