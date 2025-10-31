@@ -1,9 +1,14 @@
-# Objeción: PRECIO
+# INTENTO: PRECIO
+- Mueve de precio → valor/retorno; anual diluye costo y libera todo (escuelas, certificados, offline).
+- Evita cifras si no las pidió; habla de lo que habilita el año completo.
+- Cierre: CTA a activar anual hoy.
 
-- Enfocar en resultado y retorno: certificaciones verificables + rutas completas.
-- Si completa 1 curso/mes, la inversión se justifica en habilidades aplicables.
-- Micro-acción: enviar ruta y 1 clase para hoy.
-- Evitar comparar precios sin contexto.
+EJEMPLOS REPLY:
+- "Más que precio, miremos valor: con el anual tienes rutas, certificados y todo el contenido sin límites. ¿Lo activamos hoy y lo aprovechas de una?"
+- "El plan anual cubre todo lo que necesitas para crecer y certificarte. ¿Quieres activarlo ya y te acompaño con la ruta que más te sirve?"
 
-Frases útiles:
-- “Lo que cambia es el resultado que te llevas, no la cantidad de cursos.”
+WHY:
+- Reencuadro precio en valor/retorno + acceso total anual.
+
+NEXT:
+- Si pregunta cifras, darlas claras y cortas; proponer activación hoy.
