@@ -1,28 +1,44 @@
 {
-  "manifest_version": 3,
   "name": "FerBot",
-  "description": "Asistente comercial de Ferney (panel flotante en Hilos).",
+  "description": "Asistente comercial de Platzi. FAB en Hilos/WhatsApp y popup universal desde el ícono.",
   "version": "1.1.0",
+  "manifest_version": 3,
   "icons": {
     "16": "icon16.png",
-    "32": "icon32.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
+
   "host_permissions": [
-    "*://*.hilos.io/*",
-    "*://hilos.io/*",
+    "https://app.hilos.com/*",
+    "https://web.whatsapp.com/*",
     "https://ferbot-api.onrender.com/*"
   ],
+
   "content_scripts": [
     {
-      "matches": ["*://*.hilos.io/*", "*://hilos.io/*"],
+      "matches": [
+        "https://app.hilos.com/*",
+        "https://web.whatsapp.com/*"
+      ],
       "js": ["contentScript.js"],
-      "run_at": "document_idle",
-      "all_frames": true,
-      "match_about_blank": true
+      "run_at": "document_idle"
     }
   ],
-  "action": { "default_title": "FerBot" }
+
+  "action": {
+    "default_title": "Abrir FerBot",
+    "default_popup": "popup.html"
+  },
+
+  "permissions": [],
+
+  "commands": {
+    "toggle-ferbot": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Mostrar el panel FerBot en la página actual (si está en un sitio permitido)."
+    }
+  }
 }
