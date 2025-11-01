@@ -1,19 +1,20 @@
-// server.js — FerBot API (OpenAI + Trainer + Dashboard de Usabilidad)
+// server.js — FerBot API + Telemetría y Panel Unificado
 // ---------------------------------------------------------------------------------
 require("dotenv").config();
 
-const express  = require("express");
-const cors     = require("cors");
-const fs       = require("fs/promises");
-const fssync   = require("fs");
-const path     = require("path");
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs/promises");
+const fssync = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
 // Rutas base
-const ROOT_DIR   = __dirname;
+const ROOT_DIR = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 app.use(express.static(PUBLIC_DIR));
 
@@ -23,20 +24,21 @@ app.use(express.static(PUBLIC_DIR));
 const DATA_DIR       = path.join(ROOT_DIR, "data");
 const MEMORY_PATH    = path.join(DATA_DIR, "memory.json");              // KB (objeciones)
 const VARIANTS_PATH  = path.join(DATA_DIR, "variants.json");            // variants por intent::stage
-const STATS_PATH     = path.join(DATA_DIR, "stats.json");               // métricas (rating/wins)
+const STATS_PATH     = path.join(DATA_DIR, "stats.json");               // métricas de rating por texto
 const TRAINER_TXT    = path.join(DATA_DIR, "trainer_identity.txt");     // identidad del trainer
 const TRAINER_KNOW   = path.join(DATA_DIR, "trainer_knowledge");        // carpeta .txt/.md (opcional)
-const EVENTS_PATH    = path.join(DATA_DIR, "events.jsonl");             // NUEVO: event log (JSONL)
+const USAGE_LOG_ND   = path.join(DATA_DIR, "usage.ndjson");             // telemetría de uso (eventos)
+const USAGE_SUMMARY  = path.join(DATA_DIR, "metrics.json");             // resumen simple (opcional)
 
-for (const p of [DATA_DIR]) {
+for (const p of [DATA_DIR, TRAINER_KNOW]) {
   if (!fssync.existsSync(p)) fssync.mkdirSync(p, { recursive: true });
 }
 if (!fssync.existsSync(MEMORY_PATH))    fssync.writeFileSync(MEMORY_PATH,   JSON.stringify({ items: [] }, null, 2));
 if (!fssync.existsSync(VARIANTS_PATH))  fssync.writeFileSync(VARIANTS_PATH, JSON.stringify({ byKey: {} }, null, 2));
 if (!fssync.existsSync(STATS_PATH))     fssync.writeFileSync(STATS_PATH,    JSON.stringify({ byKey: {} }, null, 2));
-if (!fssync.existsSync(TRAINER_KNOW))   fssync.mkdirSync(TRAINER_KNOW, { recursive: true });
+if (!fssync.existsSync(USAGE_LOG_ND))   fssync.writeFileSync(USAGE_LOG_ND,  "");
+if (!fssync.existsSync(USAGE_SUMMARY))  fssync.writeFileSync(USAGE_SUMMARY, JSON.stringify({ }, null, 2));
 if (!fssync.existsSync(TRAINER_TXT))    fssync.writeFileSync(TRAINER_TXT, "");
-if (!fssync.existsSync(EVENTS_PATH))    fssync.writeFileSync(EVENTS_PATH, "");
 
 // ----------------------------
 // Helpers
@@ -54,12 +56,18 @@ function normalizeSpaces(s = "") {
 function normKey(s=""){ return String(s||"").toLowerCase().replace(/\s+/g," ").trim(); }
 function clampReplyToWhatsApp(text, maxChars=220) {
   let t = (text || "").trim();
-  // Deja máximo 2 frases
   const parts = t.split(/(?<=[.!?])\s+/).filter(Boolean);
   t = parts.slice(0,2).join(" ");
-  // Recorta por caracteres (suave)
   if (t.length > maxChars) t = t.slice(0, maxChars-1).trimEnd() + "…";
   return t;
+}
+function hashText(s=""){
+  return crypto.createHash("sha1").update(String(s)).digest("hex").slice(0,16);
+}
+function getClientSig(req){
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "0.0.0.0";
+  const ua = req.headers["user-agent"] || "unknown";
+  return `${ip}__${ua}`;
 }
 
 // Variants cache (modo offline)
@@ -107,7 +115,7 @@ async function buildGuideFromKB(intent = "_default") {
 }
 
 // ----------------------------
-// Tracking + Ratings
+// Tracking + Ratings (stats.json para ranking por texto)
 // ----------------------------
 function ensureStatEntry(stats, intent, stage, text) {
   const key = `${intent}::${stage}`;
@@ -194,23 +202,24 @@ app.get("/health", (_req, res) => {
 });
 
 // ----------------------------
-// EVENT LOG (server-side)
+// Telemetría de uso (NDJSON)
 // ----------------------------
-function clientIdFrom(req){
-  return (req.headers["x-client-id"] || req.headers["x-forwarded-for"] || req.ip || "").toString();
+async function appendUsage(event){
+  try {
+    await fs.appendFile(USAGE_LOG_ND, JSON.stringify(event) + "\n", "utf8");
+  } catch {}
 }
-async function appendEvent(ev){
-  try{
-    const line = JSON.stringify(ev) + "\n";
-    await fs.appendFile(EVENTS_PATH, line, "utf8");
-  }catch(_){}
+function safeSnippet(s="", n=120){
+  s = (s||"").replace(/\s+/g," ").trim();
+  return s.length>n? (s.slice(0,n-1)+"…") : s;
 }
+function parseTime(ts){ const d = new Date(ts); return isNaN(+d) ? new Date() : d; }
 
 // ----------------------------
 // ASSIST offline (variants + KB)
 // ----------------------------
 app.post("/assist", async (req, res) => {
-  const startedAt = Date.now();
+  const tStart = Date.now();
   try {
     const { question = "", customerName = "Cliente", stage = "rebatir" } = req.body || {};
     const name = customerName || "Cliente";
@@ -221,18 +230,6 @@ app.post("/assist", async (req, res) => {
     const guide = normalizeSpaces(`Hola ${name}, ${guidePoints}`);
 
     trackShown(intent, stage, reply).catch(()=>{});
-
-    // Log event
-    appendEvent({
-      ts: new Date().toISOString(),
-      route: "/assist",
-      ok: true,
-      intent, stage,
-      reply_len: reply.length,
-      ms: Date.now() - startedAt,
-      ip: req.ip, ua: req.headers["user-agent"]||"",
-      cid: clientIdFrom(req)
-    }).catch(()=>{});
 
     res.json({
       ok: true,
@@ -249,18 +246,24 @@ app.post("/assist", async (req, res) => {
         intent,
         stage
       },
-      time_ms: Date.now() - startedAt
+      time_ms: Date.now()-tStart
     });
+
+    // Telemetría
+    const ev = {
+      type:"assist",
+      mode:"offline",
+      ts:new Date().toISOString(),
+      intent, stage,
+      ms: Date.now()-tStart,
+      q: safeSnippet(question, 160),
+      replyHash: hashText(reply),
+      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
+      client: getClientSig(req)
+    };
+    appendUsage(ev).catch(()=>{});
   } catch (err) {
-    appendEvent({
-      ts: new Date().toISOString(),
-      route: "/assist",
-      ok: false,
-      error: "assist_failed",
-      ms: Date.now() - startedAt,
-      ip: req.ip, ua: req.headers["user-agent"]||"",
-      cid: clientIdFrom(req)
-    }).catch(()=>{});
+    console.error("assist error", err);
     res.status(500).json({ ok: false, error: "assist_failed" });
   }
 });
@@ -269,7 +272,7 @@ app.post("/assist", async (req, res) => {
 // ASSIST OpenAI (general)
 // ----------------------------
 app.post("/assist_openai", async (req, res) => {
-  const startedAt = Date.now();
+  const tStart = Date.now();
   try {
     const { question = "", customerName = "Cliente", stage = "rebatir" } = req.body || {};
     const name = customerName || "Cliente";
@@ -288,7 +291,7 @@ app.post("/assist_openai", async (req, res) => {
     const user = `Cliente: ${name}\nStage: ${stage}\nPregunta: ${question}\nIntent: ${intent}\nEntrega solo el mensaje final para WhatsApp.`;
 
     const apiKey = process.env.OPENAI_API_KEY;
-    const model  = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    const model  = process.env.OPENAI_MODEL || "gpt-5";
     if (!apiKey) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
 
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -308,16 +311,6 @@ app.post("/assist_openai", async (req, res) => {
 
     if (!r.ok) {
       const errText = await r.text().catch(()=> "");
-      appendEvent({
-        ts: new Date().toISOString(),
-        route: "/assist_openai",
-        ok: false,
-        error: "openai_failed",
-        detail: String(errText || ""),
-        ms: Date.now() - startedAt,
-        ip: req.ip, ua: req.headers["user-agent"]||"",
-        cid: clientIdFrom(req)
-      }).catch(()=>{});
       return res.status(500).json({ ok:false, error: "openai_failed", detail: errText });
     }
     const data = await r.json();
@@ -325,17 +318,6 @@ app.post("/assist_openai", async (req, res) => {
     const reply = clampReplyToWhatsApp(raw);
 
     trackShown(intent, stage, reply).catch(()=>{});
-
-    appendEvent({
-      ts: new Date().toISOString(),
-      route: "/assist_openai",
-      ok: true,
-      intent, stage,
-      reply_len: reply.length,
-      ms: Date.now() - startedAt,
-      ip: req.ip, ua: req.headers["user-agent"]||"",
-      cid: clientIdFrom(req)
-    }).catch(()=>{});
 
     res.json({
       ok: true,
@@ -352,49 +334,54 @@ app.post("/assist_openai", async (req, res) => {
         intent,
         stage,
         persona: { name: "Ferney Salas", brand: "Platzi" }
-      }
+      },
+      time_ms: Date.now()-tStart
     });
-  } catch (err) {
-    appendEvent({
-      ts: new Date().toISOString(),
-      route: "/assist_openai",
-      ok: false,
-      error: "assist_openai_failed",
-      ms: Date.now() - startedAt,
-      ip: req.ip, ua: req.headers["user-agent"]||"",
-      cid: clientIdFrom(req)
+
+    appendUsage({
+      type:"assist",
+      mode:"openai",
+      ts:new Date().toISOString(),
+      intent, stage,
+      ms: Date.now()-tStart,
+      q: safeSnippet(question, 160),
+      replyHash: hashText(reply),
+      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
+      client: getClientSig(req)
     }).catch(()=>{});
+
+  } catch (err) {
+    console.error("assist_openai error", err);
     res.status(500).json({ ok:false, error:"assist_openai_failed" });
   }
 });
 
 // ----------------------------
-// ASSIST_TRAINER — usa Trainer (system) + optional knowledge
-// Devuelve: REPLY (≤220 chars, ≤2 frases) + WHY + NEXT
+// ASSIST_TRAINER — usa Trainer (REPLY + WHY + NEXT)
 // ----------------------------
 function fallbackWhy(stage, intent) {
   const map = {
-    sondeo:     "Primero entendemos meta y contexto para personalizar la ruta.",
-    rebatir:    "Anclamos beneficio real y reducimos fricción con micro-acción.",
-    pre_cierre: "Validamos interés y facilitamos el primer paso guiado.",
-    cierre:     "Ofrecemos el plan más simple para avanzar hoy.",
-    integracion:"Refuerza la decisión y agenda hábito corto diario."
+    sondeo:     "Reconoce la meta y avanza con pregunta única.",
+    rebatir:    "Conviertes objeción en valor y beneficio de vida.",
+    pre_cierre: "Refuerzas valor y quitas fricción hacia anual.",
+    cierre:     "Concretas con decisión clara.",
+    integracion:"Alineas meta y primer paso sin fricción."
   };
-  return map[stage] || `Guiamos por beneficio y CTA (${intent}/${stage}).`;
+  return map[stage] || `Guía al valor y CTA (${intent}/${stage}).`;
 }
 function fallbackNext(stage) {
   const map = {
-    sondeo:     "Pregunta meta 30–60 días y tiempo diario.",
-    rebatir:    "Propón 2 clases iniciales y pide OK.",
-    pre_cierre: "Envía ruta y solicita confirmación para hoy.",
-    cierre:     "Ofrece plan (Expert/Duo/Family) y pide elección.",
-    integracion:"Deja mini agenda 5–10 min y seguimiento."
+    sondeo:     "Haz 1 pregunta clave y prepara CTA anual.",
+    rebatir:    "Valida y propone paso concreto hoy.",
+    pre_cierre: "Confirma interés y despeja última duda.",
+    cierre:     "Pide decisión (plan anual) de forma amable.",
+    integracion:"Define primer paso y ritmo semanal."
   };
   return map[stage] || "Cierra con un CTA simple y accionable.";
 }
 
 app.post("/assist_trainer", async (req, res) => {
-  const startedAt = Date.now();
+  const tStart = Date.now();
   try {
     const { question = "", customerName = "", stage = "rebatir", intent:intentIn, context = "" } = req.body || {};
     const name = (customerName || "").trim();
@@ -402,15 +389,15 @@ app.post("/assist_trainer", async (req, res) => {
     const intent = intentIn || inferIntent(question);
 
     const rules = [
-      "Hablas como Ferney (cálido, claro, directo). Español.",
+      "Eres FerBot (español Colombia), amable, dinámico y con energía positiva.",
       "WhatsApp-friendly: ≤220 caracteres y máximo 2 frases.",
-      "Sin clases gratis ni beneficios no confirmados.",
-      "Respeta el stage: sondeo, rebatir, pre_cierre, cierre, integracion.",
-      "Si falta info, pide 1 dato clave y da micro-CTA.",
-      "FORMATO ESTRICTO (3 líneas):",
-      "REPLY: <mensaje para WhatsApp (puede empezar con el nombre si está disponible)>",
-      "WHY: <por qué esta respuesta (≤100 caracteres)>",
-      "NEXT: <siguiente paso para el asesor (≤100 caracteres)>"
+      "Suscripción ANUAL; evita llamadas o 'enviar material'.",
+      "Respeta el stage (sondeo, rebatir, pre_cierre, cierre, integracion).",
+      "Si falta contexto, pide UNA cosa y da micro-CTA.",
+      "FORMATO (3 líneas):",
+      "REPLY: <mensaje WhatsApp>",
+      "WHY: <por qué, ≤100c, enseña el criterio>",
+      "NEXT: <siguiente paso para el asesor, ≤100c>"
     ].join("\n");
 
     const system = [
@@ -429,7 +416,7 @@ app.post("/assist_trainer", async (req, res) => {
     ].filter(Boolean).join("\n");
 
     const apiKey = process.env.OPENAI_API_KEY;
-    const model  = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    const model  = process.env.OPENAI_MODEL || "gpt-5";
     if (!apiKey) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
 
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -449,22 +436,11 @@ app.post("/assist_trainer", async (req, res) => {
 
     if (!r.ok) {
       const errText = await r.text().catch(()=> "");
-      appendEvent({
-        ts: new Date().toISOString(),
-        route: "/assist_trainer",
-        ok: false,
-        error: "openai_failed",
-        detail: String(errText || ""),
-        ms: Date.now() - startedAt,
-        ip: req.ip, ua: req.headers["user-agent"]||"",
-        cid: clientIdFrom(req)
-      }).catch(()=>{});
       return res.status(500).json({ ok:false, error: "openai_failed", detail: errText });
     }
     const data = await r.json();
     const content = data?.choices?.[0]?.message?.content || "";
 
-    // Parse REPLY / WHY / NEXT
     const mReply = content.match(/REPLY:\s*([\s\S]*?)(?:\n+WHY:|\n+NEXT:|$)/i);
     const mWhy   = content.match(/WHY:\s*(.*?)(?:\n+NEXT:|$)/i);
     const mNext  = content.match(/NEXT:\s*(.*)$/i);
@@ -473,53 +449,45 @@ app.post("/assist_trainer", async (req, res) => {
     let why   = (mWhy && mWhy[1]   || "").trim();
     let next  = (mNext && mNext[1] || "").trim();
 
-    // Enforce WhatsApp length
     reply = clampReplyToWhatsApp(reply, 220);
     if (!why)  why  = fallbackWhy(stage, intent);
     if (!next) next = fallbackNext(stage);
 
     trackShown(intent, stage, reply).catch(()=>{});
 
-    appendEvent({
-      ts: new Date().toISOString(),
-      route: "/assist_trainer",
-      ok: true,
-      intent, stage,
-      reply_len: reply.length,
-      ms: Date.now() - startedAt,
-      ip: req.ip, ua: req.headers["user-agent"]||"",
-      cid: clientIdFrom(req)
-    }).catch(()=>{});
-
-    res.json({
+    const resp = {
       ok: true,
       text: reply,
       whatsapp: reply,
       message: reply,
       answer: reply,
       result: {
-        reply,
-        why,
-        next,
+        reply, why, next,
         guide: `Por qué: ${why} · Siguiente paso: ${next}`,
         sections: { [stage]: reply },
         model,
         confidence: 0.9,
         intent,
-        stage,
-        persona: { name: "Ferney Salas", brand: "Platzi" }
-      }
-    });
-  } catch (err) {
-    appendEvent({
-      ts: new Date().toISOString(),
-      route: "/assist_trainer",
-      ok: false,
-      error: "assist_trainer_failed",
-      ms: Date.now() - startedAt,
-      ip: req.ip, ua: req.headers["user-agent"]||"",
-      cid: clientIdFrom(req)
+        stage
+      },
+      time_ms: Date.now()-tStart
+    };
+    res.json(resp);
+
+    appendUsage({
+      type:"assist",
+      mode:"trainer",
+      ts:new Date().toISOString(),
+      intent, stage,
+      ms: Date.now()-tStart,
+      q: safeSnippet(question, 160),
+      replyHash: hashText(reply),
+      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
+      client: getClientSig(req)
     }).catch(()=>{});
+
+  } catch (err) {
+    console.error("assist_trainer error", err);
     res.status(500).json({ ok:false, error:"assist_trainer_failed" });
   }
 });
@@ -544,11 +512,7 @@ app.post("/admin/importFerney", async (_req, res) => {
         const key = `${intent}::${stage}`;
         if (!currentVariants.byKey[key]) currentVariants.byKey[key] = { intent, stage, variants: [] };
 
-        const existingSet = new Set(
-          (currentVariants.byKey[key].variants || [])
-            .map(v => normKey(v.text))
-        );
-
+        const existingSet = new Set((currentVariants.byKey[key].variants || []).map(v => normKey(v.text)));
         const incoming = Array.isArray(block.variants) ? block.variants : [];
         for (const v of incoming) {
           const text = (v.text || "").trim();
@@ -585,22 +549,66 @@ app.post("/admin/importFerney", async (_req, res) => {
     }
     await writeJsonPretty(MEMORY_PATH, { items });
 
-    res.json({
-      ok: true,
-      mode: "merge",
-      variants_added,
-      variants_skipped,
-      kb_added,
-      kb_skipped
-    });
+    res.json({ ok: true, mode: "merge", variants_added, variants_skipped, kb_added, kb_skipped });
+
   } catch (err) {
+    console.error("importFerney error", err);
     res.status(500).json({ ok: false, error: "import_failed" });
   }
 });
 
 // ----------------------------
-// Dashboard (legacy simple) + NUEVO /admin/usability
+// Dashboard clásico (se mantiene)
 // ----------------------------
+app.post("/trackShow", async (req, res) => {
+  try {
+    const { intent = "_default", stage = "rebatir", text = "" } = req.body || {};
+    if (!text) return res.status(400).json({ ok: false, error: "missing_text" });
+    await trackShown(intent, stage, text);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("trackShow error", err);
+    res.status(500).json({ ok: false, error: "track_show_failed" });
+  }
+});
+app.post("/trackWin", async (req, res) => {
+  try {
+    const { intent = "_default", stage = "rebatir", text = "", won = false } = req.body || {};
+    if (!text) return res.status(400).json({ ok: false, error: "missing_text" });
+    await trackWinLose(intent, stage, text, !!won);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("trackWin error", err);
+    res.status(500).json({ ok: false, error: "track_win_failed" });
+  }
+});
+app.post("/trackRate", async (req, res) => {
+  try {
+    const { intent = "_default", stage = "rebatir", text = "", rating = "regular" } = req.body || {};
+    if (!text)   return res.status(400).json({ ok: false, error: "missing_text" });
+    if (!["good","regular","bad"].includes(rating)) {
+      return res.status(400).json({ ok: false, error: "invalid_rating" });
+    }
+    await trackRating(intent, stage, text, rating);
+    res.json({ ok: true });
+
+    // Telemetría rating
+    appendUsage({
+      type:"rate",
+      ts:new Date().toISOString(),
+      intent, stage,
+      rating,
+      replyHash: hashText(text),
+      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
+      client: getClientSig(req)
+    }).catch(()=>{});
+
+  } catch (err) {
+    console.error("trackRate error", err);
+    res.status(500).json({ ok: false, error: "track_rate_failed" });
+  }
+});
+
 app.get("/stats", async (_req, res) => {
   try {
     const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
@@ -624,145 +632,183 @@ app.get("/stats", async (_req, res) => {
     out.sort((a,b)=> (b.winrate - a.winrate) || (b.shown - a.shown));
     res.json({ ok: true, rows: out });
   } catch (err) {
+    console.error("stats error", err);
     res.status(500).json({ ok: false, error: "stats_failed" });
   }
 });
 
 app.get("/admin/dashboard", async (_req, res) => {
-  // redirige al panel moderno
-  res.redirect("/dashboard.html");
-});
-
-// NUEVO: redirect amable para /admin/usability
-app.get("/admin/usability", (_req,res)=> res.redirect("/dashboard.html"));
-
-// ----------------------------
-// MÉTRICAS AVANZADAS (para dashboard.html)
-// ----------------------------
-app.get("/metrics", async (_req, res) => {
   try {
-    // base: stats (ratings) + events (tiempos y actividad)
-    const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
+    const resp = await (await fetchLocalStats()).json();
+    const rows = (resp.rows || []).map(r => `
+      <tr>
+        <td>${r.intent}</td>
+        <td>${r.stage}</td>
+        <td>${escapeHtml(r.text)}</td>
+        <td style="text-align:right">${r.shown}</td>
+        <td style="text-align:right">${r.wins}</td>
+        <td style="text-align:right">${(r.winrate*100).toFixed(1)}%</td>
+      </tr>
+    `).join("");
 
-    // a) rows (como /stats)
-    const rows = [];
-    let totalShown=0, totalWins=0, totalGood=0, totalRegular=0, totalBad=0;
-    for (const key of Object.keys(stats.byKey || {})) {
-      const [intent, stage] = key.split("::");
-      const map = stats.byKey[key];
-      for (const text of Object.keys(map)) {
-        const row = map[text];
-        const shown = Number(row.shown || 0);
-        const wins = Number(row.wins || 0);
-        const good = Number(row.good || 0);
-        const regular = Number(row.regular || 0);
-        const bad = Number(row.bad || 0);
-        const winrate = shown > 0 ? +(wins / shown).toFixed(3) : 0;
-        rows.push({ intent, stage, text, shown, wins, winrate, good, regular, bad });
-        totalShown += shown; totalWins += wins;
-        totalGood += good; totalRegular += regular; totalBad += bad;
-      }
-    }
-    rows.sort((a,b)=> (b.winrate - a.winrate) || (b.shown - a.shown));
-
-    // b) events.jsonl → tiempos, actividad, por-hora
-    let lines = [];
-    try {
-      const content = await fs.readFile(EVENTS_PATH, "utf8");
-      lines = content.trim() ? content.trim().split("\n").map(l => JSON.parse(l)) : [];
-    } catch { lines = []; }
-
-    const now = Date.now();
-    const ms5m = 5*60*1000;
-    const start0h = new Date(); start0h.setHours(0,0,0,0);
-    const start24h = now - 24*60*60*1000;
-
-    const uniq5m = new Set();
-    const uniqToday = new Set();
-    const timesLast24 = [];
-
-    const byHour = new Map(); // hourLabel -> count
-    for (let i=0;i<24;i++){
-      const d = new Date(now - (23-i)*60*60*1000);
-      const label = d.toTimeString().slice(0,5); // HH:MM aprox
-      byHour.set(label, 0);
-    }
-
-    for (const ev of lines) {
-      const t = new Date(ev.ts).getTime();
-      if (ev.ok) {
-        if (t>=start24h) timesLast24.push(Number(ev.ms||0));
-        if (t>=now-ms5m) uniq5m.add(ev.cid || ev.ip || "na");
-        if (t>=start0h.getTime()) uniqToday.add(ev.cid || ev.ip || "na");
-
-        // por hora
-        const hour = new Date(t);
-        const label = new Date(hour.getFullYear(), hour.getMonth(), hour.getDate(), hour.getHours(), 0, 0)
-          .toTimeString().slice(0,5);
-        if (byHour.has(label)) byHour.set(label, byHour.get(label)+1);
-      }
-    }
-
-    // tiempos respuesta
-    const avgMs = timesLast24.length ? Math.round(timesLast24.reduce((a,b)=>a+b,0)/timesLast24.length) : 0;
-    const p95Ms = (() => {
-      if (!timesLast24.length) return 0;
-      const arr = [...timesLast24].sort((a,b)=>a-b);
-      const idx = Math.floor(0.95*(arr.length-1));
-      return arr[idx];
-    })();
-
-    // sesiones aprox por IP/cid (ventana 24h, gap >30min = nueva sesión)
-    const sessions = new Map(); // cid -> [timestamps...]
-    lines.forEach(ev=>{
-      if (!ev.ok) return;
-      const t = new Date(ev.ts).getTime();
-      if (t<start24h) return;
-      const cid = ev.cid || ev.ip || "na";
-      if (!sessions.has(cid)) sessions.set(cid, []);
-      sessions.get(cid).push(t);
-    });
-    let totalDur=0, totalSess=0;
-    for (const [,ts] of sessions) {
-      ts.sort((a,b)=>a-b);
-      let sStart=ts[0], prev=ts[0];
-      for (let i=1;i<ts.length;i++){
-        if (ts[i]-prev > 30*60*1000) { // corta sesión
-          totalDur += (prev - sStart);
-          totalSess += 1;
-          sStart = ts[i];
-        }
-        prev = ts[i];
-      }
-      totalDur += (prev - sStart);
-      totalSess += 1;
-    }
-    const avgSessMin = totalSess ? +(totalDur/totalSess/60000).toFixed(1) : 0;
-
-    res.json({
-      ok:true,
-      summary:{
-        shown: totalShown,
-        winrate: totalShown ? +(totalWins/totalShown*100).toFixed(1) : 0,
-        good: totalGood,
-        regular: totalRegular,
-        bad: totalBad,
-        active_5m: uniq5m.size,
-        active_today: uniqToday.size,
-        avg_response_ms: avgMs,
-        p95_response_ms: p95Ms,
-        avg_session_min: avgSessMin
-      },
-      per_hour: Array.from(byHour.entries()).map(([label,count])=>({label,count})),
-      rows
-    });
-  } catch (e) {
-    res.status(500).json({ ok:false, error:"metrics_failed" });
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.end(`<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<title>FerBot · Dashboard (clásico)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:#0b0f19;color:#e2e8f0;margin:0;padding:24px}
+  h1{margin:0 0 12px;font-size:20px}
+  table{width:100%;border-collapse:collapse;background:#0f1524;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+  th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px}
+  th{background:rgba(255,255,255,.04);text-align:left}
+  tr:hover{background:rgba(255,255,255,.03)}
+  .sub{opacity:.7;font-size:12px;margin-bottom:16px}
+  a{color:#97C93E}
+</style>
+</head>
+<body>
+  <h1>FerBot · Dashboard (clásico)</h1>
+  <div class="sub">Para el panel nuevo y tecnológico ve a <a href="/panel.html">/panel.html</a></div>
+  <div style="margin:12px 0">
+    <form method="GET" action="/stats" target="_blank"><button>Ver JSON /stats</button></form>
+    <form method="POST" action="/admin/reloadTrainer" style="display:inline"><button>Recargar Trainer</button></form>
+  </div>
+  <table>
+    <thead><tr><th>Intent</th><th>Stage</th><th>Texto</th><th>Shown</th><th>Wins</th><th>Winrate</th></tr></thead>
+    <tbody>${rows || ""}</tbody>
+  </table>
+</body></html>`);
+  } catch (err) {
+    res.status(500).send("Error");
   }
 });
 
-// /agent → agent.html (panel emergencia ya existente si lo tienes)
-app.get("/agent", (_req,res)=> res.redirect("/agent.html"));
+function escapeHtml(s=""){return s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]))}
+async function fetchLocalStats(){
+  const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
+  const out = [];
+  for (const key of Object.keys(stats.byKey || {})) {
+    const [intent, stage] = key.split("::");
+    const map = stats.byKey[key];
+    for (const text of Object.keys(map)) {
+      const row = map[text];
+      const shown = Number(row.shown || 0);
+      const wins = Number(row.wins || 0);
+      const winrate = shown > 0 ? +(wins / shown).toFixed(3) : 0;
+      out.push({
+        intent, stage, text, shown, wins, winrate,
+        good: Number(row.good || 0),
+        regular: Number(row.regular || 0),
+        bad: Number(row.bad || 0),
+      });
+    }
+  }
+  out.sort((a,b)=> (b.winrate - a.winrate) || (b.shown - a.shown));
+  return { json: async () => ({ ok:true, rows: out }) };
+}
+
+// ----------------------------
+// Panel público (emergencia/consulta)
+// ----------------------------
+app.get("/agent", (_req,res)=> res.redirect("/panel.html"));
+
+// ----------------------------
+// Telemetría agregada (JSON para panel nuevo)
+// ----------------------------
+app.get("/admin/usage", async (req, res) => {
+  try {
+    let lines = [];
+    try {
+      lines = (await fs.readFile(USAGE_LOG_ND, "utf8")).trim().split("\n").filter(Boolean);
+    } catch { lines = []; }
+
+    const events = [];
+    for (const ln of lines) {
+      try { events.push(JSON.parse(ln)); } catch {}
+    }
+
+    const now = new Date();
+    const t24 = now.getTime() - 24*3600*1000;
+    const t7d = now.getTime() - 7*24*3600*1000;
+    const t5m = now.getTime() - 5*60*1000;
+    const t1h = now.getTime() - 60*60*1000;
+
+    const inRange = (t0) => (parseTime(t0).getTime() >= t24);
+    const ev24 = events.filter(e => inRange(e.ts));
+    const ev7d = events.filter(e => parseTime(e.ts).getTime() >= t7d);
+
+    const active5m = new Set(ev24.filter(e=>parseTime(e.ts).getTime()>=t5m).map(e=>e.client)).size;
+    const active1h = new Set(ev24.filter(e=>parseTime(e.ts).getTime()>=t1h).map(e=>e.client)).size;
+    const active24 = new Set(ev24.map(e=>e.client)).size;
+
+    const assists24 = ev24.filter(e=>e.type==="assist");
+    const ratings24 = ev24.filter(e=>e.type==="rate");
+
+    const avgLatency24 = assists24.length ? Math.round(assists24.reduce((a,b)=>a+(+b.ms||0),0)/assists24.length) : 0;
+
+    const byHourMap = new Map();
+    for (const e of assists24) {
+      const d = new Date(e.ts);
+      const key = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours()).toISOString();
+      byHourMap.set(key, (byHourMap.get(key)||0)+1);
+    }
+    const byHour24 = Array.from(byHourMap.entries())
+      .sort((a,b)=> new Date(a[0]) - new Date(b[0]))
+      .map(([hourISO,count])=>({ hourISO, count }));
+
+    const sumMap = (arr, key) => {
+      const m = {};
+      for (const e of arr) {
+        const k = e[key] || "_";
+        m[k] = (m[k]||0)+1;
+      }
+      return m;
+    };
+    const byIntent24 = sumMap(assists24, "intent");
+    const byStage24  = sumMap(assists24, "stage");
+
+    const rateCount = { good:0, regular:0, bad:0 };
+    for (const r of ratings24) {
+      if (r.rating==="good") rateCount.good++;
+      else if (r.rating==="regular") rateCount.regular++;
+      else if (r.rating==="bad") rateCount.bad++;
+    }
+    const shown24 = Math.max(1, (rateCount.good + rateCount.regular + rateCount.bad));
+    const winrate = (rateCount.good*1 + rateCount.regular*0.5) / shown24;
+
+    // Últimos 20 eventos (assist y rate)
+    const recent = events.slice(-100).reverse().filter(e=>e.type==="assist").slice(0,20).map(e=>({
+      ts: e.ts, intent: e.intent, stage: e.stage, ms: e.ms || 0,
+      q: e.q || "", replyHash: e.replyHash || ""
+    }));
+
+    res.json({
+      ok: true,
+      now: now.toISOString(),
+      totals: {
+        last_24h: assists24.length,
+        last_7d: ev7d.filter(e=>e.type==="assist").length,
+        all_time: events.filter(e=>e.type==="assist").length
+      },
+      kpis: {
+        avgLatencyMs24h: avgLatency24,
+        activeUsers5m: active5m,
+        activeUsers1h: active1h,
+        activeUsers24h: active24
+      },
+      byHour24,
+      byIntent24,
+      byStage24,
+      ratings24: { ...rateCount, winrate: +winrate.toFixed(3) },
+      recent
+    });
+  } catch (err) {
+    console.error("usage error", err);
+    res.status(500).json({ ok:false, error:"usage_failed" });
+  }
+});
 
 // ----------------------------
 // Inicio servidor
