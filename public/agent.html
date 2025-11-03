@@ -2,45 +2,52 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>FerBot · Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <style>
-    :root{--bg:#0b0f19;--card:#0f1524;--text:#e2e8f0;--muted:#94a3b8;--platzi:#97C93E;--ok:#19c37d;--warn:#fbbf24;--bad:#ef4444}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-    .shell{max-width:780px;margin:28px auto;padding:0 16px}
-    h1{margin:0 0 6px;font-size:20px} .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
-    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
-    label{font-size:12px;color:var(--muted);display:block;margin:8px 0 6px}
-    input,textarea,select{width:100%;background:#0e1322;color:#dbeafe;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px;font-size:14px}
-    textarea{min-height:90px;resize:vertical}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .btns{display:flex;gap:8px;margin-top:12px}
-    button{cursor:pointer;border:0;border-radius:10px;padding:10px 12px;font-weight:700}
-    .primary{background:var(--platzi);color:#0b0f19}
+    :root{
+      --green:#97C93E; --dark:#0b0f19; --panel:#0b0f19CC; --ink:#e2e8f0; --muted:#94a3b8;
+      --ok:#19c37d; --warn:#fbbf24; --bad:#ef4444;
+    }
+    body{margin:0;background:var(--dark);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;}
+    .wrap{max-width:860px;margin:32px auto;padding:0 16px;}
+    h1{margin:0 0 18px;font-size:22px}
+    .card{background:#0f1524;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+    input,select,textarea{
+      width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);
+      background:#0f1524;color:#dbeafe;outline:none;font-size:14px;
+    }
+    textarea{min-height:96px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btns{display:flex;gap:8px;align-items:center;margin-top:12px}
+    button{padding:10px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+    .primary{background:var(--green);color:#0b0f19}
     .ghost{background:#1b2333;color:#cbd5e1}
-    .rate{display:none;gap:6px;margin-top:10px}
-    .good{background:var(--ok);color:#062d1f} .regular{background:var(--warn);color:#332200} .bad{background:var(--bad);color:#fff}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
-    .whyNext{white-space:pre-wrap}
-    .bar{height:8px;border-radius:999px;background:#1b2333;overflow:hidden;position:relative;margin:8px 0}
-    .bar>i{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--bad);transition:width .2s linear, background .2s linear}
-    .timer{font-size:12px;color:var(--muted)}
-    .sentiment{font-size:12px;padding:6px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:6px}
-    .s-neg{background:rgba(239,68,68,.15);color:#fecaca;border:1px solid rgba(239,68,68,.35)}
-    .s-neu{background:rgba(251,191,36,.12);color:#fde68a;border:1px solid rgba(251,191,36,.35)}
-    .s-pos{background:rgba(25,195,125,.14);color:#bbf7d0;border:1px solid rgba(25,195,125,.35)}
-    .footer{margin-top:12px;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px}
-    .dot{width:10px;height:10px;border-radius:999px;background:var(--platzi);box-shadow:0 0 0 0 rgba(151,201,62,.8);animation:pulse 1.5s infinite}
-    @keyframes pulse{to{box-shadow:0 0 0 12px rgba(151,201,62,0)}}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#101727}
+    .dot{width:8px;height:8px;border-radius:999px;background:#64748b}
+    .dot.pos{background:#19c37d}.dot.neu{background:#f59e0b}.dot.neg{background:#ef4444}
+    .signal{display:flex;align-items:center;gap:8px}
+    .bullet{width:10px;height:10px;border-radius:10px;background:#ef4444}
+    .bullet.ambar{background:#f59e0b}.bullet.verde{background:#22c55e}
+    .muted{color:#94a3b8}
+    .ratings{display:none;gap:8px}
+    .good{background:#19c37d;color:#062d1f}.regular{background:#fbbf24;color:#332200}.bad{background:#ef4444;color:#fff}
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
   </style>
 </head>
 <body>
-  <div class="shell">
-    <h1>FerBot · Panel</h1>
-    <div class="sub">Consulta rápida cuando no tengas la extensión. Usa el mismo motor que Hilos.</div>
-
+  <div class="wrap">
+    <h1>FerBot — Panel</h1>
     <div class="card">
+      <div class="footer" style="margin:0 0 12px">
+        <div class="signal">
+          <div class="bullet" id="b"></div>
+          <div class="muted" id="t">0.0s</div>
+        </div>
+        <div class="pill"><span class="dot neu" id="sd"></span><span id="st">Neutral</span></div>
+      </div>
+
       <div class="row">
         <div>
           <label>Nombre del cliente</label>
@@ -58,172 +65,115 @@
         </div>
       </div>
 
-      <label style="margin-top:6px">Contexto (opcional)</label>
-      <input id="ctx" placeholder="Ej. trabaja tiempo completo; busca certificación"/>
+      <label style="margin-top:6px">Contexto (opcional, para el bot)</label>
+      <input id="ctx" placeholder="Ej. preguntó por certificaciones; poco tiempo"/>
 
-      <label style="margin-top:6px">Texto/objeción del cliente</label>
-      <textarea id="input" placeholder="Copia aquí lo que dijo el cliente…"></textarea>
+      <label style="margin-top:6px">Texto del cliente</label>
+      <textarea id="q" placeholder="Pega aquí lo que dijo el cliente o su objeción…"></textarea>
 
-      <div id="sentWrap" style="margin-top:8px;display:none"></div>
+      <label style="margin-top:6px">Explicación (POR QUÉ + SIGUIENTE PASO)</label>
+      <textarea id="why" placeholder="Aquí verás POR QUÉ y SIGUIENTE PASO."></textarea>
 
-      <div class="bar" title="Tiempo de respuesta"><i id="bar"></i></div>
-      <div class="timer" id="timer">0.0 s</div>
-
-      <div class="btns">
-        <button id="go" class="primary">Generar</button>
-        <button id="clear" class="ghost">Clear</button>
-      </div>
-
-      <div class="grid2" style="margin-top:12px">
-        <div>
-          <label>Respuesta (para pegar)</label>
-          <textarea id="out" class="mono" placeholder="Aquí sale el mensaje listo para WhatsApp…"></textarea>
-        </div>
-        <div>
-          <label>POR QUÉ + SIGUIENTE PASO (para el asesor)</label>
-          <textarea id="why" class="mono whyNext" placeholder="Motivo de la respuesta y acción siguiente…"></textarea>
-        </div>
-      </div>
-
-      <div id="rate" class="rate">
-        <button id="rGood" class="good">👍 Buena</button>
-        <button id="rReg" class="regular">😐 Regular</button>
-        <button id="rBad" class="bad">👎 Mala</button>
-      </div>
+      <label style="margin-top:6px">Respuesta (lista para pegar)</label>
+      <textarea id="out" placeholder="Mensaje corto para el cliente (≤ 2 frases)."></textarea>
 
       <div class="footer">
-        <div class="dot"></div>
-        <div>Hecho con amor <span style="color:#97C93E">💚</span></div>
+        <div class="btns">
+          <button id="gen" class="primary">Generar</button>
+          <button id="clear" class="ghost">Clear</button>
+        </div>
+        <div class="btns ratings" id="rts">
+          <button id="rGood" class="good">👍 Buena</button>
+          <button id="rReg"  class="regular">😐 Regular</button>
+          <button id="rBad"  class="bad">👎 Mala</button>
+        </div>
       </div>
     </div>
+    <p class="muted" style="margin-top:10px">Hecho con amor 💚</p>
   </div>
 
 <script>
-(() => {
-  const BASE = localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com";
+const BASE = (localStorage.getItem("ferbot_api_base") || "").trim() || location.origin;
 
-  const el = id => document.getElementById(id);
-  const nameEl = el("name"), stageEl = el("stage"), ctxEl = el("ctx"), inputEl = el("input");
-  const outEl = el("out"), whyEl = el("why"), rateBox = el("rate");
-  const bGo = el("go"), bClear = el("clear");
-  const bGood = el("rGood"), bReg = el("rReg"), bBad = el("rBad");
-  const bar = el("bar"), timer = el("timer"), sentWrap = el("sentWrap");
+const el = id => document.getElementById(id);
+const name = el("name"), stage = el("stage"), ctx = el("ctx"), q = el("q");
+const why = el("why"), out = el("out"), gen = el("gen"), clear = el("clear");
+const b = el("b"), t = el("t"), sd = el("sd"), st = el("st"), rts = el("rts"), rGood = el("rGood"), rReg = el("rReg"), rBad = el("rBad");
 
-  // Sentiment muy simple (local)
-  function sentiment(s=""){
-    const t = s.toLowerCase();
-    if (/(no tengo tiempo|caro|no puedo|dudo|miedo|no sirve|cancelar)/.test(t)) return { tag:"negativo", cls:"s-neg", tip:"Valida emoción y propone micro-acción." };
-    if (/(gracias|bien|perfecto|me gusta|suena bien)/.test(t)) return { tag:"positivo", cls:"s-pos", tip:"Aprovecha el momentum con CTA corto." };
-    return { tag:"neutral", cls:"s-neu", tip:"Aterriza meta y ofrece primer paso." };
-  }
+name.value = localStorage.getItem("ferbot_name") || "";
+name.addEventListener("change", ()=> localStorage.setItem("ferbot_name", name.value.trim()));
 
-  function showSentiment(){
-    const s = inputEl.value.trim();
-    if (!s){ sentWrap.style.display="none"; sentWrap.innerHTML=""; return; }
-    const res = sentiment(s);
-    sentWrap.style.display="block";
-    sentWrap.innerHTML = `<span class="sentiment ${res.cls}">Estado: <b>${res.tag}</b> · ${res.tip}</span>`;
-  }
+function badge(text){
+  const s = (text||"").toLowerCase();
+  let cls = "neu", label="Neutral";
+  if (/(no puedo|caro|malo|no sirve|no tengo tiempo|no sé|no se|difícil)/.test(s)) { cls="neg"; label="Negativo"; }
+  else if (/(gracias|excelente|me interesa|bien|listo|perfecto|genial|sí|si)/.test(s)) { cls="pos"; label="Positivo"; }
+  sd.classList.remove("pos","neu","neg"); sd.classList.add(cls); st.textContent = label;
+}
+q.addEventListener("input", ()=> badge(q.value));
 
-  // Countdown/barra
-  let t0=0, ti=null;
-  function startTimer(){
-    t0 = performance.now();
-    bar.style.width = "10%";
-    bar.style.background = "var(--bad)";
-    timer.textContent = "0.0 s";
-    clearInterval(ti);
-    ti = setInterval(()=>{
-      const dt = (performance.now()-t0)/1000;
-      timer.textContent = dt.toFixed(1)+" s";
-      const pct = Math.min(95, 10 + dt*15); // crece suave hasta 95%
-      bar.style.width = pct+"%";
-      if (dt>3) bar.style.background = "var(--warn)";
-    }, 120);
-  }
-  function stopTimerOK(){
-    clearInterval(ti);
-    const dt = (performance.now()-t0)/1000;
-    timer.textContent = dt.toFixed(1)+" s";
-    bar.style.width = "100%";
-    bar.style.background = "var(--ok)";
-  }
+let iv=null, t0=0;
+function start() {
+  stop(); t0 = performance.now(); setColor("rojo");
+  iv = setInterval(()=> {
+    const dt = (performance.now() - t0)/1000;
+    t.textContent = dt.toFixed(1) + "s";
+    if (dt < 2) setColor("rojo");
+    else if (dt < 4) setColor("ambar");
+    else setColor("verde");
+  }, 100);
+}
+function stop(){ if (iv){ clearInterval(iv); iv=null; } }
+function setColor(c){ b.classList.remove("ambar","verde"); if (c==="ambar") b.classList.add("ambar"); else if (c==="verde") b.classList.add("verde"); }
 
-  async function generate(){
-    const question = inputEl.value.trim();
-    if (!question){ alert("Escribe o pega el mensaje del cliente."); return; }
+function toggleRatings(show){ rts.style.display = show ? "flex" : "none"; }
 
-    showSentiment();
-    rateBox.style.display = "none";
-    outEl.value = ""; whyEl.value = "";
-    startTimer();
+gen.onclick = async () => {
+  const question = (q.value||"").trim();
+  if (!question){ alert("Escribe el texto del cliente."); return; }
+  why.value = ""; out.value = ""; toggleRatings(false); badge(question); start();
+  try {
+    const body = { question, customerName:(name.value||"Cliente"), stage:stage.value, context:(ctx.value||""), intent:guessIntent(question) };
+    const res = await fetch(`${BASE}/assist_trainer`, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body) });
+    stop(); setColor("verde");
+    if (!res.ok){ const txt = await res.text().catch(()=> ""); alert("No se pudo generar. " + txt); return; }
+    const json = await res.json();
+    const reply = (json?.result?.reply || json?.text || "").trim();
+    const py    = (json?.result?.why  || "").trim();
+    const nx    = (json?.result?.next || "").trim();
+    out.value = reply;
+    why.value = `POR QUÉ: ${py}\nSIGUIENTE PASO: ${nx}`;
+    window.__lastReply = reply; window.__lastStage = stage.value; window.__lastIntent = body.intent;
+    toggleRatings(true);
+  } catch(e){ stop(); alert("Error de red. Revisa que el servidor esté arriba."); }
+};
 
-    const payload = {
-      question,
-      customerName: (nameEl.value || "Cliente").trim(),
-      stage: stageEl.value,
-      context: ctxEl.value.trim() || ""
-    };
+clear.onclick = () => { why.value=""; out.value=""; stop(); setColor("rojo"); t.textContent="0.0s"; toggleRatings(false); };
 
-    try{
-      const r = await fetch(`${BASE}/assist_trainer`, {
-        method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload)
-      });
-      if (!r.ok){
-        const tx = await r.text().catch(()=> "");
-        alert(`Error ${r.status}: ${tx.slice(0,200)}`);
-        return;
-      }
-      const json = await r.json();
-      const reply = (json?.result?.reply || json?.text || "").trim();
-      const why   = (json?.result?.why   || "").trim();
-      const next  = (json?.result?.next  || "").trim();
+rGood.onclick = ()=> rate("good");
+rReg.onclick  = ()=> rate("regular");
+rBad.onclick  = ()=> rate("bad");
+async function rate(kind){
+  try{
+    const text = window.__lastReply || ""; if (!text) return;
+    await fetch(`${BASE}/trackRate`, {
+      method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ intent:(window.__lastIntent||"_panel"), stage:(window.__lastStage||"integracion"), text, rating:kind })
+    });
+  }catch(_){}
+  toggleRatings(false);
+}
 
-      outEl.value = reply || "(sin respuesta)";
-      const combo = `POR QUÉ: ${why || "-"}\nSIGUIENTE PASO: ${next || "-"}`;
-      whyEl.value = combo;
-
-      // mostrar rating (1 sola vez por respuesta)
-      rateBox.style.display = "flex";
-      rateBox.dataset.hash = btoa(unescape(encodeURIComponent((reply||"").slice(0,240))));
-      stopTimerOK();
-    }catch(e){
-      alert("No se pudo generar. ¿API vigente?");
-      console.error(e);
-    }
-  }
-
-  async function rate(kind){
-    if (rateBox.style.display==="none") return;
-    const reply = outEl.value.trim(); if (!reply) return;
-    const hash = rateBox.dataset.hash || "";
-    const already = sessionStorage.getItem("rated:"+hash);
-    if (already) { rateBox.style.display="none"; return; } // evita doble rating
-
-    try{
-      await fetch(`${BASE}/trackRate`, {
-        method:"POST", headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({
-          intent: "_panel", stage: stageEl.value, text: reply, rating: kind
-        })
-      });
-    }catch(_){}
-    sessionStorage.setItem("rated:"+hash, "1");
-    rateBox.style.display = "none";
-  }
-
-  // Eventos
-  bGo.addEventListener("click", generate);
-  bClear.addEventListener("click", ()=>{ outEl.value=""; whyEl.value=""; rateBox.style.display="none"; });
-  inputEl.addEventListener("input", showSentiment);
-  bGood.addEventListener("click", ()=>rate("good"));
-  bReg.addEventListener("click",  ()=>rate("regular"));
-  bBad.addEventListener("click",  ()=>rate("bad"));
-
-  // Prefills leves desde localStorage
-  nameEl.value = localStorage.getItem("ferbot_name") || "";
-  nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_name", nameEl.value.trim()));
-})();
+function guessIntent(q=""){
+  const s=(q||"").toLowerCase();
+  if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|ocupad)/.test(s)) return "tiempo";
+  if (/(precio|caro|costo|costoso|vale|promoci|oferta|descuento)/.test(s)) return "precio";
+  if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
+  if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
+  if (/(qué es platzi|que es platzi|platzi|pitch)/.test(s)) return "pitch";
+  return "_panel";
+}
 </script>
 </body>
 </html>
+
