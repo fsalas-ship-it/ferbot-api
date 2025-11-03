@@ -1,90 +1,80 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<title>FerBot · Manual de Instalación y Uso</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<style>
-  :root{
-    --bg:#0b0f19; --panel:#0f1524; --ink:#e2e8f0; --muted:#94a3b8; --green:#97C93E;
-  }
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-  .wrap{max-width:960px;margin:0 auto;padding:24px}
-  h1{font-size:28px;margin:0 0 8px}
-  h2{font-size:20px;margin:24px 0 8px}
-  p,li{color:#cbd5e1;line-height:1.6}
-  code,kbd{background:#10182b;border:1px solid rgba(255,255,255,.08);padding:2px 6px;border-radius:6px}
-  .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin:16px 0}
-  .btn{display:inline-block;background:#162036;border:1px solid rgba(255,255,255,.1);color:#cbd5e1;
-       text-decoration:none;padding:10px 12px;border-radius:10px;margin-right:10px}
-  .btn:hover{background:#1a2742}
-  .callout{border-left:4px solid var(--green);padding:10px 12px;background:#0e1527;margin:16px 0;border-radius:8px}
-  .tiny{color:var(--muted);font-size:12px}
-  .green{color:var(--green)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-</style>
+  <meta charset="utf-8"/>
+  <title>FerBot · Manual de Instalación y Uso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root{ --bg:#0b0f19; --card:#0f1524; --ink:#e2e8f0; --muted:#94a3b8; --green:#97C93E; }
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+    .wrap{max-width:900px;margin:32px auto;padding:0 20px}
+    h1{margin:0 0 10px} h2{margin:24px 0 8px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;margin:12px 0}
+    code,kbd{background:#11192a;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 6px}
+    a{color:var(--green)}
+    ol li, ul li{margin:6px 0}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#101727;color:#cbd5e1}
+  </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>🤖 FerBot · Manual de Instalación y Uso</h1>
-    <p class="tiny">Versión v1.3 · Este manual explica cómo instalar la extensión, usar el panel de emergencia y consultar métricas.</p>
-
+    <h1>FerBot — Manual de instalación y uso</h1>
     <div class="card">
-      <h2>Descargas y accesos rápidos</h2>
-      <p>
-        <a class="btn" href="/FerBot_Manual_Instalacion_Uso_v1.3.pdf" target="_blank">📄 Descargar PDF</a>
-        <a class="btn" href="/agent" target="_blank">⚡ Panel de emergencia</a>
-        <a class="btn" href="/admin/usability" target="_blank">📊 Panel de usabilidad</a>
-      </p>
+      <p><b>Objetivo</b>: Instalar la extensión una sola vez, fijar la API de FerBot en Render y usar el panel de emergencia cuando se requiera.</p>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>1) Instalar la extensión</h2>
-        <ol>
-          <li>Abre <kbd>chrome://extensions/</kbd></li>
-          <li>Activa <b>Modo Desarrollador</b></li>
-          <li>Clic en <b>Cargar descomprimida</b></li>
-          <li>Selecciona la carpeta <code>extension/</code></li>
-        </ol>
-        <p class="callout">La extensión muestra un botón 🤖 flotante. Puedes activarlo o desactivarlo por sitio.</p>
-      </div>
-
-      <div class="card">
-        <h2>2) Usar FerBot en un sitio</h2>
-        <ol>
-          <li>Haz clic en el icono 🤖 de la extensión (popup)</li>
-          <li>Elige <b>Activar aquí</b> para mostrar FerBot en ese sitio</li>
-          <li>Abre el botón flotante y genera respuestas</li>
-        </ol>
-        <p>Atajo: <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd></p>
-      </div>
-
-      <div class="card">
-        <h2>3) Panel de emergencia</h2>
-        <p>Si no puedes usar la extensión, entra al panel web:</p>
-        <p><a class="btn" href="/agent" target="_blank">Abrir /agent</a></p>
-        <p>Genera REPLY (mensaje), WHY (explicación) y NEXT (siguiente paso).</p>
-      </div>
-
-      <div class="card">
-        <h2>4) Calificaciones y aprendizaje</h2>
-        <p>Califica cada respuesta (👍 😐 👎). Las métricas se registran automáticamente.</p>
-        <p>Consulta el panel:</p>
-        <p><a class="btn" href="/admin/usability" target="_blank">Panel de usabilidad</a></p>
-      </div>
+    <h2>1) Instalar extensión FerBot</h2>
+    <div class="card">
+      <ol>
+        <li>Descarga el paquete <b>extension.zip</b> desde el repositorio.</li>
+        <li>Descomprime la carpeta <b>extension/</b> (no cambies nombres).</li>
+        <li>Chrome → <kbd>chrome://extensions</kbd> → activa <b>Modo Desarrollador</b>.</li>
+        <li>Click en <b>Cargar descomprimida</b> → selecciona la carpeta <b>extension/</b>.</li>
+      </ol>
+      <p class="pill">Listo: verás el botón del bot en Hilos y sitios permitidos.</p>
     </div>
 
+    <h2>2) Fijar la API (una sola vez)</h2>
     <div class="card">
-      <h2>Recomendaciones de uso</h2>
+      <ol>
+        <li>Abre Hilos (o una página cualquiera), y abre DevTools <kbd>⌥⌘I</kbd>.</li>
+        <li>En la pestaña <b>Console</b> pega esto y Enter:</li>
+      </ol>
+      <pre><code>localStorage.setItem("ferbot_api_base","https://ferbot-api.onrender.com")</code></pre>
+      <p>Verifica con:</p>
+      <pre><code>localStorage.getItem("ferbot_api_base")</code></pre>
+      <p class="pill">Debería imprimir: https://ferbot-api.onrender.com</p>
+    </div>
+
+    <h2>3) Panel de emergencia</h2>
+    <div class="card">
+      <p>Si no tienes Hilos abierto o quieres probar rápido:</p>
       <ul>
-        <li>Mantén el tono: colombiano, claro, dinámico y con energía.</li>
-        <li>Habla de suscripción <b class="green">ANUAL</b> y beneficios de vida (empleo, ingresos, idioma).</li>
-        <li>No prometas cosas no confirmadas. No invites a llamadas ni a “enviar material”.</li>
+        <li>Abre: <a href="/agent" target="_blank">/agent</a></li>
+        <li>Escribe texto del cliente y presiona <b>Generar</b>.</li>
+        <li>Califica la respuesta: 👍 😐 👎 (aparecen y desaparecen por respuesta).</li>
       </ul>
     </div>
 
-    <p class="tiny">Hecho con <span class="green">♥</span> para el equipo.</p>
+    <h2>4) Dashboard de usabilidad</h2>
+    <div class="card">
+      <p>Para ver métricas y ranking:</p>
+      <ul>
+        <li>Abre: <a href="/admin/usability" target="_blank">/admin/usability</a> (recomendado)</li>
+        <li>JSON crudo: <a href="/stats" target="_blank">/stats</a></li>
+      </ul>
+    </div>
+
+    <h2>Soporte rápido</h2>
+    <div class="card">
+      <ul>
+        <li>API Health: <a href="/health" target="_blank">/health</a> (debe decir <code>{"ok":true}</code>)</li>
+        <li>Recargar Trainer: <b>POST</b> <code>/admin/reloadTrainer</code></li>
+      </ul>
+      <p>Si Render “duerme”, el primer request puede tardar; el keepalive ya está configurado en el repo.</p>
+    </div>
+
+    <p style="opacity:.7;margin-top:24px">Hecho con amor 💚</p>
   </div>
 </body>
 </html>
