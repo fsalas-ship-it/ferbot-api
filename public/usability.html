@@ -21,7 +21,6 @@
     th{background:rgba(255,255,255,.04);text-align:left;position:sticky;top:0}
     .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
     .pill{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#101727;color:#cbd5e1;font-size:12px}
-    .right{float:right}
   </style>
 </head>
 <body>
@@ -79,7 +78,6 @@ async function load(){
   }catch(e){ console.error(e); }
 }
 function render(rows){
-  // KPIs
   let shown=0, wins=0, g=0, b=0; const stageMap={}, intentMap={};
   rows.forEach(r=>{
     shown += r.shown; wins += r.wins; g += r.good; b += r.bad;
@@ -87,17 +85,15 @@ function render(rows){
     intentMap[r.intent]= (intentMap[r.intent]||0)+ r.shown;
   });
   const wr = shown>0 ? (wins/shown*100).toFixed(1) : "0.0";
-  document.getElementById("kShown").textContent = shown;
-  document.getElementById("kWR").textContent    = wr+"%";
-  document.getElementById("kGood").textContent  = g;
-  document.getElementById("kBad").textContent   = b;
+  qs("#kShown").textContent = shown;
+  qs("#kWR").textContent    = wr+"%";
+  qs("#kGood").textContent  = g;
+  qs("#kBad").textContent   = b;
 
-  // Charts
   drawDonut("byStage", stageMap, (c)=> chStage=c, chStage);
   drawDonut("byIntent", intentMap, (c)=> chIntent=c, chIntent);
 
-  // Tabla
-  const tb = document.getElementById("tbl");
+  const tb = qs("#tbl");
   tb.innerHTML = rows.map(r=> `<tr>
     <td>${esc(r.intent)}</td><td>${esc(r.stage)}</td><td>${esc(r.text)}</td>
     <td>${r.shown}</td><td>${r.wins}</td><td>${(r.winrate*100).toFixed(1)}%</td>
@@ -105,19 +101,16 @@ function render(rows){
 }
 function drawDonut(cid, map, setRef, old){
   const labels = Object.keys(map); const data = labels.map(k=> map[k]);
-  const cfg = {
-    type:"doughnut",
-    data:{ labels, datasets:[{ data }] },
-    options:{ plugins:{ legend:{ labels:{ color:"#e2e8f0" } } }, responsive:true }
-  };
+  const cfg = { type:"doughnut", data:{ labels, datasets:[{ data }] },
+    options:{ plugins:{ legend:{ labels:{ color:"#e2e8f0" } } }, responsive:true } };
   if (old){ old.data.labels = labels; old.data.datasets[0].data = data; old.update(); }
-  else { setRef(new Chart(document.getElementById(cid), cfg)); }
+  else { setRef(new Chart(qs(`#${cid}`), cfg)); }
 }
 function esc(s){ return String(s||"").replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
+const qs = sel => document.querySelector(sel);
 
-// (placeholder) activos — puedes conectar a presencia más adelante
-document.getElementById("act5").textContent = "0";
-document.getElementById("actD").textContent = "0";
+// placeholders de activos (se pueden conectar luego a presencia real)
+qs("#act5").textContent="0"; qs("#actD").textContent="0";
 
 load(); setInterval(load, 5000);
 </script>
