@@ -1,17 +1,56 @@
-// FerBot content script — Render fijo + assist_trainer + WHY/NEXT en una caja
-// Countdown (rojo→ámbar→verde), Sentimiento compacto, Ratings 1-vez, Autopaste OFF
+// FerBot content script — FAB + Panel con botón X, allowlist por dominio y atajo teclado.
+// Lee allowlist desde chrome.storage.sync. Si dominio no está activo, no muestra el FAB.
+
 (() => {
-  // =========================
-  // CONFIG
-  // =========================
-  const BASE = "https://ferbot-api.onrender.com"; // SIEMPRE Render
+  const BASE = "https://ferbot-api.onrender.com"; // API en Render
   const PLATZI_GREEN = "#97C93E";
   const DARK = "#0b0f19";
-  const PANEL_BG = "#0b0f19E6";
-  const GRAY = "#94a3b8";
 
-  // Guard: no doble inyección
-  if (document.getElementById("ferbot-fab") || document.getElementById("ferbot-styles")) return;
+  // Dominios activos por defecto (puedes editarlos)
+  const DEFAULT_ALLOW = {
+    "app.hilos.io": true,
+    "web.whatsapp.com": true,
+    "fsalas-ship-it.github.io": true,
+    "ferbot-api.onrender.com": true
+  };
+
+  // Páginas donde Chrome NO permite inyección (limitación del navegador)
+  const HARD_BLOCK = /^(chrome:|chrome-extension:|edge:|moz-extension:|about:|file:|chromewebstore.google.com)/i;
+
+  // Guard: evitar doble inyección
+  if (window.__ferbot_loaded__) return;
+  window.__ferbot_loaded__ = true;
+
+  // Evitar sitios bloqueados por el navegador
+  if (HARD_BLOCK.test(location.protocol) || /chromewebstore\.google\.com/.test(location.host)) {
+    return;
+  }
+
+  // --- util storage ---
+  function getAllowlist() {
+    return new Promise((resolve) => {
+      try {
+        chrome.storage?.sync?.get({ ferbot_allowlist: DEFAULT_ALLOW }, (res) => {
+          resolve(res?.ferbot_allowlist || DEFAULT_ALLOW);
+        });
+      } catch {
+        resolve(DEFAULT_ALLOW);
+      }
+    });
+  }
+
+  function isAllowedHost(allow) {
+    const host = location.hostname;
+    // match exact host o subdominio
+    if (allow[host]) return true;
+    // prueba sin subdominio (ej: a.b.c.com → c.com)
+    const parts = host.split(".");
+    if (parts.length > 2) {
+      const base = parts.slice(-2).join(".");
+      if (allow[base]) return true;
+    }
+    return false;
+  }
 
   // =========================
   // ESTILOS
@@ -24,18 +63,16 @@
     width:56px; height:56px; border-radius:999px; background:${PLATZI_GREEN};
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 8px 28px rgba(0,0,0,.35); cursor:grab; user-select:none;
-    font-size:24px; color:#0b0f19; border:0;
-    animation: ferbot-pulse 2s infinite;
+    font-size:24px; color:${DARK}; border:0; animation: ferbot-pulse 2s infinite;
   }
   @keyframes ferbot-pulse {
     0% { transform: scale(1); box-shadow:0 8px 28px rgba(0,0,0,.35); }
     50% { transform: scale(1.06); box-shadow:0 14px 38px rgba(0,0,0,.45); }
     100% { transform: scale(1); box-shadow:0 8px 28px rgba(0,0,0,.35); }
   }
-
   .ferbot-panel{
     position:fixed; right:20px; bottom:86px; z-index:2147483647;
-    width:min(400px,92vw); background:${PANEL_BG}; color:#e2e8f0;
+    width:min(400px,92vw); background:#0b0f19E6; color:#e2e8f0;
     border-radius:16px; box-shadow:0 18px 40px rgba(0,0,0,.35);
     border:1px solid rgba(255,255,255,.10); display:flex; flex-direction:column;
     max-height:78vh; overflow:hidden; backdrop-filter: blur(6px);
@@ -46,31 +83,25 @@
     cursor:move; user-select:none;
   }
   .ferbot-title{ font-weight:800; letter-spacing:.3px; font-size:13px; display:flex; align-items:center; gap:6px; }
+  .ferbot-tools{ display:flex; align-items:center; gap:8px; }
+  .ferbot-close{
+    width:24px; height:24px; border-radius:6px; background:#121a2b; color:#cbd5e1; border:1px solid rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; line-height:1;
+  }
   .ferbot-signal{
-    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:${GRAY};
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#94a3b8;
     background:#121a2b; border:1px solid rgba(255,255,255,.10); border-radius:999px; padding:4px 8px;
   }
   .ferbot-bullet{ width:8px; height:8px; border-radius:12px; background:#ef4444; }
   .ferbot-bullet.ambar{ background:#f59e0b; }
   .ferbot-bullet.verde{ background:#22c55e; }
   .ferbot-timer{ font-variant-numeric:tabular-nums; opacity:.9; }
-
   .ferbot-body{ padding:10px 10px 78px; overflow:auto; }
-  .ferbot-label{ font-size:11px; color:${GRAY}; margin:6px 0 4px; }
-
-  .ferbot-row{
-    display:flex; align-items:center; gap:8px;
-  }
-  .ferbot-badge{
-    font-size:11px; padding:4px 8px; border-radius:999px;
-    border:1px solid rgba(255,255,255,.10); background:#101727; color:#cbd5e1;
-    display:inline-flex; align-items:center; gap:6px;
-  }
+  .ferbot-label{ font-size:11px; color:#94a3b8; margin:6px 0 4px; }
+  .ferbot-row{ display:flex; align-items:center; gap:8px; }
+  .ferbot-badge{ font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:#101727; color:#cbd5e1; display:inline-flex; align-items:center; gap:6px; }
   .ferbot-badge .dot{ width:7px; height:7px; border-radius:999px; background:#64748b; }
-  .ferbot-badge.pos .dot{ background:#22c55e; }
-  .ferbot-badge.neu .dot{ background:#f59e0b; }
-  .ferbot-badge.neg .dot{ background:#ef4444; }
-
+  .ferbot-badge.pos .dot{ background:#22c55e; } .ferbot-badge.neu .dot{ background:#f59e0b; } .ferbot-badge.neg .dot{ background:#ef4444; }
   .ferbot-input, .ferbot-output{
     width:100%; min-height:92px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
     background:#0f1524; color:#dbeafe; outline:none; padding:8px 9px; resize:vertical;
@@ -78,63 +109,64 @@
     box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02);
   }
   .ferbot-output{ min-height:86px; }
-
   .ferbot-select, .ferbot-name, .ferbot-context{
-    width:100%; padding:7px 9px; border-radius:9px; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12);
-    font-size:13px;
+    width:100%; padding:7px 9px; border-radius:9px; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12); font-size:13px;
   }
   .ferbot-footer{
     position:absolute; left:0; right:0; bottom:0; display:flex; gap:6px; padding:8px 10px;
     background:rgba(255,255,255,.04); border-top:1px solid rgba(255,255,255,.08); flex-wrap:wrap;
   }
   .ferbot-btn{ flex:1; padding:7px 8px; border-radius:9px; border:0; cursor:pointer; font-weight:800; font-size:12px; }
-  .ferbot-primary{ background:${PLATZI_GREEN}; color:#0b0f19; }
+  .ferbot-primary{ background:${PLATZI_GREEN}; color:${DARK}; }
   .ferbot-ghost{ background:#1b2333; color:#cbd5e1; }
   .ferbot-good{ background:#19c37d; color:#062d1f; display:none; }
   .ferbot-regular{ background:#fbbf24; color:#332200; display:none; }
   .ferbot-bad{ background:#ef4444; color:#fff; display:none; }
-  .ferbot-autopaste{ display:flex; align-items:center; gap:6px; color:${GRAY}; font-size:12px; }
+  .ferbot-autopaste{ display:flex; align-items:center; gap:6px; color:#94a3b8; font-size:12px; }
   `;
   document.head.appendChild(style);
 
-  // =========================
-  // FAB
-  // =========================
-  const fab = document.createElement("button");
-  fab.id = "ferbot-fab";
-  fab.className = "ferbot-fab";
-  fab.title = "Abrir FerBot";
-  fab.textContent = "🤖";
-  document.body.appendChild(fab);
+  let fab, panel;
 
-  // Drag FAB
-  let dragFab=false, offX=0, offY=0;
-  fab.addEventListener("mousedown",(e)=>{ dragFab=true; offX = e.clientX - fab.getBoundingClientRect().left; offY = e.clientY - fab.getBoundingClientRect().top; });
-  window.addEventListener("mousemove",(e)=>{ if(!dragFab) return; fab.style.right="auto"; fab.style.bottom="auto"; fab.style.left=`${e.clientX-offX}px`; fab.style.top=`${e.clientY-offY}px`; });
-  window.addEventListener("mouseup",()=> dragFab=false);
+  function buildFab() {
+    const b = document.createElement("button");
+    b.id = "ferbot-fab";
+    b.className = "ferbot-fab";
+    b.title = "Abrir FerBot";
+    b.textContent = "🤖";
+    document.body.appendChild(b);
 
-  // =========================
-  // PANEL
-  // =========================
-  let panel;
-  fab.addEventListener("click", () => {
-    if (panel && panel.isConnected) { panel.remove(); return; }
+    // Drag FAB
+    let drag=false, offX=0, offY=0;
+    b.addEventListener("mousedown",(e)=>{ drag=true; offX = e.clientX - b.getBoundingClientRect().left; offY = e.clientY - b.getBoundingClientRect().top; });
+    window.addEventListener("mousemove",(e)=>{ if(!drag) return; b.style.right="auto"; b.style.bottom="auto"; b.style.left=`${e.clientX-offX}px`; b.style.top=`${e.clientY-offY}px`; });
+    window.addEventListener("mouseup",()=> drag=false);
+
+    b.addEventListener("click", togglePanel);
+    return b;
+  }
+
+  function togglePanel() {
+    if (panel && panel.isConnected) { panel.remove(); panel = null; return; }
     panel = buildPanel();
     document.body.appendChild(panel);
-  });
+  }
 
   function buildPanel(){
     const div = document.createElement("div");
     div.className = "ferbot-panel";
     const savedName = (localStorage.getItem("ferbot_name") || "").replace(/"/g,"&quot;");
-    const savedAuto = localStorage.getItem("ferbot_autopaste") === "1" ? "checked" : ""; // OFF por defecto
+    const savedAuto = localStorage.getItem("ferbot_autopaste") === "1" ? "checked" : "";
 
     div.innerHTML = `
       <div class="ferbot-header" id="ferbot-drag-bar">
         <div class="ferbot-title">FerBot <span style="opacity:.8">🤖</span></div>
-        <div class="ferbot-signal">
-          <span class="ferbot-bullet" id="ferbot-bullet"></span>
-          <span class="ferbot-timer" id="ferbot-timer">0.0s</span>
+        <div class="ferbot-tools">
+          <div class="ferbot-signal">
+            <span class="ferbot-bullet" id="ferbot-bullet"></span>
+            <span class="ferbot-timer" id="ferbot-timer">0.0s</span>
+          </div>
+          <button class="ferbot-close" id="ferbot-close" title="Cerrar">×</button>
         </div>
       </div>
 
@@ -157,7 +189,7 @@
         </div>
 
         <label class="ferbot-label" style="margin-top:6px;">Contexto (opcional, para el bot)</label>
-        <input id="ferbot-context" class="ferbot-context" placeholder="Ej. preguntó por certificaciones; tiene poco tiempo">
+        <input id="ferbot-context" class="ferbot-context" placeholder="Ej. preguntó por certificaciones; poco tiempo">
 
         <div class="ferbot-row" style="justify-content:space-between; margin-top:8px">
           <div class="ferbot-label">Selecciona texto del chat o escribe la objeción, luego <b>Generar</b>.</div>
@@ -177,7 +209,7 @@
         </div>
 
         <label class="ferbot-label" style="margin-top:6px;">Explicación (POR QUÉ + SIGUIENTE PASO)</label>
-        <textarea id="ferbot-guide" class="ferbot-output" placeholder="Aquí verás POR QUÉ y el SIGUIENTE PASO, para enseñar al asesor."></textarea>
+        <textarea id="ferbot-guide" class="ferbot-output" placeholder="Aquí verás POR QUÉ y el SIGUIENTE PASO."></textarea>
 
         <label class="ferbot-label" style="margin-top:6px;">Respuesta (lista para pegar)</label>
         <textarea id="ferbot-output" class="ferbot-output" placeholder="Mensaje breve para el cliente (≤ 2 frases)."></textarea>
@@ -192,7 +224,7 @@
       </div>
     `;
 
-    // Drag panel
+    // Drag del panel
     const drag = div.querySelector("#ferbot-drag-bar");
     let dragging=false, dx=0, dy=0;
     drag.addEventListener("mousedown",(e)=>{
@@ -204,6 +236,9 @@
     window.addEventListener("mousemove",(e)=>{ if(!dragging) return; div.style.left=`${e.clientX-dx}px`; div.style.top=`${e.clientY-dy}px`; });
     window.addEventListener("mouseup",()=> dragging=false);
 
+    // Cerrar con X
+    div.querySelector("#ferbot-close").onclick = () => { div.remove(); panel = null; };
+
     // Refs
     const input   = div.querySelector("#ferbot-input");
     const output  = div.querySelector("#ferbot-output");
@@ -212,42 +247,47 @@
     const stageEl = div.querySelector("#ferbot-stage");
     const ctxEl   = div.querySelector("#ferbot-context");
     const autoEl  = div.querySelector("#ferbot-autopaste");
-
     const badge   = div.querySelector("#ferbot-sentiment");
     const badgeTxt= div.querySelector("#ferbot-sentiment-text");
-
     const bullet  = div.querySelector("#ferbot-bullet");
     const timerEl = div.querySelector("#ferbot-timer");
-
     const btnGen  = div.querySelector("#ferbot-generate");
     const btnClear= div.querySelector("#ferbot-clear");
     const btnGood = div.querySelector("#ferbot-rate-good");
     const btnReg  = div.querySelector("#ferbot-rate-regular");
     const btnBad  = div.querySelector("#ferbot-rate-bad");
 
-    // Persist nombre y autopaste
+    // Persistencia
     nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_name", nameEl.value.trim()));
     autoEl.addEventListener("change", ()=> localStorage.setItem("ferbot_autopaste", autoEl.checked ? "1" : "0"));
 
-    // Captura selección del chat
+    // Sentimiento simple
+    function updateSentimentBadge(text){
+      const s = (text||"").toLowerCase();
+      let cls = "neu", t = "Neutral";
+      const pos = /(gracias|excelente|me interesa|bien|listo|perfecto|genial)/i;
+      const neg = /(no puedo|caro|dif[ií]cil|malo|no me gusta|no sirve|no tengo tiempo|no s[ée])/i;
+      if (neg.test(s)) { cls="neg"; t="Negativo"; }
+      else if (pos.test(s)) { cls="pos"; t="Positivo"; }
+      badge.classList.remove("pos","neu","neg");
+      badge.classList.add(cls);
+      badgeTxt.textContent = t;
+    }
+
     function captureSelectionIntoInput() {
-      try {
-        const sel = window.getSelection()?.toString()?.trim() || "";
-        if (sel) input.value = sel;
-      } catch {}
-      updateSentimentBadge(input.value, badge, badgeTxt);
+      try { const sel = window.getSelection()?.toString()?.trim() || ""; if (sel) input.value = sel; } catch {}
+      updateSentimentBadge(input.value);
     }
     captureSelectionIntoInput();
     document.addEventListener("dblclick", captureSelectionIntoInput);
     document.addEventListener("mouseup", () => setTimeout(captureSelectionIntoInput, 30));
-    input.addEventListener("input", ()=> updateSentimentBadge(input.value, badge, badgeTxt));
+    input.addEventListener("input", ()=> updateSentimentBadge(input.value));
 
-    // Rating: oculto hasta generar
+    // Ratings: ocultos hasta generar
     toggleRatings(false);
     let lastReplyForRating = null;
-    let ratedThisOutput = false;
 
-    // Countdown helpers
+    // Countdown
     let t0 = 0, iv = null;
     function startTimer(){
       stopTimer();
@@ -256,21 +296,18 @@
       iv = setInterval(()=>{
         const dt = (performance.now()-t0)/1000;
         timerEl.textContent = dt.toFixed(1)+"s";
-        if (dt >= 0 && dt < 2.0) setBullet("rojo");
-        else if (dt >= 2.0 && dt < 4.0) setBullet("ambar");
+        if (dt < 2.0) setBullet("rojo");
+        else if (dt < 4.0) setBullet("ambar");
         else setBullet("verde");
       }, 100);
     }
-    function stopTimer(){
-      if (iv){ clearInterval(iv); iv=null; }
-    }
+    function stopTimer(){ if (iv){ clearInterval(iv); iv=null; } }
     function setBullet(color){
       bullet.classList.remove("ambar","verde");
       if (color==="ambar") bullet.classList.add("ambar");
       else if (color==="verde") bullet.classList.add("verde");
     }
 
-    // GENERAR
     btnGen.onclick = async () => {
       const q = (input.value || "").trim() || window.getSelection()?.toString()?.trim() || "";
       if (!q) { alert("Escribe la objeción/pregunta primero."); return; }
@@ -278,35 +315,22 @@
       const stage = stageEl.value;
       const context = (ctxEl.value || "").trim();
 
-      // Limpia zonas de salida y UI
       guide.value = "";
       output.value = "";
       toggleRatings(false);
-      ratedThisOutput = false;
 
-      // Timer ON
       startTimer();
-      btnGen.disabled = true;
-
       try{
         const body = { question:q, customerName:name, stage, context, intent: guessIntent(q) };
         const res = await fetch(`${BASE}/assist_trainer`, {
           method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body)
         });
 
-        // Timer OFF al finalizar
         stopTimer(); setBullet("verde");
-        btnGen.disabled = false;
 
         if (!res.ok) {
           const txt = await res.text().catch(()=> "");
-          if (res.status === 500 && /openai_rate_limited/i.test(txt)) {
-            alert("OpenAI con mucha demanda (429). Intenta de nuevo en breve.");
-          } else if (res.status === 500 && /openai_bad_param/i.test(txt)) {
-            alert("Modelo no acepta un parámetro. Ya lo manejamos: intenta de nuevo.");
-          } else {
-            alert(`No se pudo generar (HTTP ${res.status}). ${txt || ""}`);
-          }
+          alert(`No se pudo generar (HTTP ${res.status}). ${txt || ""}`);
           return;
         }
         const json = await res.json();
@@ -318,42 +342,29 @@
         output.value = reply;
         guide.value  = `POR QUÉ: ${why}\nSIGUIENTE PASO: ${next}`;
 
-        // Autopaste opcional
         if (autoEl.checked) pasteToChat(reply);
 
-        // Habilita rating 1 vez por respuesta
         lastReplyForRating = reply;
         toggleRatings(true);
 
-        // Handlers de calificación (una vez por respuesta)
         btnGood.onclick = () => doRateAndHide("good", lastReplyForRating, stage);
         btnReg.onclick  = () => doRateAndHide("regular", lastReplyForRating, stage);
         btnBad.onclick  = () => doRateAndHide("bad", lastReplyForRating, stage);
       }catch(e){
         stopTimer();
-        btnGen.disabled = false;
-        alert("No se pudo generar. Revisa que el servidor esté arriba.");
+        alert("No se pudo generar. Verifica que el servidor esté arriba.");
       }
     };
 
-    // CLEAR
     btnClear.onclick = () => {
       guide.value = "";
       output.value = "";
       toggleRatings(false);
-      stopTimer();
-      setBullet("rojo");
-      timerEl.textContent = "0.0s";
-      lastReplyForRating = null;
-      ratedThisOutput = false;
+      stopTimer(); setBullet("rojo"); document.getElementById("ferbot-timer").textContent = "0.0s";
     };
 
     async function doRateAndHide(rating, replyText, stage){
-      if (ratedThisOutput) return;
-      ratedThisOutput = true;
       if (!replyText) return;
-      // Deshabilita botones para evitar doble click
-      [btnGood, btnReg, btnBad].forEach(b=> b.disabled = true);
       try{
         await fetch(`${BASE}/trackRate`, {
           method:"POST", headers:{ "Content-Type":"application/json" },
@@ -361,9 +372,7 @@
         });
       }catch(_){}
       toggleRatings(false);
-      [btnGood, btnReg, btnBad].forEach(b=> { b.disabled = false; });
     }
-
     function toggleRatings(show){
       btnGood.style.display = show ? "inline-block" : "none";
       btnReg.style.display  = show ? "inline-block" : "none";
@@ -373,31 +382,14 @@
     return div;
   }
 
-  // =========================
-  // UTILIDADES
-  // =========================
   function guessIntent(q=""){
     const s = (q||"").toLowerCase();
-    if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|no me da el tiempo|ocupad)/.test(s)) return "tiempo";
+    if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|ocupad)/.test(s)) return "tiempo";
     if (/(precio|caro|costo|costoso|vale|promoci|oferta|descuento)/.test(s)) return "precio";
     if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
     if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
     if (/(qué es platzi|que es platzi|platzi|pitch)/.test(s)) return "pitch";
     return "_default";
-  }
-
-  // Sentimiento super-compacto (heurístico)
-  function updateSentimentBadge(text, badge, label){
-    const s = (text||"").toLowerCase();
-    let cls = "neu", t = "Neutral";
-    const posWords = /(gracias|excelente|me interesa|bien|listo|perfecto|genial)/i;
-    const negWords = /(no puedo|caro|dificil|malo|no me gusta|no sirve|no tengo tiempo|no sé|no se)/i;
-    if (negWords.test(s)) { cls="neg"; t="Negativo"; }
-    else if (posWords.test(s)) { cls="pos"; t="Positivo"; }
-    else { cls="neu"; t="Neutral"; }
-    badge.classList.remove("pos","neu","neg");
-    badge.classList.add(cls);
-    label.textContent = t;
   }
 
   // Autopaste genérico
@@ -441,17 +433,22 @@
     } catch {}
   }
 
-  // Inyección y reinyección en SPAs (no hace nada hasta abrir FAB)
-  function ensureInjected(){ /* no-op */ }
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    ensureInjected();
-  } else {
-    window.addEventListener("DOMContentLoaded", ensureInjected, { once:true });
-  }
-  let lastUrl = location.href;
-  new MutationObserver(()=>{ if(location.href!==lastUrl){ lastUrl=location.href; setTimeout(ensureInjected,300);} })
-    .observe(document, { subtree:true, childList:true });
+  // Atajo: Alt+Shift+F para abrir/cerrar panel (si FAB existe)
+  document.addEventListener("keydown", (e) => {
+    if (e.altKey && e.shiftKey && (e.key === "F" || e.key === "f")) {
+      if (!fab) return;
+      e.preventDefault();
+      fab.click();
+    }
+  });
+
+  // Arranque condicionado por allowlist
+  getAllowlist().then((allow) => {
+    if (!isAllowedHost(allow)) {
+      // No permitido: no inyectamos UI
+      return;
+    }
+    fab = buildFab();
+  });
+
 })();
-
-
-
