@@ -1,200 +1,90 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FerBot · Manual de Instalación y Uso (v1.3)</title>
+<meta charset="utf-8"/>
+<title>FerBot · Manual de Instalación y Uso</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
   :root{
-    --ink:#e2e8f0; --muted:#94a3b8; --bg:#0b0f19; --panel:#0f1524;
-    --accent:#97C93E; --bad:#ef4444; --warn:#f59e0b; --good:#19c37d;
-    --card:#101826; --line:rgba(255,255,255,.08);
+    --bg:#0b0f19; --panel:#0f1524; --ink:#e2e8f0; --muted:#94a3b8; --green:#97C93E;
   }
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  .wrap{max-width:1024px;margin:0 auto;padding:28px 20px 80px}
-  h1{font-size:28px;margin:0 0 6px}
-  h2{margin:28px 0 10px;font-size:20px;border-top:1px solid var(--line);padding-top:20px}
-  h3{margin:22px 0 8px;font-size:16px;color:#cbd5e1}
-  p{line-height:1.6;color:#cbd5e1}
-  code,pre{background:#0e1524;border:1px solid var(--line);border-radius:8px;padding:2px 6px}
-  pre{padding:12px;overflow:auto}
-  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
-        background:#0e1524;padding:6px 10px;border-radius:999px;color:#cbd5e1;font-size:13px}
-  .btn{display:inline-block;background:var(--accent);color:#0b0f19;font-weight:800;
-       padding:10px 14px;border-radius:10px;text-decoration:none}
-  .grid{display:grid;gap:12px;grid-template-columns:repeat(12,1fr)}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
-  .col6{grid-column:span 6} .col4{grid-column:span 4} .col8{grid-column:span 8} .col12{grid-column:span 12}
-  ul,ol{padding-left:20px}
-  .kbd{background:#111827;border:1px solid var(--line);border-bottom-width:3px;border-radius:8px;padding:2px 6px}
-  .callout{border-left:4px solid var(--accent);background:#0e1524;border:1px solid var(--line);padding:12px 14px;border-radius:8px;margin:10px 0}
-  .warn{border-left-color:var(--warn)}
-  .bad{border-left-color:var(--bad)}
-  .good{border-left-color:var(--good)}
-  .toc a{color:#93c5fd;text-decoration:none}
-  .small{font-size:12px;color:var(--muted)}
-  @media print{
-    .no-print{display:none!important}
-    body{background:#fff;color:#111}
-    .card{border-color:#ddd}
-  }
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  .wrap{max-width:960px;margin:0 auto;padding:24px}
+  h1{font-size:28px;margin:0 0 8px}
+  h2{font-size:20px;margin:24px 0 8px}
+  p,li{color:#cbd5e1;line-height:1.6}
+  code,kbd{background:#10182b;border:1px solid rgba(255,255,255,.08);padding:2px 6px;border-radius:6px}
+  .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin:16px 0}
+  .btn{display:inline-block;background:#162036;border:1px solid rgba(255,255,255,.1);color:#cbd5e1;
+       text-decoration:none;padding:10px 12px;border-radius:10px;margin-right:10px}
+  .btn:hover{background:#1a2742}
+  .callout{border-left:4px solid var(--green);padding:10px 12px;background:#0e1527;margin:16px 0;border-radius:8px}
+  .tiny{color:var(--muted);font-size:12px}
+  .green{color:var(--green)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="grid">
-    <div class="col12 card" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <h1>FerBot · Manual de Instalación y Uso</h1>
-        <div class="small">Versión 1.3 · Última actualización: 2025-11-01 · Equipo Platzi</div>
+  <div class="wrap">
+    <h1>🤖 FerBot · Manual de Instalación y Uso</h1>
+    <p class="tiny">Versión v1.3 · Este manual explica cómo instalar la extensión, usar el panel de emergencia y consultar métricas.</p>
+
+    <div class="card">
+      <h2>Descargas y accesos rápidos</h2>
+      <p>
+        <a class="btn" href="/FerBot_Manual_Instalacion_Uso_v1.3.pdf" target="_blank">📄 Descargar PDF</a>
+        <a class="btn" href="/agent" target="_blank">⚡ Panel de emergencia</a>
+        <a class="btn" href="/admin/usability" target="_blank">📊 Panel de usabilidad</a>
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>1) Instalar la extensión</h2>
+        <ol>
+          <li>Abre <kbd>chrome://extensions/</kbd></li>
+          <li>Activa <b>Modo Desarrollador</b></li>
+          <li>Clic en <b>Cargar descomprimida</b></li>
+          <li>Selecciona la carpeta <code>extension/</code></li>
+        </ol>
+        <p class="callout">La extensión muestra un botón 🤖 flotante. Puedes activarlo o desactivarlo por sitio.</p>
       </div>
-      <div class="pill"><span>Estado</span><span style="width:10px;height:10px;border-radius:12px;background:var(--good)"></span><b>Estable</b></div>
+
+      <div class="card">
+        <h2>2) Usar FerBot en un sitio</h2>
+        <ol>
+          <li>Haz clic en el icono 🤖 de la extensión (popup)</li>
+          <li>Elige <b>Activar aquí</b> para mostrar FerBot en ese sitio</li>
+          <li>Abre el botón flotante y genera respuestas</li>
+        </ol>
+        <p>Atajo: <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd></p>
+      </div>
+
+      <div class="card">
+        <h2>3) Panel de emergencia</h2>
+        <p>Si no puedes usar la extensión, entra al panel web:</p>
+        <p><a class="btn" href="/agent" target="_blank">Abrir /agent</a></p>
+        <p>Genera REPLY (mensaje), WHY (explicación) y NEXT (siguiente paso).</p>
+      </div>
+
+      <div class="card">
+        <h2>4) Calificaciones y aprendizaje</h2>
+        <p>Califica cada respuesta (👍 😐 👎). Las métricas se registran automáticamente.</p>
+        <p>Consulta el panel:</p>
+        <p><a class="btn" href="/admin/usability" target="_blank">Panel de usabilidad</a></p>
+      </div>
     </div>
 
-    <div class="col12 card toc">
-      <h3>Contenido</h3>
-      <ol>
-        <li><a href="#intro">Qué es FerBot</a></li>
-        <li><a href="#requisitos">Requisitos</a></li>
-        <li><a href="#instalacion">Instalación de la extensión</a></li>
-        <li><a href="#activacion">Activación por dominio y atajos</a></li>
-        <li><a href="#uso">Uso del panel</a></li>
-        <li><a href="#funciones">Funciones inteligentes</a></li>
-        <li><a href="#panel-emergencia">Panel de emergencia</a></li>
-        <li><a href="#dashboard">Dashboard de usabilidad</a></li>
-        <li><a href="#mantenimiento">Mantenimiento (Trainer/Salud)</a></li>
-        <li><a href="#buenas">Buenas prácticas</a></li>
-        <li><a href="#troubleshooting">Solución de problemas</a></li>
-        <li><a href="#faq">FAQ</a></li>
-      </ol>
-    </div>
-
-    <div id="intro" class="col12 card">
-      <h2>1) Qué es FerBot</h2>
-      <p>FerBot es el asistente comercial de Platzi. Ayuda a redactar respuestas cortas, con energía y orientación a valor
-      (suscripción anual), explicando <b>POR QUÉ</b> y el <b>SIGUIENTE PASO</b> para que los asesores aprendan y vendan mejor.</p>
-      <p>Funciona como <b>extensión de Chrome</b> con botón flotante, y además cuenta con un <b>panel web de emergencia</b>.</p>
-    </div>
-
-    <div id="requisitos" class="col12 card">
-      <h2>2) Requisitos</h2>
+    <div class="card">
+      <h2>Recomendaciones de uso</h2>
       <ul>
-        <li>Google Chrome (v110+)</li>
-        <li>Endpoint activo: <code>https://ferbot-api.onrender.com</code></li>
-        <li>Carpeta <code>extension/</code> con: <code>manifest.json</code>, <code>contentScript.js</code>, <code>popup.html</code> e íconos.</li>
+        <li>Mantén el tono: colombiano, claro, dinámico y con energía.</li>
+        <li>Habla de suscripción <b class="green">ANUAL</b> y beneficios de vida (empleo, ingresos, idioma).</li>
+        <li>No prometas cosas no confirmadas. No invites a llamadas ni a “enviar material”.</li>
       </ul>
     </div>
 
-    <div id="instalacion" class="col12 card">
-      <h2>3) Instalación de la extensión</h2>
-      <ol>
-        <li>Abre <code>chrome://extensions/</code> y activa <b>Modo Desarrollador</b>.</li>
-        <li>Haz clic en <b>Cargar descomprimida</b> y selecciona la carpeta <code>extension/</code>.</li>
-        <li>Fija el ícono de FerBot en la barra (menú de extensiones &rarr; 📌).</li>
-      </ol>
-      <div class="callout good"><b>Listo</b>: la extensión queda instalada. Puedes controlarla desde el popup (icono de la barra).</div>
-    </div>
-
-    <div id="activacion" class="col12 card">
-      <h2>4) Activación por dominio y atajos</h2>
-      <p>FerBot solo aparece en los sitios que autorices desde el <b>popup</b> de la extensión.</p>
-      <ul>
-        <li><b>Activar aquí</b>: habilita FerBot en el dominio actual.</li>
-        <li><b>Desactivar aquí</b>: lo oculta (no invasivo).</li>
-        <li><b>Abrir panel</b>: muestra el panel flotante de inmediato.</li>
-      </ul>
-      <p><b>Atajo</b>: <span class="kbd">Alt</span> + <span class="kbd">Shift</span> + <span class="kbd">F</span> para abrir/cerrar el panel.</p>
-    </div>
-
-    <div id="uso" class="col12 card">
-      <h2>5) Uso del panel</h2>
-      <ul>
-        <li><b>Nombre del cliente</b>, <b>Etapa</b>, <b>Contexto</b> y <b>Texto del cliente</b>.</li>
-        <li>Botón <b>Generar</b> → crea <b>REPLY</b>, <b>WHY</b>, <b>NEXT</b> (máx. 220 caracteres, 1–2 frases).</li>
-        <li><b>Autopaste</b> (opcional) → pega automáticamente en el campo de chat activo.</li>
-        <li><b>Calificaciones</b> → aparecen tras generar; al calificar se ocultan y quedan en el dashboard.</li>
-        <li>Botón <b>Clear</b> → reinicia la respuesta.</li>
-        <li>Botón <b>X</b> en el header → cierra el panel (el botón flotante queda disponible).</li>
-      </ul>
-      <div class="callout"><b>Tip</b>: el panel detecta el sentimiento del texto del cliente y lo muestra como insignia (positivo / neutral / negativo).</div>
-    </div>
-
-    <div id="funciones" class="col12 card">
-      <h2>6) Funciones inteligentes</h2>
-      <ul>
-        <li><b>Detección de intención</b> (tiempo, precio, cert, competencia, pitch).</li>
-        <li><b>Analizador de sentimiento</b> compacto junto al campo de texto.</li>
-        <li><b>Countdown</b> del tiempo de respuesta: rojo → ámbar → verde.</li>
-        <li><b>Memoria ligera</b>: nombre del cliente y preferencia de autopaste.</li>
-        <li><b>Telemetría</b>: calificaciones enviadas al dashboard.</li>
-      </ul>
-    </div>
-
-    <div id="panel-emergencia" class="col12 card">
-      <h2>7) Panel de emergencia</h2>
-      <p>Si no puedes usar la extensión, utiliza el panel web:</p>
-      <pre>https://ferbot-api.onrender.com/agent</pre>
-      <p>Genera respuestas con el mismo formato REPLY / WHY / NEXT.</p>
-    </div>
-
-    <div id="dashboard" class="col12 card">
-      <h2>8) Dashboard de usabilidad</h2>
-      <p>Visita:</p>
-      <pre>https://ferbot-api.onrender.com/admin/usability</pre>
-      <ul>
-        <li>Métricas clave: respuestas, winrate, buenas/malas, top respuestas.</li>
-        <li>Distribución por etapa e intento, usuarios activos 5m / hoy.</li>
-        <li>Auto-actualización cada 5 segundos.</li>
-      </ul>
-    </div>
-
-    <div id="mantenimiento" class="col12 card">
-      <h2>9) Mantenimiento</h2>
-      <h3>Recargar Trainer</h3>
-      <pre>https://ferbot-api.onrender.com/admin/reloadTrainer</pre>
-      <p>Respuesta esperada:</p>
-      <pre>{ "ok": true, "identity_len": 2400, "knowledge_len": 1600 }</pre>
-      <h3>Salud del servicio</h3>
-      <pre>https://ferbot-api.onrender.com/health</pre>
-      <pre>{ "ok": true, "openai": true, "model_env": "gpt-5" }</pre>
-    </div>
-
-    <div id="buenas" class="col12 card">
-      <h2>10) Buenas prácticas</h2>
-      <ul>
-        <li>Tono Colombia, cálido y con energía. Sin llamadas ni “te envío material”.</li>
-        <li>Siempre <b>REPLY</b> (al cliente) + <b>WHY</b> (razón de enfoque) + <b>NEXT</b> (siguiente paso de venta anual).</li>
-        <li>Califica al menos 3 respuestas al día para mejorar el ranking.</li>
-      </ul>
-    </div>
-
-    <div id="troubleshooting" class="col12 card">
-      <h2>11) Solución de problemas</h2>
-      <h3>Error “OpenAI quota” o 429</h3>
-      <ol>
-        <li>Espera 60–90 s y reintenta.</li>
-        <li>Verifica en <code>/health</code> que <code>openai: true</code>.</li>
-        <li>Si persiste, notifica al owner del servicio (revisión de plan/clave).</li>
-      </ol>
-      <h3>El botón no aparece en un sitio</h3>
-      <ol>
-        <li>Abre el <b>popup</b> de FerBot y pulsa <b>“Activar aquí”</b>.</li>
-        <li>Recarga la página.</li>
-      </ol>
-      <h3>No pega la respuesta</h3>
-      <ol>
-        <li>Activa <b>Autopaste</b> o pega manualmente con <span class="kbd">Cmd/Ctrl</span> + <span class="kbd">V</span>.</li>
-        <li>En algunos editores privados, la app bloquea la escritura programática.</li>
-      </ol>
-    </div>
-
-    <div id="faq" class="col12 card">
-      <h2>12) FAQ rápido</h2>
-      <p><b>¿Puedo usarlo fuera de Hilos/WhatsApp?</b><br> Sí. Actívalo desde el popup en cualquier dominio que necesites.</p>
-      <p><b>¿Cómo cierro el panel?</b><br> Usa la “X” del header o el atajo <span class="kbd">Alt</span> + <span class="kbd">Shift</span> + <span class="kbd">F</span>.</p>
-      <p class="small">© 2025 Platzi · Uso interno. No distribuir fuera del equipo autorizado.</p>
-    </div>
+    <p class="tiny">Hecho con <span class="green">♥</span> para el equipo.</p>
   </div>
-</div>
 </body>
 </html>
