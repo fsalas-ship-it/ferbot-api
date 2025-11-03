@@ -1,4 +1,4 @@
-// server.js — FerBot API + Telemetría y Panel Unificado
+// server.js — FerBot API (OpenAI/Trainer + panel + manual + dashboard)
 // ---------------------------------------------------------------------------------
 require("dotenv").config();
 
@@ -7,14 +7,14 @@ const cors = require("cors");
 const fs = require("fs/promises");
 const fssync = require("fs");
 const path = require("path");
-const crypto = require("crypto");
+const fetch = global.fetch || ((...args) => import("node-fetch").then(({default: f}) => f(...args)));
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// Rutas base
-const ROOT_DIR = __dirname;
+// Rutas base (estáticos)
+const ROOT_DIR   = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 app.use(express.static(PUBLIC_DIR));
 
@@ -24,21 +24,20 @@ app.use(express.static(PUBLIC_DIR));
 const DATA_DIR       = path.join(ROOT_DIR, "data");
 const MEMORY_PATH    = path.join(DATA_DIR, "memory.json");              // KB (objeciones)
 const VARIANTS_PATH  = path.join(DATA_DIR, "variants.json");            // variants por intent::stage
-const STATS_PATH     = path.join(DATA_DIR, "stats.json");               // métricas de rating por texto
+const STATS_PATH     = path.join(DATA_DIR, "stats.json");               // métricas por respuesta
+const USAGE_PATH     = path.join(DATA_DIR, "usage.ndjson");             // trazas de uso
 const TRAINER_TXT    = path.join(DATA_DIR, "trainer_identity.txt");     // identidad del trainer
 const TRAINER_KNOW   = path.join(DATA_DIR, "trainer_knowledge");        // carpeta .txt/.md (opcional)
-const USAGE_LOG_ND   = path.join(DATA_DIR, "usage.ndjson");             // telemetría de uso (eventos)
-const USAGE_SUMMARY  = path.join(DATA_DIR, "metrics.json");             // resumen simple (opcional)
 
-for (const p of [DATA_DIR, TRAINER_KNOW]) {
+for (const p of [DATA_DIR]) {
   if (!fssync.existsSync(p)) fssync.mkdirSync(p, { recursive: true });
 }
 if (!fssync.existsSync(MEMORY_PATH))    fssync.writeFileSync(MEMORY_PATH,   JSON.stringify({ items: [] }, null, 2));
 if (!fssync.existsSync(VARIANTS_PATH))  fssync.writeFileSync(VARIANTS_PATH, JSON.stringify({ byKey: {} }, null, 2));
 if (!fssync.existsSync(STATS_PATH))     fssync.writeFileSync(STATS_PATH,    JSON.stringify({ byKey: {} }, null, 2));
-if (!fssync.existsSync(USAGE_LOG_ND))   fssync.writeFileSync(USAGE_LOG_ND,  "");
-if (!fssync.existsSync(USAGE_SUMMARY))  fssync.writeFileSync(USAGE_SUMMARY, JSON.stringify({ }, null, 2));
+if (!fssync.existsSync(TRAINER_KNOW))   fssync.mkdirSync(TRAINER_KNOW, { recursive: true });
 if (!fssync.existsSync(TRAINER_TXT))    fssync.writeFileSync(TRAINER_TXT, "");
+if (!fssync.existsSync(USAGE_PATH))     fssync.writeFileSync(USAGE_PATH, "");
 
 // ----------------------------
 // Helpers
@@ -56,18 +55,18 @@ function normalizeSpaces(s = "") {
 function normKey(s=""){ return String(s||"").toLowerCase().replace(/\s+/g," ").trim(); }
 function clampReplyToWhatsApp(text, maxChars=220) {
   let t = (text || "").trim();
+  // Máximo 2 frases
   const parts = t.split(/(?<=[.!?])\s+/).filter(Boolean);
   t = parts.slice(0,2).join(" ");
   if (t.length > maxChars) t = t.slice(0, maxChars-1).trimEnd() + "…";
   return t;
 }
-function hashText(s=""){
-  return crypto.createHash("sha1").update(String(s)).digest("hex").slice(0,16);
-}
-function getClientSig(req){
-  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "0.0.0.0";
-  const ua = req.headers["user-agent"] || "unknown";
-  return `${ip}__${ua}`;
+function nowIso(){ return new Date().toISOString(); }
+function appendUsage(obj){
+  try {
+    const line = JSON.stringify({ ts: nowIso(), ...obj }) + "\n";
+    fssync.appendFileSync(USAGE_PATH, line, "utf8");
+  } catch {}
 }
 
 // Variants cache (modo offline)
@@ -115,7 +114,7 @@ async function buildGuideFromKB(intent = "_default") {
 }
 
 // ----------------------------
-// Tracking + Ratings (stats.json para ranking por texto)
+// Tracking + Ratings
 // ----------------------------
 function ensureStatEntry(stats, intent, stage, text) {
   const key = `${intent}::${stage}`;
@@ -129,6 +128,7 @@ async function trackShown(intent, stage, replyText) {
   const { key, t } = ensureStatEntry(stats, intent, stage, replyText);
   stats.byKey[key][t].shown += 1;
   await writeJsonPretty(STATS_PATH, stats);
+  appendUsage({ type:"shown", intent, stage, text: t });
 }
 async function trackWinLose(intent, stage, replyText, won) {
   const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
@@ -141,6 +141,7 @@ async function trackWinLose(intent, stage, replyText, won) {
     stats.byKey[key][t].bad += 1;
   }
   await writeJsonPretty(STATS_PATH, stats);
+  appendUsage({ type:"winlose", intent, stage, text: t, won: !!won });
 }
 async function trackRating(intent, stage, replyText, rating) {
   const stats = await readJsonSafe(STATS_PATH, { byKey: {} });
@@ -156,6 +157,7 @@ async function trackRating(intent, stage, replyText, rating) {
     stats.byKey[key][t].bad += 1;
   }
   await writeJsonPretty(STATS_PATH, stats);
+  appendUsage({ type:"rate", intent, stage, text: t, rating });
 }
 
 // ----------------------------
@@ -179,7 +181,7 @@ async function loadTrainerIdentity() {
       if (t) texts.push(`# ${f}\n${t}`);
     }
     const joined = texts.join("\n\n---\n\n");
-    TRAINER_SNIPPETS = joined.slice(0, 10000);
+    TRAINER_SNIPPETS = joined.slice(0, 12000); // límite seguro
   } catch { TRAINER_SNIPPETS = ""; }
 }
 
@@ -202,24 +204,9 @@ app.get("/health", (_req, res) => {
 });
 
 // ----------------------------
-// Telemetría de uso (NDJSON)
-// ----------------------------
-async function appendUsage(event){
-  try {
-    await fs.appendFile(USAGE_LOG_ND, JSON.stringify(event) + "\n", "utf8");
-  } catch {}
-}
-function safeSnippet(s="", n=120){
-  s = (s||"").replace(/\s+/g," ").trim();
-  return s.length>n? (s.slice(0,n-1)+"…") : s;
-}
-function parseTime(ts){ const d = new Date(ts); return isNaN(+d) ? new Date() : d; }
-
-// ----------------------------
 // ASSIST offline (variants + KB)
 // ----------------------------
 app.post("/assist", async (req, res) => {
-  const tStart = Date.now();
   try {
     const { question = "", customerName = "Cliente", stage = "rebatir" } = req.body || {};
     const name = customerName || "Cliente";
@@ -246,22 +233,8 @@ app.post("/assist", async (req, res) => {
         intent,
         stage
       },
-      time_ms: Date.now()-tStart
+      time_ms: 3
     });
-
-    // Telemetría
-    const ev = {
-      type:"assist",
-      mode:"offline",
-      ts:new Date().toISOString(),
-      intent, stage,
-      ms: Date.now()-tStart,
-      q: safeSnippet(question, 160),
-      replyHash: hashText(reply),
-      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
-      client: getClientSig(req)
-    };
-    appendUsage(ev).catch(()=>{});
   } catch (err) {
     console.error("assist error", err);
     res.status(500).json({ ok: false, error: "assist_failed" });
@@ -272,7 +245,6 @@ app.post("/assist", async (req, res) => {
 // ASSIST OpenAI (general)
 // ----------------------------
 app.post("/assist_openai", async (req, res) => {
-  const tStart = Date.now();
   try {
     const { question = "", customerName = "Cliente", stage = "rebatir" } = req.body || {};
     const name = customerName || "Cliente";
@@ -280,18 +252,17 @@ app.post("/assist_openai", async (req, res) => {
 
     const guidePoints = await buildGuideFromKB(intent);
     const system = [
-      "Eres un asesor comercial breve y claro para WhatsApp (español).",
-      "Tono cercano, hispano neutro.",
-      "Respeta el 'stage' (sondeo, rebatir, pre_cierre, cierre, integracion).",
-      "Responde en ≤220 caracteres y máximo 2 frases.",
-      "Prohibido ofrecer clases gratis o beneficios no confirmados.",
+      "Eres un asesor comercial breve y claro para WhatsApp (español Colombia).",
+      "Tono cercano, dinámico, energía positiva. 1–2 frases, ≤220 caracteres.",
+      "Responde por ETAPA (sondeo, rebatir, pre_cierre, cierre, integracion).",
+      "No invites a llamadas ni ‘te envío material’. Suscripción anual.",
       `Guía de contexto: ${guidePoints}`
     ].join("\n");
 
-    const user = `Cliente: ${name}\nStage: ${stage}\nPregunta: ${question}\nIntent: ${intent}\nEntrega solo el mensaje final para WhatsApp.`;
+    const user = `Cliente: ${name}\nStage: ${stage}\nPregunta: ${question}\nIntent: ${intent}\nEntrega solo el mensaje final (≤220c).`;
 
     const apiKey = process.env.OPENAI_API_KEY;
-    const model  = process.env.OPENAI_MODEL || "gpt-5";
+    const model  = process.env.OPENAI_MODEL || "gpt-4o-mini";
     if (!apiKey) return res.status(400).json({ ok: false, error: "missing_openai_api_key" });
 
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -333,23 +304,9 @@ app.post("/assist_openai", async (req, res) => {
         confidence: 0.85,
         intent,
         stage,
-        persona: { name: "Ferney Salas", brand: "Platzi" }
-      },
-      time_ms: Date.now()-tStart
+        persona: { brand: "Platzi" }
+      }
     });
-
-    appendUsage({
-      type:"assist",
-      mode:"openai",
-      ts:new Date().toISOString(),
-      intent, stage,
-      ms: Date.now()-tStart,
-      q: safeSnippet(question, 160),
-      replyHash: hashText(reply),
-      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
-      client: getClientSig(req)
-    }).catch(()=>{});
-
   } catch (err) {
     console.error("assist_openai error", err);
     res.status(500).json({ ok:false, error:"assist_openai_failed" });
@@ -357,31 +314,31 @@ app.post("/assist_openai", async (req, res) => {
 });
 
 // ----------------------------
-// ASSIST_TRAINER — usa Trainer (REPLY + WHY + NEXT)
+// ASSIST_TRAINER — usa Trainer (system) + optional knowledge
+// Devuelve: REPLY (≤220 chars, ≤2 frases) + WHY + NEXT
 // ----------------------------
 function fallbackWhy(stage, intent) {
   const map = {
-    sondeo:     "Reconoce la meta y avanza con pregunta única.",
-    rebatir:    "Conviertes objeción en valor y beneficio de vida.",
-    pre_cierre: "Refuerzas valor y quitas fricción hacia anual.",
-    cierre:     "Concretas con decisión clara.",
-    integracion:"Alineas meta y primer paso sin fricción."
+    sondeo:     "Validamos meta y contexto para personalizar.",
+    rebatir:    "Convertimos la objeción en valor y beneficio de vida.",
+    pre_cierre: "Subimos valor percibido y quitamos fricción.",
+    cierre:     "Concretamos la decisión anual con claridad.",
+    integracion:"Refuerza decisión y hábito inicial."
   };
-  return map[stage] || `Guía al valor y CTA (${intent}/${stage}).`;
+  return map[stage] || `Guía por beneficio y CTA (${intent}/${stage}).`;
 }
 function fallbackNext(stage) {
   const map = {
-    sondeo:     "Haz 1 pregunta clave y prepara CTA anual.",
-    rebatir:    "Valida y propone paso concreto hoy.",
-    pre_cierre: "Confirma interés y despeja última duda.",
-    cierre:     "Pide decisión (plan anual) de forma amable.",
-    integracion:"Define primer paso y ritmo semanal."
+    sondeo:     "Haz 1 pregunta clave y prepara la invitación anual.",
+    rebatir:    "Reformula en beneficio y pide mini ‘OK’ para avanzar.",
+    pre_cierre: "Recapitula valor y propone el anual directo.",
+    cierre:     "Solicita confirmación del anual y activa.",
+    integracion:"Deja hábito inicial y seguimiento corto."
   };
   return map[stage] || "Cierra con un CTA simple y accionable.";
 }
 
 app.post("/assist_trainer", async (req, res) => {
-  const tStart = Date.now();
   try {
     const { question = "", customerName = "", stage = "rebatir", intent:intentIn, context = "" } = req.body || {};
     const name = (customerName || "").trim();
@@ -389,15 +346,14 @@ app.post("/assist_trainer", async (req, res) => {
     const intent = intentIn || inferIntent(question);
 
     const rules = [
-      "Eres FerBot (español Colombia), amable, dinámico y con energía positiva.",
-      "WhatsApp-friendly: ≤220 caracteres y máximo 2 frases.",
-      "Suscripción ANUAL; evita llamadas o 'enviar material'.",
-      "Respeta el stage (sondeo, rebatir, pre_cierre, cierre, integracion).",
-      "Si falta contexto, pide UNA cosa y da micro-CTA.",
-      "FORMATO (3 líneas):",
-      "REPLY: <mensaje WhatsApp>",
-      "WHY: <por qué, ≤100c, enseña el criterio>",
-      "NEXT: <siguiente paso para el asesor, ≤100c>"
+      "Eres FerBot (Colombia): amable, dinámico, con energía. 1–2 frases, ≤220c.",
+      "Vendes transformación con suscripción ANUAL. Nada de llamadas ni “te envío material”.",
+      "Respeta ETAPA: sondeo, rebatir, pre_cierre, cierre, integracion.",
+      "Si falta info, pide UNA cosa y deja micro-CTA.",
+      "FORMATO ESTRICTO (3 líneas):",
+      "REPLY: <mensaje listo para WhatsApp (máx 220c, 1–2 frases, tono Colombia)>",
+      "WHY: <por qué esta respuesta (≤100c, explica cómo convierte objeción en valor)>",
+      "NEXT: <siguiente paso para el asesor (≤100c, orientado al plan anual)>"
     ].join("\n");
 
     const system = [
@@ -441,6 +397,7 @@ app.post("/assist_trainer", async (req, res) => {
     const data = await r.json();
     const content = data?.choices?.[0]?.message?.content || "";
 
+    // Parse REPLY / WHY / NEXT
     const mReply = content.match(/REPLY:\s*([\s\S]*?)(?:\n+WHY:|\n+NEXT:|$)/i);
     const mWhy   = content.match(/WHY:\s*(.*?)(?:\n+NEXT:|$)/i);
     const mNext  = content.match(/NEXT:\s*(.*)$/i);
@@ -449,43 +406,32 @@ app.post("/assist_trainer", async (req, res) => {
     let why   = (mWhy && mWhy[1]   || "").trim();
     let next  = (mNext && mNext[1] || "").trim();
 
+    // Enforce WhatsApp length
     reply = clampReplyToWhatsApp(reply, 220);
     if (!why)  why  = fallbackWhy(stage, intent);
     if (!next) next = fallbackNext(stage);
 
     trackShown(intent, stage, reply).catch(()=>{});
 
-    const resp = {
+    res.json({
       ok: true,
       text: reply,
       whatsapp: reply,
       message: reply,
       answer: reply,
       result: {
-        reply, why, next,
+        reply,
+        why,
+        next,
         guide: `Por qué: ${why} · Siguiente paso: ${next}`,
         sections: { [stage]: reply },
         model,
         confidence: 0.9,
         intent,
-        stage
-      },
-      time_ms: Date.now()-tStart
-    };
-    res.json(resp);
-
-    appendUsage({
-      type:"assist",
-      mode:"trainer",
-      ts:new Date().toISOString(),
-      intent, stage,
-      ms: Date.now()-tStart,
-      q: safeSnippet(question, 160),
-      replyHash: hashText(reply),
-      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
-      client: getClientSig(req)
-    }).catch(()=>{});
-
+        stage,
+        persona: { brand: "Platzi" }
+      }
+    });
   } catch (err) {
     console.error("assist_trainer error", err);
     res.status(500).json({ ok:false, error:"assist_trainer_failed" });
@@ -493,72 +439,7 @@ app.post("/assist_trainer", async (req, res) => {
 });
 
 // ----------------------------
-// IMPORTADOR (merge) de data/ferney_variants.json
-// ----------------------------
-app.post("/admin/importFerney", async (_req, res) => {
-  try {
-    const FERNEY_FILE = path.join(DATA_DIR, "ferney_variants.json");
-    const raw = await fs.readFile(FERNEY_FILE, "utf8");
-    const data = JSON.parse(raw);
-
-    const currentVariants = await readJsonSafe(VARIANTS_PATH, { byKey: {} });
-    if (!currentVariants.byKey) currentVariants.byKey = {};
-    let variants_added = 0, variants_skipped = 0;
-
-    if (Array.isArray(data.variants)) {
-      for (const block of data.variants) {
-        const intent = String(block.intent || "_default");
-        const stage = String(block.stage || "rebatir");
-        const key = `${intent}::${stage}`;
-        if (!currentVariants.byKey[key]) currentVariants.byKey[key] = { intent, stage, variants: [] };
-
-        const existingSet = new Set((currentVariants.byKey[key].variants || []).map(v => normKey(v.text)));
-        const incoming = Array.isArray(block.variants) ? block.variants : [];
-        for (const v of incoming) {
-          const text = (v.text || "").trim();
-          if (!text) continue;
-          const nkey = normKey(text);
-          if (existingSet.has(nkey)) { variants_skipped++; continue; }
-          currentVariants.byKey[key].variants.push({ text, weight: Number(v.weight || 1) });
-          existingSet.add(nkey);
-          variants_added++;
-        }
-      }
-    }
-
-    await writeJsonPretty(VARIANTS_PATH, currentVariants);
-    await loadVariants();
-
-    // KB merge
-    const memory = await readJsonSafe(MEMORY_PATH, { items: [] });
-    const items = Array.isArray(memory.items) ? memory.items : [];
-    const memSet = new Set(items.map(it => `${normKey(it.tema)}::${normKey(it.contenido)}`));
-    let kb_added = 0, kb_skipped = 0;
-
-    if (Array.isArray(data.kb)) {
-      for (const k of data.kb) {
-        const tema = String(k.tema || "_default");
-        const contenido = (k.contenido || "").trim();
-        if (!contenido) continue;
-        const sig = `${normKey(tema)}::${normKey(contenido)}`;
-        if (memSet.has(sig)) { kb_skipped++; continue; }
-        items.push({ tipo: "objecion", tema, contenido, ts: new Date().toISOString(), source: "ferney_variants.json" });
-        memSet.add(sig);
-        kb_added++;
-      }
-    }
-    await writeJsonPretty(MEMORY_PATH, { items });
-
-    res.json({ ok: true, mode: "merge", variants_added, variants_skipped, kb_added, kb_skipped });
-
-  } catch (err) {
-    console.error("importFerney error", err);
-    res.status(500).json({ ok: false, error: "import_failed" });
-  }
-});
-
-// ----------------------------
-// Dashboard clásico (se mantiene)
+// Dashboard / Métricas
 // ----------------------------
 app.post("/trackShow", async (req, res) => {
   try {
@@ -591,18 +472,6 @@ app.post("/trackRate", async (req, res) => {
     }
     await trackRating(intent, stage, text, rating);
     res.json({ ok: true });
-
-    // Telemetría rating
-    appendUsage({
-      type:"rate",
-      ts:new Date().toISOString(),
-      intent, stage,
-      rating,
-      replyHash: hashText(text),
-      source: req.headers["x-ferbot-source"] || (req.headers.referer?.includes("/agent")?"panel":"unknown"),
-      client: getClientSig(req)
-    }).catch(()=>{});
-
   } catch (err) {
     console.error("trackRate error", err);
     res.status(500).json({ ok: false, error: "track_rate_failed" });
@@ -637,10 +506,11 @@ app.get("/stats", async (_req, res) => {
   }
 });
 
+// Dashboard HTML compacto
 app.get("/admin/dashboard", async (_req, res) => {
   try {
-    const resp = await (await fetchLocalStats()).json();
-    const rows = (resp.rows || []).map(r => `
+    const stats = await (await fetchLocalStats()).json();
+    const rows = (stats.rows || []).map(r => `
       <tr>
         <td>${r.intent}</td>
         <td>${r.stage}</td>
@@ -655,7 +525,7 @@ app.get("/admin/dashboard", async (_req, res) => {
     res.end(`<!doctype html>
 <html lang="es"><head>
 <meta charset="utf-8"/>
-<title>FerBot · Dashboard (clásico)</title>
+<title>FerBot · Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
   body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:#0b0f19;color:#e2e8f0;margin:0;padding:24px}
@@ -665,14 +535,16 @@ app.get("/admin/dashboard", async (_req, res) => {
   th{background:rgba(255,255,255,.04);text-align:left}
   tr:hover{background:rgba(255,255,255,.03)}
   .sub{opacity:.7;font-size:12px;margin-bottom:16px}
-  a{color:#97C93E}
+  a.btn{display:inline-block;margin-right:8px;padding:8px 12px;border-radius:8px;background:#162036;color:#cbd5e1;text-decoration:none}
+  a.btn:hover{background:#1a2742}
 </style>
 </head>
 <body>
-  <h1>FerBot · Dashboard (clásico)</h1>
-  <div class="sub">Para el panel nuevo y tecnológico ve a <a href="/panel.html">/panel.html</a></div>
+  <h1>FerBot · Dashboard</h1>
+  <div class="sub">Ranking por winrate y exposición (wins compuestos: buena=1, regular=0.5, mala=0)</div>
   <div style="margin:12px 0">
-    <form method="GET" action="/stats" target="_blank"><button>Ver JSON /stats</button></form>
+    <a class="btn" href="/admin/usability" target="_blank">Panel de Usabilidad</a>
+    <a class="btn" href="/stats" target="_blank">Ver JSON</a>
     <form method="POST" action="/admin/reloadTrainer" style="display:inline"><button>Recargar Trainer</button></form>
   </div>
   <table>
@@ -710,105 +582,21 @@ async function fetchLocalStats(){
 }
 
 // ----------------------------
-// Panel público (emergencia/consulta)
+// Paneles estáticos / Documentación
 // ----------------------------
-app.get("/agent", (_req,res)=> res.redirect("/panel.html"));
 
-// ----------------------------
-// Telemetría agregada (JSON para panel nuevo)
-// ----------------------------
-app.get("/admin/usage", async (req, res) => {
-  try {
-    let lines = [];
-    try {
-      lines = (await fs.readFile(USAGE_LOG_ND, "utf8")).trim().split("\n").filter(Boolean);
-    } catch { lines = []; }
+// /agent → agent.html (panel de emergencia)
+app.get("/agent", (_req,res)=> res.sendFile(path.join(PUBLIC_DIR, "agent.html")));
 
-    const events = [];
-    for (const ln of lines) {
-      try { events.push(JSON.parse(ln)); } catch {}
-    }
+// /admin/usability → usability.html (panel unificado)
+app.get("/admin/usability", (_req,res)=> res.sendFile(path.join(PUBLIC_DIR, "usability.html")));
 
-    const now = new Date();
-    const t24 = now.getTime() - 24*3600*1000;
-    const t7d = now.getTime() - 7*24*3600*1000;
-    const t5m = now.getTime() - 5*60*1000;
-    const t1h = now.getTime() - 60*60*1000;
-
-    const inRange = (t0) => (parseTime(t0).getTime() >= t24);
-    const ev24 = events.filter(e => inRange(e.ts));
-    const ev7d = events.filter(e => parseTime(e.ts).getTime() >= t7d);
-
-    const active5m = new Set(ev24.filter(e=>parseTime(e.ts).getTime()>=t5m).map(e=>e.client)).size;
-    const active1h = new Set(ev24.filter(e=>parseTime(e.ts).getTime()>=t1h).map(e=>e.client)).size;
-    const active24 = new Set(ev24.map(e=>e.client)).size;
-
-    const assists24 = ev24.filter(e=>e.type==="assist");
-    const ratings24 = ev24.filter(e=>e.type==="rate");
-
-    const avgLatency24 = assists24.length ? Math.round(assists24.reduce((a,b)=>a+(+b.ms||0),0)/assists24.length) : 0;
-
-    const byHourMap = new Map();
-    for (const e of assists24) {
-      const d = new Date(e.ts);
-      const key = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours()).toISOString();
-      byHourMap.set(key, (byHourMap.get(key)||0)+1);
-    }
-    const byHour24 = Array.from(byHourMap.entries())
-      .sort((a,b)=> new Date(a[0]) - new Date(b[0]))
-      .map(([hourISO,count])=>({ hourISO, count }));
-
-    const sumMap = (arr, key) => {
-      const m = {};
-      for (const e of arr) {
-        const k = e[key] || "_";
-        m[k] = (m[k]||0)+1;
-      }
-      return m;
-    };
-    const byIntent24 = sumMap(assists24, "intent");
-    const byStage24  = sumMap(assists24, "stage");
-
-    const rateCount = { good:0, regular:0, bad:0 };
-    for (const r of ratings24) {
-      if (r.rating==="good") rateCount.good++;
-      else if (r.rating==="regular") rateCount.regular++;
-      else if (r.rating==="bad") rateCount.bad++;
-    }
-    const shown24 = Math.max(1, (rateCount.good + rateCount.regular + rateCount.bad));
-    const winrate = (rateCount.good*1 + rateCount.regular*0.5) / shown24;
-
-    // Últimos 20 eventos (assist y rate)
-    const recent = events.slice(-100).reverse().filter(e=>e.type==="assist").slice(0,20).map(e=>({
-      ts: e.ts, intent: e.intent, stage: e.stage, ms: e.ms || 0,
-      q: e.q || "", replyHash: e.replyHash || ""
-    }));
-
-    res.json({
-      ok: true,
-      now: now.toISOString(),
-      totals: {
-        last_24h: assists24.length,
-        last_7d: ev7d.filter(e=>e.type==="assist").length,
-        all_time: events.filter(e=>e.type==="assist").length
-      },
-      kpis: {
-        avgLatencyMs24h: avgLatency24,
-        activeUsers5m: active5m,
-        activeUsers1h: active1h,
-        activeUsers24h: active24
-      },
-      byHour24,
-      byIntent24,
-      byStage24,
-      ratings24: { ...rateCount, winrate: +winrate.toFixed(3) },
-      recent
-    });
-  } catch (err) {
-    console.error("usage error", err);
-    res.status(500).json({ ok:false, error:"usage_failed" });
-  }
-});
+// Manual HTML, README y PDF descargable
+app.get("/manual", (_req, res) => res.sendFile(path.join(PUBLIC_DIR, "manual.html")));
+app.get("/readme", (_req, res) => res.sendFile(path.join(PUBLIC_DIR, "README_INSTALACION.md")));
+app.get("/FerBot_Manual_Instalacion_Uso_v1.3.pdf", (_req, res) =>
+  res.sendFile(path.join(PUBLIC_DIR, "FerBot_Manual_Instalacion_Uso_v1.3.pdf"))
+);
 
 // ----------------------------
 // Inicio servidor
