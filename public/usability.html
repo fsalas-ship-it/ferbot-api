@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>FerBot · Usabilidad ⚡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{ --bg:#0b0f19; --card:#0f1524; --ink:#e2e8f0; --muted:#94a3b8; --green:#97C93E; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+    .wrap{max-width:1200px;margin:18px auto;padding:0 16px}
+    h1{margin:0 0 12px;font-size:20px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}
+    .kpi{background:#0f1524;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
+    .muted{color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px}
+    th{background:rgba(255,255,255,.04);text-align:left;position:sticky;top:0}
+    .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#101727;color:#cbd5e1;font-size:12px}
+    .right{float:right}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <h1>FerBot · Usabilidad ⚡</h1>
+      <div class="row" style="gap:8px">
+        <span class="pill">Activos 5m: <b id="act5">0</b></span>
+        <span class="pill">Activos hoy: <b id="actD">0</b></span>
+        <span class="pill">auto-refresh 5s</span>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="muted">Respuestas mostradas</div><div id="kShown" style="font-size:22px;font-weight:800">0</div></div>
+      <div class="kpi"><div class="muted">Winrate compuesto</div><div id="kWR" style="font-size:22px;font-weight:800">0.0%</div></div>
+      <div class="kpi"><div class="muted">👍 Buenas</div><div id="kGood" style="font-size:22px;font-weight:800">0</div></div>
+      <div class="kpi"><div class="muted">👎 Malas</div><div id="kBad" style="font-size:22px;font-weight:800">0</div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="muted">Por etapa</div>
+        <canvas id="byStage" height="220"></canvas>
+      </div>
+      <div class="card">
+        <div class="muted">Por intento</div>
+        <canvas id="byIntent" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="muted">Top respuestas (efectivas)</div>
+      </div>
+      <div style="max-height:360px;overflow:auto">
+        <table>
+          <thead><tr><th>Intent</th><th>Stage</th><th>Texto</th><th>Shown</th><th>Wins</th><th>Winrate</th></tr></thead>
+          <tbody id="tbl"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<script>
+const BASE = location.origin;
+let chStage, chIntent;
+
+async function load(){
+  try{
+    const r = await fetch(`${BASE}/stats`, { cache:"no-store" });
+    const j = await r.json();
+    if (!j?.ok) throw new Error("stats not ok");
+    render(j.rows||[]);
+  }catch(e){ console.error(e); }
+}
+function render(rows){
+  // KPIs
+  let shown=0, wins=0, g=0, b=0; const stageMap={}, intentMap={};
+  rows.forEach(r=>{
+    shown += r.shown; wins += r.wins; g += r.good; b += r.bad;
+    stageMap[r.stage]  = (stageMap[r.stage]||0) + r.shown;
+    intentMap[r.intent]= (intentMap[r.intent]||0)+ r.shown;
+  });
+  const wr = shown>0 ? (wins/shown*100).toFixed(1) : "0.0";
+  document.getElementById("kShown").textContent = shown;
+  document.getElementById("kWR").textContent    = wr+"%";
+  document.getElementById("kGood").textContent  = g;
+  document.getElementById("kBad").textContent   = b;
+
+  // Charts
+  drawDonut("byStage", stageMap, (c)=> chStage=c, chStage);
+  drawDonut("byIntent", intentMap, (c)=> chIntent=c, chIntent);
+
+  // Tabla
+  const tb = document.getElementById("tbl");
+  tb.innerHTML = rows.map(r=> `<tr>
+    <td>${esc(r.intent)}</td><td>${esc(r.stage)}</td><td>${esc(r.text)}</td>
+    <td>${r.shown}</td><td>${r.wins}</td><td>${(r.winrate*100).toFixed(1)}%</td>
+  </tr>`).join("");
+}
+function drawDonut(cid, map, setRef, old){
+  const labels = Object.keys(map); const data = labels.map(k=> map[k]);
+  const cfg = {
+    type:"doughnut",
+    data:{ labels, datasets:[{ data }] },
+    options:{ plugins:{ legend:{ labels:{ color:"#e2e8f0" } } }, responsive:true }
+  };
+  if (old){ old.data.labels = labels; old.data.datasets[0].data = data; old.update(); }
+  else { setRef(new Chart(document.getElementById(cid), cfg)); }
+}
+function esc(s){ return String(s||"").replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
+
+// (placeholder) activos — puedes conectar a presencia más adelante
+document.getElementById("act5").textContent = "0";
+document.getElementById("actD").textContent = "0";
+
+load(); setInterval(load, 5000);
+</script>
+</body>
+</html>
