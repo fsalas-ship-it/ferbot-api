@@ -1,11 +1,11 @@
 // ===============================
 // FerBot API — Servidor principal
 // ===============================
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const fetch = require("node-fetch");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
@@ -97,14 +97,14 @@ NEXT: <siguiente paso comercial para el asesor>
     }
 
     const raw = data.choices?.[0]?.message?.content || "Sin respuesta";
-    const [replyMatch] = raw.match(/REPLY:(.*)/i) || [];
-    const [whyMatch] = raw.match(/WHY:(.*)/i) || [];
-    const [nextMatch] = raw.match(/NEXT:(.*)/i) || [];
+    const replyMatch = raw.match(/REPLY:(.*)/i);
+    const whyMatch = raw.match(/WHY:(.*)/i);
+    const nextMatch = raw.match(/NEXT:(.*)/i);
 
     const result = {
-      reply: replyMatch?.replace("REPLY:", "").trim() || raw,
-      why: whyMatch?.replace("WHY:", "").trim() || "",
-      next: nextMatch?.replace("NEXT:", "").trim() || "",
+      reply: replyMatch ? replyMatch[1].trim() : raw,
+      why: whyMatch ? whyMatch[1].trim() : "",
+      next: nextMatch ? nextMatch[1].trim() : "",
       model: OPENAI_MODEL
     };
 
