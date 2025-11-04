@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>FerBot — Consola unificada</title>
+  <style>
+    :root{
+      --green:#97C93E; --ink:#e2e8f0; --muted:#94a3b8; --panel:#0b0f19; --card:#111827; --stroke:#1f2937;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 800px at 10% -10%, #0f172a 0%, #0b0f19 45%, #080b12 100%);
+         color:var(--ink); font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Inter,Arial}
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    h1{font-size:18px;margin:0;letter-spacing:.2px;display:flex;align-items:center;gap:8px}
+    h1 .dot{width:8px;height:8px;border-radius:16px;background:var(--green);box-shadow:0 0 12px rgba(151,201,62,.6)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+    .tab{padding:10px 14px;border:1px solid #1f2937;border-bottom:0;border-radius:10px 10px 0 0;background:#0f1524;color:#cbd5e1;cursor:pointer}
+    .tab.active{background:#121b2e;color:#fff;border-color:#273244}
+    .panel{border:1px solid #273244;border-radius:0 12px 12px 12px;background:rgba(17,24,39,.72);backdrop-filter:blur(6px)}
+    .view{display:none}
+    .view.active{display:block}
+    iframe{width:100%;height:78vh;border:0;border-radius:12px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;padding:18px}
+    .card{background:#0f1524;border:1px solid #243044;border-radius:14px;padding:16px}
+    .card h3{margin:0 0 8px 0;font-size:16px}
+    .card p{margin:0 0 12px 0;color:#b6c1d6;font-size:14px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid #2b3a52;background:#12203a;color:#e5f1ff;text-decoration:none;font-weight:700}
+    .btn.primary{background:var(--green);color:#0b0f19;border-color:#6fa61e}
+    footer{margin:14px 0 0 0;color:#9fb0c7;font-size:12px;display:flex;justify-content:flex-end}
+    footer .heart{color:var(--green)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1><span class="dot"></span> FerBot — Consola unificada</h1>
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-tab="consulta">Panel de consulta web</button>
+        <button class="tab" data-tab="uso">Uso en vivo</button>
+        <button class="tab" data-tab="descargas">Descargas</button>
+      </nav>
+    </header>
+
+    <section class="panel">
+      <!-- Vista 1: Panel de consulta web -->
+      <div class="view active" id="view-consulta">
+        <!-- Embebemos tu panel existente para NO romper nada -->
+        <iframe src="/panel.html" title="Panel de consulta web" referrerpolicy="no-referrer"></iframe>
+      </div>
+
+      <!-- Vista 2: Uso en vivo / Usability -->
+      <div class="view" id="view-uso">
+        <iframe src="/usability.html" title="Uso en vivo" referrerpolicy="no-referrer"></iframe>
+      </div>
+
+      <!-- Vista 3: Descargas -->
+      <div class="view" id="view-descargas">
+        <div class="cards">
+          <div class="card">
+            <h3>Extensión FerBot (ZIP)</h3>
+            <p>Descarga la extensión lista para Chrome. Cargar “descomprimida” en <code>chrome://extensions</code>.</p>
+            <a class="btn primary" href="https://drive.google.com/file/d/1yGidpuOYkcjBHBCCyVk1PCceJ5r1vr9J/view?usp=drive_link" target="_blank" rel="noopener">Descargar FerBot.zip</a>
+          </div>
+          <div class="card">
+            <h3>Instalación paso a paso</h3>
+            <p>Guía visual para instalar y configurar (una sola vez).</p>
+            <a class="btn" href="/install.html" target="_blank" rel="noopener">Abrir guía de instalación</a>
+          </div>
+          <div class="card">
+            <h3>Manual de uso</h3>
+            <p>Cómo usar el bot, calificar respuestas y ver el panel.</p>
+            <a class="btn" href="/manual.html" target="_blank" rel="noopener">Abrir manual</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Hecho con <span class="heart">❤</span></div>
+    </footer>
+  </div>
+
+  <script>
+    // Tabs sin dependencias
+    const tabs = document.querySelectorAll('.tab');
+    const views = {
+      consulta: document.getElementById('view-consulta'),
+      uso: document.getElementById('view-uso'),
+      descargas: document.getElementById('view-descargas'),
+    };
+    tabs.forEach(t => {
+      t.addEventListener('click', () => {
+        tabs.forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        Object.values(views).forEach(v => v.classList.remove('active'));
+        views[t.dataset.tab].classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
