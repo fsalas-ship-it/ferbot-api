@@ -1,183 +1,238 @@
-// FerBot API — FIX normalización de stage + fallbacks por etapa
-import express from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import bodyParser from "body-parser";
-import OpenAI from "openai";
+// FerBot API — CommonJS para evitar fallas de arranque en Render (status 1)
+// Incluye: normalización de stage + fallbacks por etapa + rutas de panel/agent/dashboard
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require("express");
+const bodyParser = require("body-parser");
+const fs = require("fs");
+const path = require("path");
+const OpenAI = require("openai");
 
 const app = express();
 app.use(bodyParser.json({ limit: "1mb" }));
+
+// Archivos estáticos (panel, agent, manuales, etc.)
 app.use(express.static(path.join(__dirname, "public")));
 
 const MODEL = process.env.OPENAI_MODEL || "gpt-5";
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || "" });
 
-// ===== Trainer in-memory =====
+// =========================
+// Trainer en memoria
+// =========================
 let IDENTITY = "";
 let KNOWLEDGE = "";
 
 function loadTrainer() {
   try {
-    const id = fs.readFileSync(path.join(__dirname, "data", "trainer_identity.txt"), "utf8");
-    IDENTITY = id.trim();
-  } catch { IDENTITY = ""; }
+    const p = path.join(__dirname, "data", "trainer_identity.txt");
+    IDENTITY = fs.existsSync(p) ? fs.readFileSync(p, "utf8").trim() : "";
+  } catch {
+    IDENTITY = "";
+  }
   try {
     const dir = path.join(__dirname, "data", "trainer_knowledge");
-    const parts = fs.readdirSync(dir)
-      .filter(f => f.endsWith(".md"))
-      .map(f => fs.readFileSync(path.join(dir, f), "utf8"));
-    KNOWLEDGE = parts.join("\n\n").trim();
-  } catch { KNOWLEDGE = ""; }
+    if (fs.existsSync(dir)) {
+      const parts = fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith(".md"))
+        .map((f) => fs.readFileSync(path.join(dir, f), "utf8"));
+      KNOWLEDGE = parts.join("\n\n").trim();
+    } else {
+      KNOWLEDGE = "";
+    }
+  } catch {
+    KNOWLEDGE = "";
+  }
 }
 loadTrainer();
 
-// ===== Utils =====
-const STAGES = new Set(["sondeo","rebatir","pre_cierre","cierre","integracion"]);
-function normStage(s=""){ s=(s||"").toLowerCase().trim(); if(!STAGES.has(s)) return "sondeo"; return s; }
+// =========================
+// Utilidades
+// =========================
+const STAGES = new Set(["sondeo", "rebatir", "pre_cierre", "cierre", "integracion"]);
+function normStage(s = "") {
+  s = String(s || "").toLowerCase().trim();
+  if (!STAGES.has(s)) return "sondeo";
+  return s;
+}
 
 function buildSystem() {
-  return [
-    `Eres FerBot. Aplica estrictamente la identidad y políticas. Español Colombia.`,
-    `Responde SIEMPRE con formato:
-REPLY: <máx 220c, 1–2 frases>
-WHY: <máx 100c>
-NEXT: <máx 100c>`,
-    IDENTITY
-  ].filter(Boolean).join("\n\n");
+  const base = [
+    `Eres FerBot. Aplica identidad y políticas. Español Colombia.`,
+    `Formato OBLIGATORIO:\nREPLY: <≤220c, 1–2 frases>\nWHY: <≤100c>\nNEXT: <≤100c>`,
+  ];
+  if (IDENTITY) base.push(IDENTITY);
+  return base.join("\n\n");
 }
 
-function buildUser({question, customerName, stage, context, intent}) {
+function buildUser({ question, customerName, stage, context, intent }) {
   return [
-    `Cliente: ${customerName||"Cliente"}`,
+    `Cliente: ${customerName || "Cliente"}`,
     `Etapa: ${stage}`,
-    `Intento: ${intent||"_default"}`,
+    `Intento: ${intent || "_default"}`,
     context ? `Contexto: ${context}` : ``,
-    `Texto: ${question}`
-  ].filter(Boolean).join("\n");
+    `Texto: ${question || ""}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
-// Fallbacks distintos por etapa (nunca repiten la misma frase)
+// Fallbacks distintos por etapa (evita “misma respuesta”)
 const FALLBACKS = {
-  sondeo: (name)=>({
-    reply: `${name}, para ayudarte bien: ¿qué buscas este año: empleo, subir ingresos o inglés? Te guío con la mejor ruta anual.`,
-    why:   `Abro con una pregunta clave para entender objetivo.`,
-    next:  `Según respuesta, elige escuela y propone activar plan anual hoy.`
+  sondeo: (name) => ({
+    reply: `${name}, para ayudarte bien: ¿qué priorizas este año: empleo, subir ingresos o inglés? Te guío en ruta anual.`,
+    why: `Pregunto meta para orientar valor.`,
+    next: `Según respuesta, elige escuela y activa plan anual hoy.`,
   }),
-  rebatir: (name)=>({
-    reply: `${name}, enfocamos valor anual: ruta clara, clases cortas y certificaciones verificables. ¿Activamos hoy y te marco el primer paso?`,
-    why:   `Tomo la objeción y la convierto en beneficio y acción.`,
-    next:  `Si acepta, activa plan anual y envía primera clase guiada.`
+  rebatir: (name) => ({
+    reply: `${name}, enfoquemos valor anual: ruta clara, clases cortas y certificaciones. ¿Lo activamos hoy y te marco el primer paso?`,
+    why: `Convierto objeción en beneficio + acción.`,
+    next: `Si acepta, activa plan anual y envía 1ª clase.`,
   }),
-  pre_cierre: (name)=>({
-    reply: `${name}, con el plan anual sostienes el hábito y consolidas resultados. ¿Lo activo ahora y te dejo la ruta lista?`,
-    why:   `Refuerzo valor percibido y quito fricción hacia la decisión.`,
-    next:  `Confirma medio de pago y deja ruta/horario definido hoy.`
+  pre_cierre: (name) => ({
+    reply: `${name}, el plan anual sostiene hábito y consolida resultados. ¿Lo activo ahora y dejo la ruta lista?`,
+    why: `Refuerzo valor y quito fricción hacia la decisión.`,
+    next: `Confirma medio de pago y horario hoy.`,
   }),
-  cierre: (name)=>({
-    reply: `${name}, listo para activar el plan anual y empezar hoy con tu primera clase?`,
-    why:   `Cierre directo, amable y claro.`,
-    next:  `Confirma y envía acceso + primera clase de la ruta.`
+  cierre: (name) => ({
+    reply: `${name}, ¿confirmo el plan anual y empezamos hoy con tu primera clase?`,
+    why: `Cierre claro y amable.`,
+    next: `Confirma y comparte acceso + 1ª clase.`,
   }),
-  integracion: (name)=>({
+  integracion: (name) => ({
     reply: `¡Hola ${name}! En Platzi transformas tu carrera con rutas anuales y certificaciones. ¿Qué priorizas hoy para empezar?`,
-    why:   `Enmarco valor y pido meta para guiar el inicio.`,
-    next:  `Según meta, elige escuela y activa acceso hoy.`
-  })
+    why: `Enmarco valor y pido meta.`,
+    next: `Según meta, elige escuela y activa acceso hoy.`,
+  }),
 };
 
-// ===== Rutas =====
-app.get("/health", (req,res)=> {
-  res.json({ ok:true, service:"ferbot-api", time:new Date().toISOString(), openai: !!process.env.OPENAI_API_KEY, model_env: MODEL });
+// =========================
+// Rutas de salud y admin
+// =========================
+app.get("/health", (req, res) => {
+  res.json({
+    ok: true,
+    service: "ferbot-api",
+    time: new Date().toISOString(),
+    openai: !!process.env.OPENAI_API_KEY,
+    model_env: MODEL,
+  });
 });
 
-app.get("/admin/reloadTrainer", (req,res)=>{
+app.get("/admin/reloadTrainer", (req, res) => {
   loadTrainer();
-  res.json({ ok:true, identity_len: IDENTITY.length, knowledge_len: KNOWLEDGE.length });
+  res.json({ ok: true, identity_len: IDENTITY.length, knowledge_len: KNOWLEDGE.length });
 });
 
-// Atajos UI que ya usas
-app.get("/", (_req,res)=> res.redirect("/panel.html"));
-app.get("/agent", (_req,res)=> res.redirect("/agent.html"));
-app.get("/dashboard", (_req,res)=> res.redirect("/usability.html"));
+// Atajos UI (no rompen GitHub Pages)
+app.get("/", (_req, res) => res.redirect("/panel.html"));
+app.get("/agent", (_req, res) => res.redirect("/agent.html"));
+app.get("/dashboard", (_req, res) => res.redirect("/usability.html"));
 
-// Core
-app.post("/assist_trainer", async (req,res)=>{
+// =========================
+app.post("/assist_trainer", async (req, res) => {
   try {
-    const { question="", customerName="Cliente", stage="", context="", intent="" } = req.body || {};
-    const stg = normStage(stage);
-    const sys = buildSystem();
-    const user = buildUser({question, customerName, stage: stg, context, intent});
+    const question = String(req.body?.question || "");
+    const customerName = String(req.body?.customerName || "Cliente");
+    const stage = normStage(req.body?.stage);
+    const context = String(req.body?.context || "");
+    const intent = String(req.body?.intent || "_default");
 
-    let reply="", why="", next="";
+    let reply = "";
+    let why = "";
+    let next = "";
 
-    // Solo intentamos LLM si tenemos identidad cargada
-    if (IDENTITY && process.env.OPENAI_API_KEY) {
-      try{
+    // Solo intentamos LLM si hay API Key y hay identidad
+    if (process.env.OPENAI_API_KEY && IDENTITY) {
+      try {
         const chat = await openai.chat.completions.create({
           model: MODEL,
           temperature: 0.4,
           max_tokens: 300,
           messages: [
-            { role:"system", content: sys },
-            { role:"user", content: `Conoce estos conocimientos:\n${KNOWLEDGE || "(sin conocimiento)"}\n\n${user}` }
-          ]
+            { role: "system", content: buildSystem() },
+            {
+              role: "user",
+              content: `Conoce estos conocimientos:\n${KNOWLEDGE || "(sin conocimiento)"}\n\n${buildUser({
+                question,
+                customerName,
+                stage,
+                context,
+                intent,
+              })}`,
+            },
+          ],
         });
-        const text = (chat?.choices?.[0]?.message?.content || "").trim();
 
-        // Parse formato REPLY/WHY/NEXT (líneas)
+        const text = (chat?.choices?.[0]?.message?.content || "").trim();
         const rx = /REPLY:\s*([\s\S]*?)\n+WHY:\s*([\s\S]*?)\n+NEXT:\s*([\s\S]*)/i;
         const m = rx.exec(text);
-        if (m) { reply=m[1].trim(); why=m[2].trim(); next=m[3].trim(); }
-      }catch(e){
+        if (m) {
+          reply = (m[1] || "").trim();
+          why = (m[2] || "").trim();
+          next = (m[3] || "").trim();
+        }
+      } catch (e) {
         // caemos a fallback
       }
     }
 
     if (!reply) {
-      const fb = FALLBACKS[stg](customerName);
-      reply = fb.reply; why = fb.why; next = fb.next;
+      const fb = FALLBACKS[stage](customerName);
+      reply = fb.reply;
+      why = fb.why;
+      next = fb.next;
     }
 
     res.json({
-      ok:true,
+      ok: true,
       text: reply,
       message: reply,
       answer: reply,
       result: {
-        reply, why, next,
+        reply,
+        why,
+        next,
         guide: `Por qué: ${why} · Siguiente paso: ${next}`,
-        sections: { [stg]: reply },
+        sections: { [stage]: reply },
         model: MODEL,
         confidence: 0.9,
-        intent: intent || "_default",
-        stage: stg,
-        persona: { name: "Ferney Salas", brand: "Platzi" }
-      }
+        intent,
+        stage,
+        persona: { name: "Ferney Salas", brand: "Platzi" },
+      },
     });
   } catch (e) {
-    res.status(500).json({ ok:false, error:"assist_failed", detail:String(e) });
+    res.status(500).json({ ok: false, error: "assist_failed", detail: String(e) });
   }
 });
 
-// rating ya existente (no lo tocamos)
-app.post("/trackRate", (req,res)=>{
-  try{
-    const p = path.join(__dirname,"stats.json");
-    const data = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p,"utf8")) : { byKey:{} };
-    const { intent="_default", stage="sondeo", text="", rating="" } = req.body || {};
-    const key = `${intent}::${stage}::${(text||"").slice(0,140)}`;
-    data.byKey[key] = data.byKey[key] || { shown:0, wins:0, ratingCounts:{good:0,regular:0,bad:0} };
+// Telemetría simple (mantengo tu formato básico)
+app.post("/trackRate", (req, res) => {
+  try {
+    const p = path.join(__dirname, "stats.json");
+    const data = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : { byKey: {} };
+
+    const intent = String(req.body?.intent || "_default");
+    const stage = normStage(req.body?.stage);
+    const text = String(req.body?.text || "");
+    const rating = String(req.body?.rating || "");
+
+    const key = `${intent}::${stage}::${text.slice(0, 140)}`;
+    data.byKey[key] = data.byKey[key] || { shown: 0, wins: 0, ratingCounts: { good: 0, regular: 0, bad: 0 } };
     data.byKey[key].shown++;
-    if (rating==="good") data.byKey[key].wins++;
-    if (rating && data.byKey[key].ratingCounts[rating]!=null) data.byKey[key].ratingCounts[rating]++;
-    fs.writeFileSync(p, JSON.stringify(data,null,2));
-    res.json({ ok:true });
-  }catch(e){ res.status(500).json({ ok:false, error:"track_failed" }); }
+    if (rating === "good") data.byKey[key].wins++;
+    if (rating && data.byKey[key].ratingCounts[rating] != null) data.byKey[key].ratingCounts[rating]++;
+
+    fs.writeFileSync(p, JSON.stringify(data, null, 2));
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "track_failed" });
+  }
 });
 
+// Arranque
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, ()=> console.log(`FerBot API on :${PORT}`));
+app.listen(PORT, () => {
+  console.log(`FerBot API on :${PORT}`);
+});
