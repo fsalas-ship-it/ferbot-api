@@ -22,13 +22,11 @@
     @media(min-width:900px){ .grid-2{grid-template-columns:1fr 1fr} }
     .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px}
     .card h2{margin:0 0 8px; font-size:18px}
-    .card h3{margin:0 0 8px; font-size:16px}
     .muted{color:var(--muted); font-size:14px}
     .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
     .btn{border:0; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer}
     .btn-primary{background:var(--green); color:#0b0f19}
     .btn-ghost{background:#121a2b; color:var(--text); border:1px solid var(--line)}
-    .btn-link{background:transparent; color:var(--green); border:0; padding:0; font-weight:700; cursor:pointer}
     .divider{height:1px; background:var(--line); margin:14px 0}
     code, .kbd{background:#0b1020; color:#dbeafe; border:1px solid var(--line); border-radius:8px; padding:2px 6px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:12px}
     .step{display:flex; gap:10px; align-items:flex-start; margin:10px 0}
@@ -37,20 +35,8 @@
     .ok{color:#19c37d}
     .warn{color:#f59e0b}
     .err{color:#ef4444}
-    .toast{position:fixed; right:18px; bottom:18px; background:#11182a; border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:none}
-    details{border:1px solid var(--line); border-radius:12px; padding:10px; background:#0e1628}
-    summary{cursor:pointer; font-weight:700}
-    .kbd{margin:0 2px}
-    .link{color:var(--green); text-decoration:none}
-    .stat{display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:#0c1322; border:1px solid var(--line); border-radius:10px}
-    .stat b{font-size:16px}
-    .footer{margin-top:24px; color:var(--muted); font-size:13px}
+    .footer{margin-top:24px; color:var(--muted); font-size:13px; text-align:center}
     .heart{color:var(--green)}
-    .mono{font-family:ui-monospace,Monaco,Menlo,Consolas,monospace}
-    .os-tabs{display:flex; gap:8px; margin:8px 0 2px}
-    .os-tabs .tab{padding:6px 10px; border-radius:999px; border:1px solid var(--line); cursor:pointer; font-weight:700; font-size:13px; color:var(--muted)}
-    .os-tabs .tab.active{background:var(--green); color:#0b0f19; border-color:transparent}
-    .hidden{display:none}
   </style>
 </head>
 <body>
@@ -58,159 +44,67 @@
     <div class="hero">
       <div class="title">
         <div class="pill">FERBOT</div>
-        <h1>Instalación & Uso (Extensión + Panel)</h1>
+        <h1>Guía de instalación y uso</h1>
       </div>
+      <span class="badge">Soporte: fsalas@platzi.com · Slack: @ferney salas</span>
+    </div>
+
+    <section class="card">
+      <h2>1️⃣ Descarga</h2>
+      <p class="muted">Descarga la extensión lista para Chrome y guárdala en tu escritorio o descargas.</p>
       <div class="row">
-        <span class="badge" id="apiBadge">API: comprobando…</span>
-        <span class="badge">Soporte: <a class="link" href="mailto:fsalas@platzi.com">fsalas@platzi.com</a> · Slack: @ferney salas</span>
+        <a href="https://drive.google.com/file/d/1yGidpuOYkcjBHBCCyVk1PCceJ5r1vr9J/view?usp=drive_link" class="btn btn-primary" target="_blank">⬇️ Descargar FerBot (.zip)</a>
+        <a href="https://ferbot-api.onrender.com/agent.html" class="btn btn-ghost" target="_blank">🧪 Panel de emergencia</a>
       </div>
-    </div>
+    </section>
 
-    <div class="grid grid-2">
-      <!-- Descargas -->
-      <section class="card">
-        <h2>1) Descarga</h2>
-        <p class="muted">Baja la extensión lista y abre el panel de emergencia (por si Chrome no está disponible).</p>
-        <div class="row">
-          <!-- Reemplaza estos HREF por tus enlaces reales de Google Drive -->
-          <a id="dlZip" href="https://drive.google.com/uc?export=download&id=REEMPLAZA_ID_ZIP" class="btn btn-primary">⬇️ Descargar extensión (.zip)</a>
-          <a href="https://ferbot-api.onrender.com/agent.html" class="btn btn-ghost">🧪 Panel de emergencia</a>
-          <a href="https://ferbot-api.onrender.com/dashboard.html" class="btn btn-ghost">📊 Dashboard</a>
-        </div>
-        <div class="divider"></div>
-        <div class="stat"><span>Estado de la API</span><b id="apiState">—</b></div>
-        <div class="stat"><span>Modelo</span><b id="apiModel">—</b></div>
-      </section>
+    <section class="card">
+      <h2>2️⃣ Instalación en Chrome</h2>
+      <div class="step"><div class="step-num">1</div><div>Descomprime el archivo <b>FerBot.zip</b> en una carpeta (por ejemplo <code>FerBot_Extension/</code>).</div></div>
+      <div class="step"><div class="step-num">2</div><div>Abre Chrome y escribe en la barra: <b>chrome://extensions</b>.</div></div>
+      <div class="step"><div class="step-num">3</div><div>Activa el <b>Modo desarrollador</b> (arriba a la derecha).</div></div>
+      <div class="step"><div class="step-num">4</div><div>Haz clic en <b>Cargar descomprimida</b> y selecciona tu carpeta <b>FerBot_Extension</b>.</div></div>
+      <div class="step"><div class="step-num">5</div><div>Verás el botón 🤖 flotante. Puedes moverlo, abrirlo y empezar a usarlo.</div></div>
+    </section>
 
-      <!-- Chrome -->
-      <section class="card">
-        <h2>2) Instalar en Chrome</h2>
-        <p class="muted">No requiere permisos especiales. Se instala una vez y queda lista.</p>
-        <div class="step"><div class="step-num">1</div><div>Descomprime el <b>.zip</b> descargado en una carpeta (por ejemplo: <span class="mono">FerBot_Extension/</span>).</div></div>
-        <div class="step"><div class="step-num">2</div><div>Abre <b>chrome://extensions</b> (copia y pega en la barra de Chrome).</div></div>
-        <div class="step"><div class="step-num">3</div><div>Activa <b>Modo desarrollador</b> (esquina superior derecha).</div></div>
-        <div class="step"><div class="step-num">4</div><div>Haz clic en <b>Cargar descomprimida</b> y selecciona la carpeta <span class="mono">FerBot_Extension/</span>.</div></div>
-        <div class="step"><div class="step-num">5</div><div>Verás el botón 🤖 en Hilos/CRM. Puedes arrastrarlo, abrir/cerrar y usarlo al instante.</div></div>
-        <div class="divider"></div>
-        <details>
-          <summary>Permitir en el sitio</summary>
-          <p class="muted">Si no aparece el botón 🤖, entra en <b>chrome://extensions</b> → FerBot → <b>Detalles</b> → “Permitir acceso a URL del sitio” o “Permitir en todos los sitios”.</p>
-        </details>
-      </section>
+    <section class="card">
+      <h2>3️⃣ Configuración (una sola vez)</h2>
+      <p class="muted">FerBot ya está conectado al servidor oficial. Solo si alguna vez se cambia el servidor, usa este comando:</p>
+      <pre><code>localStorage.setItem("ferbot_api_base","https://ferbot-api.onrender.com")</code></pre>
+      <p class="muted">Para borrar la configuración: <code>localStorage.removeItem("ferbot_api_base")</code></p>
+    </section>
 
-      <!-- Config -->
-      <section class="card">
-        <h2>3) Configuración (0 pasos obligatorios)</h2>
-        <p class="muted">La extensión ya apunta a <b>Render</b>: <code>https://ferbot-api.onrender.com</code>. No hace falta tocar nada. Solo si un día apuntas a otro servidor, usa estos comandos:</p>
-        <div class="os-tabs">
-          <button class="tab active" data-os="mac">macOS</button>
-          <button class="tab" data-os="win">Windows</button>
-        </div>
-        <div id="mac" class="os-panel">
-          <div class="step"><div class="step-num">1</div><div>Abre el sitio donde usarás FerBot y luego <span class="kbd">⌥</span>+<span class="kbd">⌘</span>+<span class="kbd">J</span> (Console).</div></div>
-          <div class="step"><div class="step-num">2</div><div>Pega y <b>Enter</b>:</div></div>
-          <pre><code>localStorage.setItem("ferbot_api_base", "https://ferbot-api.onrender.com")
-location.reload()</code></pre>
-        </div>
-        <div id="win" class="os-panel hidden">
-          <div class="step"><div class="step-num">1</div><div>Abre el sitio y luego <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">J</span> (Console).</div></div>
-          <div class="step"><div class="step-num">2</div><div>Pega y <b>Enter</b>:</div></div>
-          <pre><code>localStorage.setItem("ferbot_api_base", "https://ferbot-api.onrender.com")
-location.reload()</code></pre>
-        </div>
-        <p class="muted">Para volver a la URL por defecto, ejecuta: <code>localStorage.removeItem("ferbot_api_base")</code></p>
-      </section>
+    <section class="card">
+      <h2>4️⃣ Uso rápido</h2>
+      <ul class="muted">
+        <li>Abre el botón 🤖 en Hilos o tu CRM.</li>
+        <li>Selecciona el texto del cliente o escríbelo.</li>
+        <li>Presiona <b>Generar</b> → verás <b>Respuesta</b> + <b>Por qué</b> + <b>Siguiente paso</b>.</li>
+        <li>Califica con 👍 😐 👎 → entrena al bot y se registra en el panel.</li>
+        <li>El <b>analizador de sentimiento</b> te indica tono del cliente.</li>
+        <li>El <b>countdown</b> cambia de rojo a verde según velocidad del modelo.</li>
+      </ul>
+    </section>
 
-      <!-- Uso -->
-      <section class="card">
-        <h2>4) Uso ultra-rápido</h2>
-        <div class="step"><div class="step-num">1</div><div><b>Abre el 🤖</b> (botón flotante). Escribe o selecciona el texto del cliente.</div></div>
-        <div class="step"><div class="step-num">2</div><div>Elige <b>Etapa</b> (Integración / Sondeo / Rebatir / Pre-cierre / Cierre).</div></div>
-        <div class="step"><div class="step-num">3</div><div>Presiona <b>Generar</b>. Verás: <b>Respuesta</b> (para pegar) y <b>POR QUÉ + SIGUIENTE PASO</b> (para aprender).</div></div>
-        <div class="step"><div class="step-num">4</div><div>Califica la respuesta (👍😐👎). Esto entrena el ranking y el dashboard.</div></div>
-        <div class="divider"></div>
-        <ul class="muted" style="margin:0 0 0 18px">
-          <li>Autopaste está <b>OFF</b> por defecto. Actívalo si quieres pegar automático.</li>
-          <li>El <b>countdown</b> rojo→ámbar→verde muestra el tiempo de respuesta del modelo.</li>
-          <li>El <b>análisis de sentimiento</b> aparece junto al texto del cliente (compacto y “tech”).</li>
-        </ul>
-      </section>
+    <section class="card">
+      <h2>5️⃣ Panel de control</h2>
+      <p class="muted">Puedes ver resultados y métricas del equipo:</p>
+      <ul class="muted">
+        <li>📊 <a href="https://ferbot-api.onrender.com/admin/usability" target="_blank">Dashboard en vivo</a> (respuestas, calificaciones, winrate, usuarios activos)</li>
+        <li>🧪 <a href="https://ferbot-api.onrender.com/agent.html" target="_blank">Panel de emergencia</a> (uso sin extensión)</li>
+      </ul>
+    </section>
 
-      <!-- Troubleshooting -->
-      <section class="card">
-        <h2>5) Errores frecuentes</h2>
-        <details open>
-          <summary><span class="err">No aparece el botón 🤖</span></summary>
-          <p class="muted">Ve a <b>chrome://extensions</b> → FerBot → Detalles → activa “Permitir en todos los sitios”. Refresca la página.</p>
-        </details>
-        <div class="divider"></div>
-        <details>
-          <summary><span class="warn">“No se pudo generar (HTTP 500)”</span></summary>
-          <p class="muted">Abre <a class="link" href="https://ferbot-api.onrender.com/health" target="_blank">/health</a>. Debe mostrar <code>{"ok":true,"openai":true,...}</code>. Si no, avisa a soporte.</p>
-        </details>
-        <div class="divider"></div>
-        <details>
-          <summary><span class="warn">Render “duerme”</span></summary>
-          <p class="muted">Tenemos keepalive configurado. Si tarda la primera vez, es normal (arranque en frío). Reintenta y luego quedará activo.</p>
-        </details>
-        <div class="divider"></div>
-        <details>
-          <summary><span class="ok">¿El panel de emergencia entrena?</span></summary>
-          <p class="muted">Sí. Las calificaciones del panel también impactan el dashboard.</p>
-        </details>
-      </section>
-    </div>
+    <section class="card">
+      <h2>6️⃣ Errores frecuentes</h2>
+      <p class="muted"><b>❌ No aparece el botón 🤖:</b> revisa en <code>chrome://extensions</code> → FerBot → activar “Permitir en todos los sitios”.</p>
+      <p class="muted"><b>⚠️ No genera respuesta:</b> revisa <a href="https://ferbot-api.onrender.com/health" target="_blank">/health</a>, debe mostrar <code>{"ok":true}</code>.</p>
+      <p class="muted"><b>💤 Render dormido:</b> el primer intento puede tardar unos segundos. Luego queda activo.</p>
+    </section>
 
     <div class="footer">
-      Hecho con <span class="heart">❤</span> para acelerar ventas en Platzi. · FerBot usa respuestas cortas (≤220c), por etapas, y enseña con POR QUÉ/SIGUIENTE PASO.
+      Hecho con <span class="heart">❤</span> para el equipo de Platzi — FerBot (versión comercial 2025)
     </div>
   </div>
-
-  <div class="toast" id="toast">Copiado</div>
-
-  <script>
-    // --- OS Tabs
-    const tabs = document.querySelectorAll('.os-tabs .tab');
-    const panels = { mac: document.getElementById('mac'), win: document.getElementById('win') };
-    function activate(os){
-      tabs.forEach(t=>t.classList.toggle('active', t.dataset.os===os));
-      panels.mac.classList.toggle('hidden', os!=='mac');
-      panels.win.classList.toggle('hidden', os!=='win');
-    }
-    tabs.forEach(t=> t.addEventListener('click', ()=> activate(t.dataset.os)));
-    // Detect OS
-    (() => {
-      const ua = navigator.userAgent.toLowerCase();
-      if (ua.includes('mac')) activate('mac'); else activate('win');
-    })();
-
-    // --- API Health ping
-    (async () => {
-      const apiBadge = document.getElementById('apiBadge');
-      const apiState = document.getElementById('apiState');
-      const apiModel = document.getElementById('apiModel');
-      try{
-        const r = await fetch('https://ferbot-api.onrender.com/health', {cache:'no-store'});
-        if(!r.ok) throw new Error('bad http');
-        const j = await r.json();
-        apiBadge.textContent = j.ok ? 'API: OK' : 'API: error';
-        apiBadge.style.color = j.ok ? '#19c37d' : '#ef4444';
-        apiState.textContent = j.ok ? 'Disponible' : 'Caída';
-        apiModel.textContent = j.model_env || '(modelo no reportado)';
-      }catch(e){
-        apiBadge.textContent = 'API: error';
-        apiBadge.style.color = '#ef4444';
-        apiState.textContent = 'No disponible';
-        apiModel.textContent = '—';
-      }
-    })();
-
-    // --- Copy helper (for future buttons if needed)
-    function showToast(msg='Copiado'){
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.style.display='block';
-      setTimeout(()=> t.style.display='none', 1200);
-    }
-  </script>
 </body>
 </html>
