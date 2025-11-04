@@ -1,110 +1,90 @@
-<!doctype html>
-<html lang="es" class="h-full">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>FerBot · Instalación y Uso</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>FerBot — Guía de instalación</title>
   <style>
     :root{
-      --green:#97C93E; --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --text:#e2e8f0; --line:rgba(255,255,255,.08);
+      --bg:#0b0f19; --card:#111827; --ink:#E5E7EB; --mut:#93A3B8; --ok:#97C93E; --pill:#121A2B; --stroke:#1f2937; --hl:#1D2A44;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
-         background:radial-gradient(1200px 700px at 80% -10%, rgba(151,201,62,.15), transparent 60%), var(--bg);
-         color:var(--text);}
-    .wrap{max-width:1000px; margin:0 auto; padding:28px 16px 48px;}
-    .hero{display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:16px}
-    .title{display:flex; align-items:center; gap:10px}
-    .title h1{margin:0; font-size:22px}
-    .badge{padding:6px 10px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:13px}
-    .grid{display:grid; gap:16px}
-    @media(min-width:900px){ .grid-2{grid-template-columns:1fr 1fr} }
-    .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px}
-    .card h2{margin:0 0 8px; font-size:18px}
-    .muted{color:var(--muted); font-size:14px}
-    .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-    .btn{border:0; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer}
-    .btn-primary{background:var(--green); color:#0b0f19}
-    .btn-ghost{background:#121a2b; color:var(--text); border:1px solid var(--line)}
-    .divider{height:1px; background:var(--line); margin:14px 0}
-    code, .kbd{background:#0b1020; color:#dbeafe; border:1px solid var(--line); border-radius:8px; padding:2px 6px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:12px}
-    .step{display:flex; gap:10px; align-items:flex-start; margin:10px 0}
-    .step-num{width:26px; height:26px; min-width:26px; border-radius:999px; background:#121a2b; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:700; font-size:13px}
-    .pill{padding:4px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); font-size:12px}
-    .ok{color:#19c37d}
-    .warn{color:#f59e0b}
-    .err{color:#ef4444}
-    .footer{margin-top:24px; color:var(--muted); font-size:13px; text-align:center}
-    .heart{color:var(--green)}
+    body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#0f1c2f 0%,#0b0f19 50%,#0b0f19 100%); color:var(--ink); font:14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;}
+    .wrap{max-width:980px;margin:32px auto;padding:0 16px}
+    .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .h .tag{opacity:.75;font-weight:700;letter-spacing:.4px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--stroke);border-radius:16px;padding:18px 20px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h1{margin:0 0 4px 0; font-size:22px}
+    h2{margin:0 0 10px 0; font-size:16px}
+    ol{margin:8px 0 0 18px}
+    li{margin:8px 0}
+    code{background:#0f172a;border:1px solid #1f2937;border-radius:8px;padding:4px 8px;color:#e2e8f0}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--pill);border:1px solid var(--stroke);color:#cbd5e1;border-radius:999px;padding:8px 12px;text-decoration:none;font-weight:700}
+    .pill.ok{background:var(--ok);color:#0b0f19;border:none}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:800px){.grid{grid-template-columns:1fr}}
+    footer{opacity:.7;margin-top:18px}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="hero">
-      <div class="title">
-        <div class="pill">FERBOT</div>
-        <h1>Guía de instalación y uso</h1>
+    <div class="h">
+      <div>
+        <div class="tag">FERBOT</div>
+        <h1>Guía de instalación</h1>
       </div>
-      <span class="badge">Soporte: fsalas@platzi.com · Slack: @ferney salas</span>
+      <div class="grid" style="gap:8px">
+        <a class="pill ok" href="/panel">🧪 Panel de consulta web</a>
+        <a class="pill" href="/usability">📊 Dashboard en vivo</a>
+      </div>
     </div>
 
-    <section class="card">
-      <h2>1️⃣ Descarga</h2>
-      <p class="muted">Descarga la extensión lista para Chrome y guárdala en tu escritorio o descargas.</p>
-      <div class="row">
-        <a href="https://drive.google.com/file/d/1yGidpuOYkcjBHBCCyVk1PCceJ5r1vr9J/view?usp=drive_link" class="btn btn-primary" target="_blank">⬇️ Descargar FerBot (.zip)</a>
-        <a href="https://ferbot-api.onrender.com/agent.html" class="btn btn-ghost" target="_blank">🧪 Panel de emergencia</a>
-      </div>
-    </section>
+    <div class="card">
+      <h2>1) Descarga</h2>
+      <p>Descarga la extensión lista para Chrome y guárdala.</p>
+      <a class="pill ok" href="https://drive.google.com/uc?export=download&id=1yGidpuOYkcjBHBCCyVk1PCceJ5r1vr9J">⬇️ Descargar FerBot (.zip)</a>
+    </div>
 
-    <section class="card">
-      <h2>2️⃣ Instalación en Chrome</h2>
-      <div class="step"><div class="step-num">1</div><div>Descomprime el archivo <b>FerBot.zip</b> en una carpeta (por ejemplo <code>FerBot_Extension/</code>).</div></div>
-      <div class="step"><div class="step-num">2</div><div>Abre Chrome y escribe en la barra: <b>chrome://extensions</b>.</div></div>
-      <div class="step"><div class="step-num">3</div><div>Activa el <b>Modo desarrollador</b> (arriba a la derecha).</div></div>
-      <div class="step"><div class="step-num">4</div><div>Haz clic en <b>Cargar descomprimida</b> y selecciona tu carpeta <b>FerBot_Extension</b>.</div></div>
-      <div class="step"><div class="step-num">5</div><div>Verás el botón 🤖 flotante. Puedes moverlo, abrirlo y empezar a usarlo.</div></div>
-    </section>
+    <div class="card">
+      <h2>2) Instalación en Chrome</h2>
+      <ol>
+        <li>Descomprime el archivo <b>FerBot.zip</b> en una carpeta (por ejemplo <b>FerBot_Extension/</b>).</li>
+        <li>Abre Chrome y escribe en la barra: <b>chrome://extensions</b>.</li>
+        <li>Activa el <b>Modo desarrollador</b> (arriba a la derecha).</li>
+        <li>Haz clic en <b>Cargar descomprimida</b> y selecciona la carpeta <b>FerBot_Extension</b>.</li>
+        <li>Verás el botón flotante 🤖; puedes moverlo, abrirlo y usarlo.</li>
+      </ol>
+    </div>
 
-    <section class="card">
-      <h2>3️⃣ Configuración (una sola vez)</h2>
-      <p class="muted">FerBot ya está conectado al servidor oficial. Solo si alguna vez se cambia el servidor, usa este comando:</p>
-      <pre><code>localStorage.setItem("ferbot_api_base","https://ferbot-api.onrender.com")</code></pre>
-      <p class="muted">Para borrar la configuración: <code>localStorage.removeItem("ferbot_api_base")</code></p>
-    </section>
+    <div class="card">
+      <h2>3) Configuración (una sola vez)</h2>
+      <p>FerBot ya está conectado a Render. Sólo si alguna vez se cambia el servidor, usa:</p>
+      <code>localStorage.setItem("ferbot_api_base","https://ferbot-api.onrender.com")</code>
+      <p>Para borrar:</p>
+      <code>localStorage.removeItem("ferbot_api_base")</code>
+    </div>
 
-    <section class="card">
-      <h2>4️⃣ Uso rápido</h2>
-      <ul class="muted">
+    <div class="card">
+      <h2>4) Uso rápido</h2>
+      <ul>
         <li>Abre el botón 🤖 en Hilos o tu CRM.</li>
-        <li>Selecciona el texto del cliente o escríbelo.</li>
-        <li>Presiona <b>Generar</b> → verás <b>Respuesta</b> + <b>Por qué</b> + <b>Siguiente paso</b>.</li>
-        <li>Califica con 👍 😐 👎 → entrena al bot y se registra en el panel.</li>
-        <li>El <b>analizador de sentimiento</b> te indica tono del cliente.</li>
-        <li>El <b>countdown</b> cambia de rojo a verde según velocidad del modelo.</li>
+        <li>Selecciona texto del cliente o escríbelo.</li>
+        <li>Presiona <b>Generar</b> → verás Respuesta + <b>Por qué</b> + <b>Siguiente paso</b>.</li>
+        <li>Califica con 👍 😐 👎 y entra al top del panel.</li>
+        <li>El analizador de sentimiento te indica tono del cliente.</li>
+        <li>El countdown cambia de rojo→ámbar→verde según velocidad.</li>
       </ul>
-    </section>
-
-    <section class="card">
-      <h2>5️⃣ Panel de control</h2>
-      <p class="muted">Puedes ver resultados y métricas del equipo:</p>
-      <ul class="muted">
-        <li>📊 <a href="https://ferbot-api.onrender.com/admin/usability" target="_blank">Dashboard en vivo</a> (respuestas, calificaciones, winrate, usuarios activos)</li>
-        <li>🧪 <a href="https://ferbot-api.onrender.com/agent.html" target="_blank">Panel de emergencia</a> (uso sin extensión)</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>6️⃣ Errores frecuentes</h2>
-      <p class="muted"><b>❌ No aparece el botón 🤖:</b> revisa en <code>chrome://extensions</code> → FerBot → activar “Permitir en todos los sitios”.</p>
-      <p class="muted"><b>⚠️ No genera respuesta:</b> revisa <a href="https://ferbot-api.onrender.com/health" target="_blank">/health</a>, debe mostrar <code>{"ok":true}</code>.</p>
-      <p class="muted"><b>💤 Render dormido:</b> el primer intento puede tardar unos segundos. Luego queda activo.</p>
-    </section>
-
-    <div class="footer">
-      Hecho con <span class="heart">❤</span> para el equipo de Platzi — FerBot (versión comercial 2025)
     </div>
+
+    <div class="card">
+      <h2>5) Paneles</h2>
+      <ul>
+        <li><a class="pill" href="/panel">🧪 Panel de consulta web</a></li>
+        <li><a class="pill" href="/usability">📊 Dashboard en vivo</a></li>
+      </ul>
+    </div>
+
+    <footer>Hecho con ❤ FerBot v1.0</footer>
   </div>
 </body>
 </html>
