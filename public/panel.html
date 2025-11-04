@@ -107,9 +107,8 @@
 </div>
 
 <script>
-  const BASE = "https://ferbot-api.onrender.com"; // SIEMPRE Render
+  const BASE = "https://ferbot-api.onrender.com";
 
-  // Elements
   const nameEl  = document.getElementById("name");
   const stageEl = document.getElementById("stage");
   const ctxEl   = document.getElementById("context");
@@ -130,7 +129,6 @@
   const btnB    = document.getElementById("btnBad");
   const autoEl  = document.getElementById("autopaste");
 
-  // Sentiment (heurístico)
   function updateSentimentBadge(text){
     const s = (text||"").toLowerCase();
     let cls = "neu", t = "Neutral";
@@ -164,7 +162,6 @@
     else if(color==="verde") bullet.classList.add("verde");
   }
 
-  // Ratings toggle
   function toggleRatings(show){
     btnG.style.display = show ? "inline-block" : "none";
     btnR.style.display = show ? "inline-block" : "none";
@@ -173,7 +170,6 @@
   toggleRatings(false);
   let lastReply = null;
 
-  // Generate
   btnGen.onclick = async ()=>{
     const q = (inputEl.value || "").trim();
     if (!q){ alert("Escribe la objeción/pregunta primero."); return; }
