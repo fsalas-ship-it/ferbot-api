@@ -1,238 +1,262 @@
-// FerBot API — CommonJS para evitar fallas de arranque en Render (status 1)
-// Incluye: normalización de stage + fallbacks por etapa + rutas de panel/agent/dashboard
+// server.js — FerBot API (estable)
+// Requisitos: Node 18+, OPENAI_API_KEY en el entorno
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const fs = require("fs");
 const path = require("path");
-const OpenAI = require("openai");
+const fs = require("fs");
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
-const app = express();
-app.use(bodyParser.json({ limit: "1mb" }));
+// ---------- Config ----------
+const PORT = process.env.PORT || 3000;
+const PUBLIC_DIR = path.join(__dirname, "public");
+const DATA_DIR = path.join(__dirname, "data");
+const TRAINER_IDENTITY = path.join(DATA_DIR, "trainer_identity.txt");
+const TRAINER_KNOWLEDGE_DIR = path.join(DATA_DIR, "trainer_knowledge");
 
-// Archivos estáticos (panel, agent, manuales, etc.)
-app.use(express.static(path.join(__dirname, "public")));
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-5"; // tu modelo en uso
 
-const MODEL = process.env.OPENAI_MODEL || "gpt-5";
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || "" });
+// ---------- Estado en memoria ----------
+let TRAINER = {
+  identity: "",
+  knowledge: "",
+  loadedAt: null,
+};
 
-// =========================
-// Trainer en memoria
-// =========================
-let IDENTITY = "";
-let KNOWLEDGE = "";
+let STATS = {
+  // estructura mínima para el dashboard
+  shown: {}, // firma -> { intent, stage, text, shown, wins }
+};
 
+// ---------- Utilidades ----------
+function safeRead(p) {
+  try { return fs.readFileSync(p, "utf8"); } catch { return ""; }
+}
+
+function loadKnowledgeFromDir(dir) {
+  if (!fs.existsSync(dir)) return "";
+  const files = fs.readdirSync(dir).filter(f => f.endsWith(".md") || f.endsWith(".txt"));
+  return files.map(f => `# ${f}\n` + safeRead(path.join(dir, f))).join("\n\n");
+}
+
+function signatureFor(text = "") {
+  return text.trim().toLowerCase().replace(/\s+/g, " ").slice(0, 200);
+}
+
+function ensureStatEntry(sig, intent, stage, text) {
+  if (!STATS.shown[sig]) {
+    STATS.shown[sig] = { intent, stage, text, shown: 0, wins: 0 };
+  }
+  return STATS.shown[sig];
+}
+
+async function callOpenAI(messages) {
+  if (!OPENAI_API_KEY) {
+    throw new Error("OPENAI_API_KEY not set");
+  }
+  const resp = await fetch(`${OPENAI_BASE_URL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${OPENAI_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: OPENAI_MODEL,
+      messages,
+      temperature: 0.4,
+      max_tokens: 220,
+    })
+  });
+  if (!resp.ok) {
+    const txt = await resp.text().catch(()=> "");
+    const err = new Error(`OpenAI HTTP ${resp.status}: ${txt}`);
+    err.status = resp.status;
+    throw err;
+  }
+  const json = await resp.json();
+  const text = json?.choices?.[0]?.message?.content || "";
+  return text;
+}
+
+// ---------- Trainer ----------
 function loadTrainer() {
-  try {
-    const p = path.join(__dirname, "data", "trainer_identity.txt");
-    IDENTITY = fs.existsSync(p) ? fs.readFileSync(p, "utf8").trim() : "";
-  } catch {
-    IDENTITY = "";
-  }
-  try {
-    const dir = path.join(__dirname, "data", "trainer_knowledge");
-    if (fs.existsSync(dir)) {
-      const parts = fs
-        .readdirSync(dir)
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => fs.readFileSync(path.join(dir, f), "utf8"));
-      KNOWLEDGE = parts.join("\n\n").trim();
-    } else {
-      KNOWLEDGE = "";
-    }
-  } catch {
-    KNOWLEDGE = "";
-  }
-}
-loadTrainer();
-
-// =========================
-// Utilidades
-// =========================
-const STAGES = new Set(["sondeo", "rebatir", "pre_cierre", "cierre", "integracion"]);
-function normStage(s = "") {
-  s = String(s || "").toLowerCase().trim();
-  if (!STAGES.has(s)) return "sondeo";
-  return s;
+  const identity = safeRead(TRAINER_IDENTITY);
+  const knowledge = loadKnowledgeFromDir(TRAINER_KNOWLEDGE_DIR);
+  TRAINER = { identity, knowledge, loadedAt: new Date() };
 }
 
-function buildSystem() {
-  const base = [
-    `Eres FerBot. Aplica identidad y políticas. Español Colombia.`,
-    `Formato OBLIGATORIO:\nREPLY: <≤220c, 1–2 frases>\nWHY: <≤100c>\nNEXT: <≤100c>`,
-  ];
-  if (IDENTITY) base.push(IDENTITY);
-  return base.join("\n\n");
+function buildSystemPrompt() {
+  const id = TRAINER.identity || "Eres FerBot. Responde corto, claro, tono Colombia.";
+  const kn = TRAINER.knowledge || "";
+  return `${id}\n\n=== Conocimiento ===\n${kn}\n\n` +
+    `Devuelve SIEMPRE:\nREPLY: <1-2 frases máx 220c>\nWHY: <por qué de la respuesta>\nNEXT: <siguiente paso para el asesor>`;
 }
 
-function buildUser({ question, customerName, stage, context, intent }) {
-  return [
-    `Cliente: ${customerName || "Cliente"}`,
-    `Etapa: ${stage}`,
-    `Intento: ${intent || "_default"}`,
-    context ? `Contexto: ${context}` : ``,
-    `Texto: ${question || ""}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+function guessIntent(q = "") {
+  const s = (q || "").toLowerCase();
+  if (/(tiempo|no tengo tiempo|agenda|horario|ocupad)/.test(s)) return "tiempo";
+  if (/(precio|caro|costo|vale|descuento|promoci)/.test(s)) return "precio";
+  if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
+  if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
+  if (/(platzi|qué es platzi|que es platzi|pitch)/.test(s)) return "pitch";
+  return "_default";
 }
 
-// Fallbacks distintos por etapa (evita “misma respuesta”)
 const FALLBACKS = {
+  integracion: (name) => ({
+    reply: `Hola ${name}, en Platzi transformas tu carrera con plan anual: rutas, clases cortas y certificaciones verificables. ¿Qué meta priorizas este año?`,
+    why: "Integro saludo + valor anual y pido meta.",
+    next: "Guía a elegir escuela/meta y activar hoy.",
+  }),
   sondeo: (name) => ({
-    reply: `${name}, para ayudarte bien: ¿qué priorizas este año: empleo, subir ingresos o inglés? Te guío en ruta anual.`,
-    why: `Pregunto meta para orientar valor.`,
-    next: `Según respuesta, elige escuela y activa plan anual hoy.`,
+    reply: `${name}, cuéntame tu meta de este año (empleo, ingresos o inglés) y el tiempo que puedes dedicar. Te paso una ruta anual precisa.`,
+    why: "Recojo meta/tiempo para personalizar ruta.",
+    next: "Con la meta, propon ruta y activa hoy.",
   }),
   rebatir: (name) => ({
-    reply: `${name}, enfoquemos valor anual: ruta clara, clases cortas y certificaciones. ¿Lo activamos hoy y te marco el primer paso?`,
-    why: `Convierto objeción en beneficio + acción.`,
-    next: `Si acepta, activa plan anual y envía 1ª clase.`,
+    reply: `${name}, cambiemos objeción por valor: plan anual, clases cortas y certificados que se convierten en oportunidades. ¿Te activo hoy?`,
+    why: "Viro objeción a valor/resultado del año.",
+    next: "Si confirma, activa plan y primera clase.",
   }),
   pre_cierre: (name) => ({
-    reply: `${name}, el plan anual sostiene hábito y consolida resultados. ¿Lo activo ahora y dejo la ruta lista?`,
-    why: `Refuerzo valor y quito fricción hacia la decisión.`,
-    next: `Confirma medio de pago y horario hoy.`,
+    reply: `${name}, dejemos listo hoy: plan anual con rutas y certificaciones; tú eliges ritmo y yo te guío. ¿Lo activamos ya?`,
+    why: "Quito fricción y enfoco en decisión.",
+    next: "Pide confirmación y comparte paso de pago.",
   }),
   cierre: (name) => ({
-    reply: `${name}, ¿confirmo el plan anual y empezamos hoy con tu primera clase?`,
-    why: `Cierre claro y amable.`,
-    next: `Confirma y comparte acceso + 1ª clase.`,
+    reply: `${name}, perfecto: activo tu plan anual y te dejo ruta y primera clase. ¿Confirmas para habilitar acceso ya?`,
+    why: "Cierre directo con siguiente acción.",
+    next: "Confirma y comparte instrucciones de pago.",
   }),
-  integracion: (name) => ({
-    reply: `¡Hola ${name}! En Platzi transformas tu carrera con rutas anuales y certificaciones. ¿Qué priorizas hoy para empezar?`,
-    why: `Enmarco valor y pido meta.`,
-    next: `Según meta, elige escuela y activa acceso hoy.`,
+  _default: (name) => ({
+    reply: `Hola ${name}, enfoco en transformación anual: rutas, clases cortas y certificaciones. ¿Qué quieres lograr este año?`,
+    why: "Aterrizo valor anual y pido meta.",
+    next: "Con meta, arma ruta y activa hoy.",
   }),
 };
 
-// =========================
-// Rutas de salud y admin
-// =========================
+// ---------- App ----------
+const app = express();
+app.use(cors());
+app.use(morgan("tiny"));
+app.use(bodyParser.json({ limit: "2mb" }));
+
+// Static y alias
+app.use(express.static(PUBLIC_DIR));
+app.get("/panel", (req, res) => res.sendFile(path.join(PUBLIC_DIR, "panel.html")));
+app.get("/agent", (req, res) => res.sendFile(path.join(PUBLIC_DIR, "agent.html")));
+app.get("/dashboard", (req, res) => res.sendFile(path.join(PUBLIC_DIR, "usability.html")));
+app.get("/", (req, res) => res.redirect("/panel"));
+
+// Health
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
     service: "ferbot-api",
     time: new Date().toISOString(),
-    openai: !!process.env.OPENAI_API_KEY,
-    model_env: MODEL,
+    openai: !!OPENAI_API_KEY,
+    model_env: OPENAI_MODEL,
   });
 });
 
+// Reload trainer
 app.get("/admin/reloadTrainer", (req, res) => {
   loadTrainer();
-  res.json({ ok: true, identity_len: IDENTITY.length, knowledge_len: KNOWLEDGE.length });
+  res.json({
+    ok: true,
+    identity_len: TRAINER.identity.length,
+    knowledge_len: TRAINER.knowledge.length,
+    loadedAt: TRAINER.loadedAt,
+  });
 });
 
-// Atajos UI (no rompen GitHub Pages)
-app.get("/", (_req, res) => res.redirect("/panel.html"));
-app.get("/agent", (_req, res) => res.redirect("/agent.html"));
-app.get("/dashboard", (_req, res) => res.redirect("/usability.html"));
-
-// =========================
+// Assist endpoint
 app.post("/assist_trainer", async (req, res) => {
   try {
-    const question = String(req.body?.question || "");
-    const customerName = String(req.body?.customerName || "Cliente");
-    const stage = normStage(req.body?.stage);
-    const context = String(req.body?.context || "");
-    const intent = String(req.body?.intent || "_default");
+    const { question, customerName, stage, context } = req.body || {};
+    const q = (question || "").trim();
+    const name = (customerName || "Cliente").trim();
+    const stageKey = (stage || "_default").trim();
+    const ctx = (context || "").trim();
 
-    let reply = "";
-    let why = "";
-    let next = "";
+    if (!q) return res.status(400).json({ ok:false, error:"question_required" });
 
-    // Solo intentamos LLM si hay API Key y hay identidad
-    if (process.env.OPENAI_API_KEY && IDENTITY) {
-      try {
-        const chat = await openai.chat.completions.create({
-          model: MODEL,
-          temperature: 0.4,
-          max_tokens: 300,
-          messages: [
-            { role: "system", content: buildSystem() },
-            {
-              role: "user",
-              content: `Conoce estos conocimientos:\n${KNOWLEDGE || "(sin conocimiento)"}\n\n${buildUser({
-                question,
-                customerName,
-                stage,
-                context,
-                intent,
-              })}`,
-            },
-          ],
-        });
+    const sys = buildSystemPrompt();
+    const intent = guessIntent(q);
 
-        const text = (chat?.choices?.[0]?.message?.content || "").trim();
-        const rx = /REPLY:\s*([\s\S]*?)\n+WHY:\s*([\s\S]*?)\n+NEXT:\s*([\s\S]*)/i;
-        const m = rx.exec(text);
-        if (m) {
-          reply = (m[1] || "").trim();
-          why = (m[2] || "").trim();
-          next = (m[3] || "").trim();
-        }
-      } catch (e) {
-        // caemos a fallback
-      }
+    const user = [
+      `Etapa: ${stageKey}`,
+      `Intento: ${intent}`,
+      ctx ? `Contexto: ${ctx}` : null,
+      `Mensaje del cliente (${name}): ${q}`,
+      `Formato obligatorio:\nREPLY: ...\nWHY: ...\nNEXT: ...`,
+    ].filter(Boolean).join("\n");
+
+    let text = "";
+    try {
+      text = await callOpenAI([
+        { role:"system", content: sys },
+        { role:"user", content: user },
+      ]);
+    } catch (err) {
+      // fallback si OpenAI falla
+      const f = (FALLBACKS[stageKey] || FALLBACKS._default)(name);
+      return res.json({
+        ok: true,
+        text: f.reply,
+        result: { reply: f.reply, why: f.why, next: f.next, stage: stageKey, intent, model: "fallback" }
+      });
     }
 
-    if (!reply) {
-      const fb = FALLBACKS[stage](customerName);
-      reply = fb.reply;
-      why = fb.why;
-      next = fb.next;
+    // parsea REPLY/WHY/NEXT (tolerante)
+    const lines = text.split("\n").map(s=>s.trim());
+    let reply="", why="", next="";
+    for (const ln of lines) {
+      if (!reply && /^reply:/i.test(ln)) reply = ln.replace(/^reply:/i,"").trim();
+      else if (!why && /^why:/i.test(ln)) why = ln.replace(/^why:/i,"").trim();
+      else if (!next && /^next:/i.test(ln)) next = ln.replace(/^next:/i,"").trim();
     }
+    if (!reply) reply = lines.filter(Boolean).join(" ").slice(0, 220);
 
-    res.json({
+    // registra estadística básica
+    const sig = signatureFor(reply);
+    const stat = ensureStatEntry(sig, intent, stageKey, reply);
+    stat.shown += 1;
+
+    return res.json({
       ok: true,
       text: reply,
-      message: reply,
-      answer: reply,
-      result: {
-        reply,
-        why,
-        next,
-        guide: `Por qué: ${why} · Siguiente paso: ${next}`,
-        sections: { [stage]: reply },
-        model: MODEL,
-        confidence: 0.9,
-        intent,
-        stage,
-        persona: { name: "Ferney Salas", brand: "Platzi" },
-      },
+      result: { reply, why, next, stage: stageKey, intent, model: OPENAI_MODEL }
     });
   } catch (e) {
-    res.status(500).json({ ok: false, error: "assist_failed", detail: String(e) });
+    return res.status(500).json({ ok:false, error:"assist_failed" });
   }
 });
 
-// Telemetría simple (mantengo tu formato básico)
+// Rating simple
 app.post("/trackRate", (req, res) => {
   try {
-    const p = path.join(__dirname, "stats.json");
-    const data = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : { byKey: {} };
-
-    const intent = String(req.body?.intent || "_default");
-    const stage = normStage(req.body?.stage);
-    const text = String(req.body?.text || "");
-    const rating = String(req.body?.rating || "");
-
-    const key = `${intent}::${stage}::${text.slice(0, 140)}`;
-    data.byKey[key] = data.byKey[key] || { shown: 0, wins: 0, ratingCounts: { good: 0, regular: 0, bad: 0 } };
-    data.byKey[key].shown++;
-    if (rating === "good") data.byKey[key].wins++;
-    if (rating && data.byKey[key].ratingCounts[rating] != null) data.byKey[key].ratingCounts[rating]++;
-
-    fs.writeFileSync(p, JSON.stringify(data, null, 2));
-    res.json({ ok: true });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: "track_failed" });
+    const { text, intent, stage, rating } = req.body || {};
+    if (!text) return res.json({ ok:true }); // tolerante
+    const sig = signatureFor(text);
+    const stat = ensureStatEntry(sig, intent || "_", stage || "_", text);
+    if (rating === "good") stat.wins += 1;
+    return res.json({ ok:true });
+  } catch {
+    return res.json({ ok:true });
   }
+});
+
+// 404 controlado (para que sepas si falta un archivo en /public)
+app.use((req, res) => {
+  res.status(404).send(`Not Found: ${req.originalUrl}`);
 });
 
 // Arranque
-const PORT = process.env.PORT || 3000;
+loadTrainer();
 app.listen(PORT, () => {
   console.log(`FerBot API on :${PORT}`);
 });
