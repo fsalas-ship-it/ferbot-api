@@ -7,7 +7,9 @@ const cors = require("cors");
 const fs = require("fs/promises");
 const fssync = require("fs");
 const path = require("path");
-const fetch = global.fetch || ((...args) => import("node-fetch").then(({default: f}) => f(...args)));
+
+// Usa fetch nativo de Node 18+ (no node-fetch).
+const fetch = globalThis.fetch;
 
 const app = express();
 app.use(cors());
@@ -18,13 +20,13 @@ const ROOT_DIR   = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const DATA_DIR   = path.join(ROOT_DIR, "data");
 
-const MEMORY_PATH   = path.join(DATA_DIR, "memory.json");           // objeciones/KB simples
-const VARIANTS_PATH = path.join(DATA_DIR, "variants.json");         // variantes por intent::stage (offline)
-const STATS_PATH    = path.join(DATA_DIR, "stats.json");            // métricas/rating
-const TRAINER_TXT   = path.join(DATA_DIR, "trainer_identity.txt");  // identidad+reglas del trainer
-const TRAINER_KNOW  = path.join(DATA_DIR, "trainer_knowledge");     // carpeta .txt/.md
+const MEMORY_PATH   = path.join(DATA_DIR, "memory.json");
+const VARIANTS_PATH = path.join(DATA_DIR, "variants.json");
+const STATS_PATH    = path.join(DATA_DIR, "stats.json");
+const TRAINER_TXT   = path.join(DATA_DIR, "trainer_identity.txt");
+const TRAINER_KNOW  = path.join(DATA_DIR, "trainer_knowledge");
 
-// Ensure folders/files
+// Ensure dirs/files
 for (const p of [DATA_DIR, PUBLIC_DIR, TRAINER_KNOW]) {
   if (!fssync.existsSync(p)) fssync.mkdirSync(p, { recursive: true });
 }
@@ -32,9 +34,8 @@ if (!fssync.existsSync(MEMORY_PATH))   fssync.writeFileSync(MEMORY_PATH, JSON.st
 if (!fssync.existsSync(VARIANTS_PATH)) fssync.writeFileSync(VARIANTS_PATH, JSON.stringify({ byKey: {} }, null, 2));
 if (!fssync.existsSync(STATS_PATH))    fssync.writeFileSync(STATS_PATH, JSON.stringify({ byKey: {} }, null, 2));
 if (!fssync.existsSync(TRAINER_TXT))   fssync.writeFileSync(TRAINER_TXT, "");
-// public/* (panel) se crea en el paso de subir archivos
 
-// Serve estáticos (public/)
+// Serve estáticos
 app.use(express.static(PUBLIC_DIR));
 
 // Utils
@@ -61,8 +62,9 @@ function inferIntent(q = "") {
   if (/(pitch|qué es platzi|que es platzi|platzi)/.test(s)) return "pitch";
   return "_default";
 }
+function escapeHtml(s=""){return s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]))}
 
-// Stats helpers
+// Stats
 function ensureStatEntry(stats, intent, stage, text) {
   const key = `${intent}::${stage}`;
   if (!stats.byKey[key]) stats.byKey[key] = {};
@@ -86,9 +88,10 @@ async function trackRating(intent, stage, replyText, rating) {
   await writeJsonPretty(STATS_PATH, stats);
 }
 
-// Trainer (identity + knowledge)
+// Trainer cache
 let TRAINER_IDENTITY = "";
-let TRAINER_SNIPPETS = ""; // concatenado (capado)
+let TRAINER_SNIPPETS = "";
+
 async function loadTrainerIdentity() {
   try {
     TRAINER_IDENTITY = (await fs.readFile(TRAINER_TXT, "utf8")).trim();
@@ -106,10 +109,6 @@ async function loadTrainerIdentity() {
     TRAINER_SNIPPETS = texts.join("\n\n---\n\n").slice(0, 10000);
   } catch { TRAINER_SNIPPETS = ""; }
 }
-app.post("/admin/reloadTrainer", async (_req, res) => {
-  await loadTrainerIdentity();
-  res.json({ ok: true, identity_len: TRAINER_IDENTITY.length, knowledge_len: TRAINER_SNIPPETS.length });
-});
 
 // Health
 app.get("/health", (_req, res) => {
@@ -122,26 +121,36 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// Assist (trainer) — devuelve REPLY + WHY + NEXT
+// Reload trainer (acepta GET y POST)
+app.get("/admin/reloadTrainer", async (_req, res) => {
+  await loadTrainerIdentity();
+  res.json({ ok: true, identity_len: TRAINER_IDENTITY.length, knowledge_len: TRAINER_SNIPPETS.length });
+});
+app.post("/admin/reloadTrainer", async (_req, res) => {
+  await loadTrainerIdentity();
+  res.json({ ok: true, identity_len: TRAINER_IDENTITY.length, knowledge_len: TRAINER_SNIPPETS.length });
+});
+
+// Assist
 function fallbackWhy(stage, intent) {
   const map = {
-    sondeo:     "Validamos su meta y contexto para personalizar.",
-    rebatir:    "Convertimos objeción en valor y acción concreta.",
-    pre_cierre: "Reafirmamos valor anual y quitamos fricciones.",
-    cierre:     "Concretamos decisión con paso simple.",
-    integracion:"Refuerza hábito y claridad del primer paso."
+    sondeo:     "Valido su meta y contexto para personalizar.",
+    rebatir:    "Convierto la objeción en valor y acción.",
+    pre_cierre: "Reafirmo valor anual y quito fricciones.",
+    cierre:     "Concreto decisión con paso simple.",
+    integracion:"Refuerzo hábito y primer paso claro."
   };
-  return map[stage] || `Guiamos por beneficio y CTA (${intent}/${stage}).`;
+  return map[stage] || `Guío por valor y CTA (${intent}/${stage}).`;
 }
 function fallbackNext(stage) {
   const map = {
     sondeo:     "Haz 1 pregunta clave y confirma meta anual.",
-    rebatir:    "Conecta valor → vida y pide mini OK.",
-    pre_cierre: "Resume valor y pide confirmación de activación.",
-    cierre:     "Pide confirmación para activar plan anual hoy.",
+    rebatir:    "Conecta valor→vida y pide mini OK.",
+    pre_cierre: "Resume valor y pide confirmación.",
+    cierre:     "Pide confirmación para activar hoy.",
     integracion:"Deja horario diario corto y seguimiento."
   };
-  return map[stage] || "Cierra con un CTA claro y accionable.";
+  return map[stage] || "Cierra con un CTA claro.";
 }
 
 app.post("/assist_trainer", async (req, res) => {
@@ -150,12 +159,11 @@ app.post("/assist_trainer", async (req, res) => {
     const name = (customerName || "").trim() || "Cliente";
     const intent = intentIn || inferIntent(question);
 
-    // Reglas del trainer (voz Colombia, anual, sin llamadas ni “te envío material”)
     const rules = [
-      "Eres FerBot (español Colombia, amable, dinámico, con energía).",
+      "Eres FerBot (español Colombia, amable, dinámico, energía positiva).",
       "No vendes cursos sueltos: vendes transformación con SUSCRIPCIÓN ANUAL.",
-      "Conecta características → beneficio de producto → beneficio de vida.",
-      "No ofrezcas llamadas, ni 'te envío material', ni clases gratis.",
+      "Une características → beneficio de producto → beneficio de vida.",
+      "No ofrezcas llamadas ni 'te envío material' ni clases gratis.",
       "Responde para WhatsApp: ≤220 caracteres, máx 2 frases.",
       "Formato estricto (3 líneas):",
       "REPLY: <mensaje listo y breve>",
@@ -194,15 +202,15 @@ app.post("/assist_trainer", async (req, res) => {
       })
     });
 
-    if (!r.ok) {
-      const errText = await r.text().catch(()=> "");
+    if (!r || !r.ok) {
+      const errText = r ? (await r.text().catch(()=> "")) : "no_response";
       return res.status(500).json({ ok:false, error: "openai_failed", detail: errText });
     }
 
     const data = await r.json();
     const content = data?.choices?.[0]?.message?.content || "";
 
-    // Parseo REPLY/WHY/NEXT
+    // Parse REPLY/WHY/NEXT
     const mReply = content.match(/REPLY:\s*([\s\S]*?)(?:\n+WHY:|\n+NEXT:|$)/i);
     const mWhy   = content.match(/WHY:\s*(.*?)(?:\n+NEXT:|$)/i);
     const mNext  = content.match(/NEXT:\s*(.*)$/i);
@@ -281,10 +289,11 @@ app.get("/stats", async (_req, res) => {
   }
 });
 
-// Dashboard simple (HTML tabla)
+// Dashboard simple
 app.get("/admin/dashboard", async (_req, res) => {
   try {
-    const resp = await (await fetch(`http://localhost:${process.env.PORT || 3005}/stats`).catch(()=>({ json: async()=>({ok:false, rows:[]}) }))).json();
+    const apiBase = `http://localhost:${process.env.PORT || 3005}`;
+    const resp = await fetch(`${apiBase}/stats`).then(r => r.json()).catch(()=>({ ok:false, rows:[] }));
     const rows = (resp.rows || []).map(r => `
       <tr>
         <td>${r.intent}</td>
@@ -331,17 +340,13 @@ app.get("/admin/dashboard", async (_req, res) => {
   }
 });
 
-// Rutas del panel (mismo HTML)
+// Panel/Agent (mismo HTML)
 app.get("/panel", (_req, res) => res.sendFile(path.join(PUBLIC_DIR, "panel.html")));
 app.get("/agent", (_req, res) => res.sendFile(path.join(PUBLIC_DIR, "panel.html")));
-
-// Helpers
-function escapeHtml(s=""){return s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]))}
 
 // Boot
 (async () => {
   await loadTrainerIdentity();
-  console.log("➡️  OpenAI habilitado:", !!process.env.OPENAI_API_KEY);
   const PORT = Number(process.env.PORT || 3005);
   app.listen(PORT, () => {
     console.log(`🔥 FerBot API escuchando en http://localhost:${PORT}`);
