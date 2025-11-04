@@ -1,118 +1,81 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
-  <title>FerBot · Usabilidad ⚡</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>FerBot — Usabilidad</title>
   <style>
-    :root{ --bg:#0b0f19; --card:#0f1524; --ink:#e2e8f0; --muted:#94a3b8; --green:#97C93E; }
+    :root{--bg:#0b0f19;--card:#111827;--ink:#E5E7EB;--mut:#93A3B8;--ok:#97C93E;--stroke:#1f2937}
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-    .wrap{max-width:1200px;margin:18px auto;padding:0 16px}
-    h1{margin:0 0 12px;font-size:20px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}
-    .kpi{background:#0f1524;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
-    .muted{color:var(--muted)}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px}
-    th{background:rgba(255,255,255,.04);text-align:left;position:sticky;top:0}
-    .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
-    .pill{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#101727;color:#cbd5e1;font-size:12px}
+    body{margin:0;background:#0b0f19;color:var(--ink);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto}
+    .wrap{max-width:1100px;margin:28px auto;padding:0 16px}
+    .h{display:flex;justify-content:space-between;align-items:center}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:#121A2B;border:1px solid var(--stroke);color:#cbd5e1;border-radius:999px;padding:8px 12px;text-decoration:none;font-weight:700}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--stroke);border-radius:16px;padding:18px 20px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    th,td{text-align:left;padding:10px 12px;background:#0f1524;border-top:1px solid #1f2937;border-bottom:1px solid #1f2937}
+    th:first-child,td:first-child{border-left:1px solid #1f2937;border-top-left-radius:10px;border-bottom-left-radius:10px}
+    th:last-child,td:last-child{border-right:1px solid #1f2937;border-top-right-radius:10px;border-bottom-right-radius:10px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .k{background:#0f1524;border:1px solid #1f2937;border-radius:12px;padding:12px}
+    .n{font-size:22px;font-weight:800}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="row">
-      <h1>FerBot · Usabilidad ⚡</h1>
-      <div class="row" style="gap:8px">
-        <span class="pill">Activos 5m: <b id="act5">0</b></span>
-        <span class="pill">Activos hoy: <b id="actD">0</b></span>
-        <span class="pill">auto-refresh 5s</span>
+    <div class="h">
+      <h2>FerBot · Usabilidad</h2>
+      <div style="display:flex;gap:8px">
+        <a class="pill" href="/panel">🧪 Panel</a>
+        <a class="pill" href="/install">📘 Guía</a>
       </div>
     </div>
 
     <div class="kpis">
-      <div class="kpi"><div class="muted">Respuestas mostradas</div><div id="kShown" style="font-size:22px;font-weight:800">0</div></div>
-      <div class="kpi"><div class="muted">Winrate compuesto</div><div id="kWR" style="font-size:22px;font-weight:800">0.0%</div></div>
-      <div class="kpi"><div class="muted">👍 Buenas</div><div id="kGood" style="font-size:22px;font-weight:800">0</div></div>
-      <div class="kpi"><div class="muted">👎 Malas</div><div id="kBad" style="font-size:22px;font-weight:800">0</div></div>
+      <div class="k"><div>Respuestas mostradas</div><div id="k_shown" class="n">0</div></div>
+      <div class="k"><div>Winrate compuesto</div><div id="k_wr" class="n">0%</div></div>
+      <div class="k"><div>👍 Buenas</div><div id="k_good" class="n">0</div></div>
+      <div class="k"><div>👎 Malas</div><div id="k_bad" class="n">0</div></div>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="muted">Por etapa</div>
-        <canvas id="byStage" height="220"></canvas>
-      </div>
-      <div class="card">
-        <div class="muted">Por intento</div>
-        <canvas id="byIntent" height="220"></canvas>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div class="muted">Top respuestas (efectivas)</div>
-      </div>
-      <div style="max-height:360px;overflow:auto">
-        <table>
-          <thead><tr><th>Intent</th><th>Stage</th><th>Texto</th><th>Shown</th><th>Wins</th><th>Winrate</th></tr></thead>
-          <tbody id="tbl"></tbody>
-        </table>
-      </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Intent</th><th>Stage</th><th>Texto</th><th>Shown</th><th>Wins</th><th>Winrate</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
     </div>
   </div>
 
-<script>
-const BASE = location.origin;
-let chStage, chIntent;
+  <script>
+    const BASE="https://ferbot-api.onrender.com";
+    const rows=document.getElementById("rows");
+    const K=(id)=>document.getElementById(id);
 
-async function load(){
-  try{
-    const r = await fetch(`${BASE}/stats`, { cache:"no-store" });
-    const j = await r.json();
-    if (!j?.ok) throw new Error("stats not ok");
-    render(j.rows||[]);
-  }catch(e){ console.error(e); }
-}
-function render(rows){
-  let shown=0, wins=0, g=0, b=0; const stageMap={}, intentMap={};
-  rows.forEach(r=>{
-    shown += r.shown; wins += r.wins; g += r.good; b += r.bad;
-    stageMap[r.stage]  = (stageMap[r.stage]||0) + r.shown;
-    intentMap[r.intent]= (intentMap[r.intent]||0)+ r.shown;
-  });
-  const wr = shown>0 ? (wins/shown*100).toFixed(1) : "0.0";
-  qs("#kShown").textContent = shown;
-  qs("#kWR").textContent    = wr+"%";
-  qs("#kGood").textContent  = g;
-  qs("#kBad").textContent   = b;
-
-  drawDonut("byStage", stageMap, (c)=> chStage=c, chStage);
-  drawDonut("byIntent", intentMap, (c)=> chIntent=c, chIntent);
-
-  const tb = qs("#tbl");
-  tb.innerHTML = rows.map(r=> `<tr>
-    <td>${esc(r.intent)}</td><td>${esc(r.stage)}</td><td>${esc(r.text)}</td>
-    <td>${r.shown}</td><td>${r.wins}</td><td>${(r.winrate*100).toFixed(1)}%</td>
-  </tr>`).join("");
-}
-function drawDonut(cid, map, setRef, old){
-  const labels = Object.keys(map); const data = labels.map(k=> map[k]);
-  const cfg = { type:"doughnut", data:{ labels, datasets:[{ data }] },
-    options:{ plugins:{ legend:{ labels:{ color:"#e2e8f0" } } }, responsive:true } };
-  if (old){ old.data.labels = labels; old.data.datasets[0].data = data; old.update(); }
-  else { setRef(new Chart(qs(`#${cid}`), cfg)); }
-}
-function esc(s){ return String(s||"").replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
-const qs = sel => document.querySelector(sel);
-
-// placeholders de activos (se pueden conectar luego a presencia real)
-qs("#act5").textContent="0"; qs("#actD").textContent="0";
-
-load(); setInterval(load, 5000);
-</script>
+    async function load(){
+      try{
+        const r=await fetch(`${BASE}/admin/usage_json`);
+        if(!r.ok) return;
+        const js=await r.json();
+        const list=js?.ranking||[];
+        rows.innerHTML="";
+        let shown=0, wins=0, goods=0, bads=0;
+        list.forEach(it=>{
+          shown+=it.shown||0; wins+=it.wins||0;
+          goods+=it.goods||0; bads+=it.bads||0;
+          const tr=document.createElement("tr");
+          tr.innerHTML=`<td>${it.intent||""}</td><td>${it.stage||""}</td><td>${(it.text||"").replace(/</g,"&lt;")}</td><td>${it.shown||0}</td><td>${it.wins||0}</td><td>${((it.winrate||0)*100).toFixed(1)}%</td>`;
+          rows.appendChild(tr);
+        });
+        K("k_shown").textContent=shown;
+        const wr=shown? ((wins/shown)*100).toFixed(1):"0.0";
+        K("k_wr").textContent=`${wr}%`;
+        K("k_good").textContent=goods;
+        K("k_bad").textContent=bads;
+      }catch(_){}
+    }
+    load(); setInterval(load,5000);
+  </script>
 </body>
 </html>
