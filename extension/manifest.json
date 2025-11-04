@@ -1,35 +1,46 @@
 {
   "manifest_version": 3,
   "name": "FerBot",
-  "description": "Asistente comercial (FerBot) para web y Hilos. FAB arrastrable + panel.",
-  "version": "1.4.0",
+  "description": "Bot de apoyo comercial de Platzi (panel flotante en sitios permitidos).",
+  "version": "1.6.0",
   "icons": {
     "16": "icon16.png",
+    "32": "icon32.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
   "action": {
-    "default_title": "FerBot"
+    "default_title": "FerBot",
+    "default_popup": "popup.html"
   },
-  "permissions": [],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
   "host_permissions": [
-    "https://*/*",
-    "http://*/*"
+    "*://app.hilos.io/*",
+    "*://web.whatsapp.com/*",
+    "*://fsalas-ship-it.github.io/*",
+    "*://ferbot-api.onrender.com/*"
   ],
   "content_scripts": [
     {
-      "matches": [ "<all_urls>" ],
-      "js": [
-        "contentScript.js",
-        "fab-move.js"
+      "matches": [
+        "*://app.hilos.io/*",
+        "*://web.whatsapp.com/*",
+        "*://fsalas-ship-it.github.io/*",
+        "*://ferbot-api.onrender.com/*"
       ],
+      "js": ["contentScript.js"],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "icon16.png", "icon48.png", "icon128.png" ],
-      "matches": [ "<all_urls>" ]
+      "resources": ["fab-move.js"],
+      "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "minimum_incognito_version": "1000000.0.0"
 }
