@@ -239,5 +239,30 @@
     return "_default";
   }
 </script>
+  <script>
+  (function () {
+    try {
+      // Cambiar título de la pestaña del navegador
+      document.title = "FerBot — Panel de consulta web";
+
+      // Si tu cabecera principal es un H1 o similar, intenta renombrarla:
+      const heading = document.querySelector("h1, header h1, .title, .panel-title");
+      if (heading && /emergencia/i.test(heading.textContent)) {
+        heading.textContent = "Panel de consulta web";
+      }
+
+      // Reemplazar pie "Hecho con ❤ para el equipo de Platzi — FerBot (versión comercial 2025)" -> "Hecho con ❤"
+      const footerCandidates = Array.from(document.querySelectorAll("footer, .footer, .foot, .pie, .credits, .creditos"));
+      for (const f of footerCandidates) {
+        const txt = f.textContent.trim();
+        if (/Hecho con/i.test(txt)) {
+          f.textContent = "Hecho con ❤";
+          break;
+        }
+      }
+    } catch (_) {}
+  })();
+</script>
+
 </body>
 </html>
