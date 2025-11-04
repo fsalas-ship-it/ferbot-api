@@ -69,7 +69,7 @@
     .btn-ghost{ background:#121a2b; color:var(--text); border:1px solid var(--line) }
     .btn-good{ background:var(--good); color:#062d1f; display:none }
     .btn-regular{ background:#fbbf24; color:#332200; display:none }
-    .btn-bad{ background:var(--bad); color:#fff; display:none }
+    .btn-bad{ background:#ef4444; color:#fff; display:none }
 
     .badge{
       font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--line);
@@ -79,6 +79,12 @@
     .badge.pos .b{background:#22c55e}
     .badge.neu .b{background:#f59e0b}
     .badge.neg .b{background:#ef4444}
+
+    .promo-pill{
+      display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+      background:#0f1b2f; border:1px solid var(--line); color:#cbd5e1; font-size:12px; cursor:default
+    }
+    .promo-pill .dot{background:#22c55e}
 
     .made{margin-top:16px; color:var(--muted); font-size:13px}
     .heart{color:var(--green)}
@@ -92,6 +98,7 @@
         <div class="row">
           <div class="title">FerBot — Agente</div>
           <div class="row" style="gap:8px">
+            <div id="promoPill" class="promo-pill" style="display:none"><span class="dot"></span><span id="promoTxt"></span></div>
             <div class="chip"><span id="bullet" class="dot"></span><span id="timer">0.0s</span></div>
             <div id="sent" class="badge neu" title="Análisis de sentimiento"><span class="b"></span><span id="sentTxt">Neutral</span></div>
           </div>
@@ -139,6 +146,9 @@
     <div class="made">Hecho con <span class="heart">❤</span> FerBot v1.4.0</div>
   </div>
 
+  <!-- Promos -->
+  <script src="/promos.js"></script>
+
   <script>
   (function(){
     const BASE = (localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com").replace(/\/+$/,'');
@@ -148,7 +158,9 @@
           guideEl = el('#guide'), outEl = el('#out'),
           genBtn = el('#gen'), clrBtn = el('#clr'),
           goodBtn = el('#rg'), regBtn = el('#rm'), badBtn = el('#rb'),
-          timerEl = el('#timer'), bullet = el('#bullet'), sent = el('#sent'), sentTxt = el('#sentTxt');
+          timerEl = el('#timer'), bullet = el('#bullet'),
+          sent = el('#sent'), sentTxt = el('#sentTxt'),
+          promoPill = el('#promoPill'), promoTxt = el('#promoTxt');
 
     // Persistencia mínima
     nameEl.value = localStorage.getItem("ferbot_agent_name") || "";
@@ -199,10 +211,27 @@
       return "_panel";
     }
 
+    // Mostrar badge de promo activa
+    function paintPromo(){
+      if(!window.FerbotPromos) return;
+      const ctx = { channel:"panel", stage: stageEl.value, intent: "_panel" };
+      const badge = window.FerbotPromos.badgeFor(ctx);
+      if(badge){
+        promoTxt.textContent = `${badge.text}: ${badge.label}`;
+        promoPill.style.display = "inline-flex";
+      }else{
+        promoPill.style.display = "none";
+      }
+    }
+    paintPromo();
+    stageEl.addEventListener("change", paintPromo);
+
     // Generar
     genBtn.onclick = async ()=>{
       const q = (inEl.value||"").trim();
       if(!q){ alert("Escribe o pega el texto del cliente."); return; }
+      const stage = stageEl.value;
+      const intent = guessIntent(q);
       updSent(q);
       outEl.value=""; guideEl.value=""; toggleRatings(false);
       startTimer();
@@ -210,9 +239,7 @@
       const body = {
         question:q,
         customerName: nameEl.value.trim() || "Cliente",
-        stage: stageEl.value,
-        context: (ctxEl.value||"").trim(),
-        intent: guessIntent(q)
+        stage, context: (ctxEl.value||"").trim(), intent
       };
 
       try{
@@ -226,9 +253,14 @@
           return;
         }
         const j = await res.json();
-        const reply = (j?.result?.reply || j?.text || "").trim();
+        let reply = (j?.result?.reply || j?.text || "").trim();
         const why   = (j?.result?.why  || "").trim();
         const next  = (j?.result?.next || "").trim();
+
+        // Aplicar CTA de promo (si corresponde)
+        if(window.FerbotPromos){
+          reply = window.FerbotPromos.applyCTA(reply, { channel:"panel", stage, intent });
+        }
 
         outEl.value   = reply;
         guideEl.value = `POR QUÉ: ${why}\nSIGUIENTE PASO: ${next}`;
@@ -236,7 +268,7 @@
         // mostrar ratings 1 vez
         toggleRatings(true);
         const ratePayload = (rating)=>({
-          intent: guessIntent(q), stage: stageEl.value, text: reply, rating
+          intent, stage, text: reply, rating
         });
         goodBtn.onclick = async()=>{ try{ await fetch(`${BASE}/trackRate`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(ratePayload("good"))}); }catch{} toggleRatings(false); };
         regBtn.onclick  = async()=>{ try{ await fetch(`${BASE}/trackRate`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(ratePayload("regular"))}); }catch{} toggleRatings(false); };
@@ -253,11 +285,7 @@
 
     // Salud rápida a /health
     (async()=>{
-      try{
-        const r = await fetch(`${BASE}/health`); if(!r.ok) throw 0;
-      }catch(_){
-        console.warn("No responde /health en", BASE);
-      }
+      try{ const r = await fetch(`${BASE}/health`); if(!r.ok) throw 0; }catch(_){ console.warn("No responde /health en", BASE); }
     })();
 
   })();
