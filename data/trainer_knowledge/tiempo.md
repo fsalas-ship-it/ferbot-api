@@ -1,15 +1,14 @@
-# INTENTO: TIEMPO
-- Valida: poco tiempo es normal; el plan anual permite constancia real.
-- Beneficio de producto → de vida: clases cortas + flexibilidad → subir ingresos/cambiar empleo durante el año.
-- Evita: “microclases”, promesas de plazos fijos.
-- Cierre: CTA suave a activar plan anual.
+# Intento: tiempo
+- Objeción típica: “no tengo tiempo”, “mi agenda es complicada”.
+- Respuesta: valida y convierte en beneficio → flexibilidad + progreso anual.
+- Apoya con: app, clases cortas, rutina sostenible, constancia anual.
+- Evita prometer plazos cortos por defecto; enfoca al plan anual.
 
-EJEMPLOS DE REPLY (≤220c):
-- "Te entiendo: con el plan anual ajustas 10–15 min al día y avanzas sin presión. ¿Activamos hoy tu acceso y defines un horario corto L–V?"
-- "Sin tiempo es común; con clases cortas y rutas claras avanzas a tu ritmo todo el año. ¿Activo tu plan anual y empezamos hoy?"
+Plantillas mentales:
+- Valida: “Entiendo que tu tiempo es limitado…”
+- Beneficio de producto: clases cortas, móvil, offline.
+- Beneficio de vida: avanzar sostenido durante el año sin cambiar la rutina.
+- Cierre: invita a activar anual hoy y proponer un bloque diario realista.
 
-WHY (cómo enseñar):
-- Reconozco la objeción y la convierto en flexibilidad + hábito anual → resultado de vida.
-
-NEXT (qué hace el asesor):
-- Si confirma, activar plan anual y sugerir horario L–V 10–15 min; registrar meta breve.
+Ejemplo de WHY:
+- “Convierto falta de tiempo en rutina corta sostenible que sí avanza en el año.”
