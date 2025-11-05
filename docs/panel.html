@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FerBot · Panel de consulta web</title>
+<style>
+  :root{
+    --bg:#0b0f19; --panel:#0b0f19E6; --card:#0f1524; --txt:#e2e8f0; --muted:#94a3b8;
+    --border:rgba(255,255,255,.10); --platzi:#97C93E; --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+  }
+  html,body{margin:0;height:100%;}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:
+    radial-gradient(900px 600px at 15% 10%, rgba(151,201,62,.12), transparent 60%),
+    radial-gradient(800px 500px at 85% 20%, rgba(151,201,62,.08), transparent 60%),
+    linear-gradient(180deg, #0b0f19 0%, #0b0f19 100%);
+    color:var(--txt); display:flex; align-items:center; justify-content:center; padding:24px;}
+  .wrap{width:min(860px,96vw);}
+  .panel{background:var(--panel); border:1px solid var(--border); border-radius:16px; box-shadow:0 18px 40px rgba(0,0,0,.35); overflow:hidden;}
+  .header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:rgba(255,255,255,.04);border-bottom:1px solid var(--border);}
+  .title{font-weight:800;letter-spacing:.3px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .signal{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);background:#121a2b;border:1px solid var(--border);border-radius:999px;padding:6px 10px}
+  .bullet{width:9px;height:9px;border-radius:12px;background:var(--bad)}
+  .bullet.ambar{background:var(--warn)}
+  .bullet.verde{background:var(--ok)}
+  .timer{font-variant-numeric:tabular-nums;opacity:.9}
+  .body{padding:14px}
+  .label{font-size:12px;color:var(--muted);margin:6px 0 4px}
+  .row{display:flex;align-items:center;gap:10px}
+  .input, .output{width:100%;min-height:92px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#dbeafe;outline:none;padding:10px;resize:vertical;box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02);font-size:14px}
+  .output{min-height:86px}
+  .select,.name,.context{width:100%;padding:9px 10px;border-radius:9px;background:var(--card);color:#dbeafe;border:1px solid var(--border);font-size:14px}
+  .badge{font-size:11px;padding:5px 9px;border-radius:999px;border:1px solid var(--border);background:#101727;color:#cbd5e1;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .dot{width:7px;height:7px;border-radius:999px;background:#64748b}
+  .badge.pos .dot{background:var(--ok)} .badge.neu .dot{background:var(--warn)} .badge.neg .dot{background:var(--bad)}
+  .footer{display:flex;gap:8px;padding:12px 14px;background:rgba(255,255,255,.04);border-top:1px solid var(--border);flex-wrap:wrap}
+  .btn{flex:1;padding:10px;border-radius:10px;border:0;cursor:pointer;font-weight:800;font-size:13px}
+  .primary{background:var(--platzi);color:#0b0f19}
+  .ghost{background:#1b2333;color:#cbd5e1}
+  .good{background:#19c37d;color:#062d1f;display:none}
+  .regular{background:#fbbf24;color:#332200;display:none}
+  .bad{background:#ef4444;color:#fff;display:none}
+  .meta{display:flex;gap:10px}
+  .autopaste{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
+  .sig{margin-top:10px;text-align:center;color:#a7b0c3;font-size:12px}
+  .sig b{color:#cfe6a4}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <div class="header">
+      <div class="title">FerBot · <span style="opacity:.8">Panel de consulta web</span> <span>🤖</span></div>
+      <div class="signal"><span id="bullet" class="bullet"></span><span id="timer" class="timer">0.0s</span></div>
+    </div>
+    <div class="body">
+      <div class="row" style="gap:10px">
+        <div style="flex:1">
+          <div class="label">Nombre del cliente</div>
+          <input id="name" class="name" placeholder="Ej. Laura">
+        </div>
+        <div style="width:48%">
+          <div class="label">Etapa</div>
+          <select id="stage" class="select">
+            <option value="integracion">Integración</option>
+            <option value="sondeo">Sondeo</option>
+            <option value="pre_cierre">Pre-cierre</option>
+            <option value="rebatir" selected>Rebatir</option>
+            <option value="cierre">Cierre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="label" style="margin-top:6px">Contexto (opcional, para el bot)</div>
+      <input id="context" class="context" placeholder="Ej. preguntó por certificaciones; tiene poco tiempo"/>
+
+      <div class="row" style="justify-content:space-between; margin-top:8px">
+        <div class="label">Escribe la objeción y haz clic en <b>Generar</b>.</div>
+        <label class="autopaste"><input id="autopaste" type="checkbox"/> Autopaste</label>
+      </div>
+
+      <div class="row" style="align-items:flex-end">
+        <div style="flex:1">
+          <textarea id="input" class="input" placeholder="Texto/objeción del cliente..."></textarea>
+        </div>
+        <div id="sentiment" class="badge neu" title="Análisis de sentimiento">
+          <span class="dot"></span><span id="sentimentText">Neutral</span>
+        </div>
+      </div>
+
+      <div class="label" style="margin-top:6px">Explicación (POR QUÉ + SIGUIENTE PASO)</div>
+      <textarea id="guide" class="output" placeholder="Aquí verás POR QUÉ y el SIGUIENTE PASO, para enseñar al asesor."></textarea>
+
+      <div class="label" style="margin-top:6px">Respuesta (lista para pegar)</div>
+      <textarea id="output" class="output" placeholder="Mensaje breve para el cliente (≤ 2 frases)."></textarea>
+
+      <div class="sig">Hecho con ❤ <b>FerBot v1.0.0</b></div>
+    </div>
+    <div class="footer">
+      <button id="btnGen"   class="btn primary">Generar</button>
+      <button id="btnClear" class="btn ghost">Clear</button>
+      <button id="btnGood"  class="btn good">👍 Buena</button>
+      <button id="btnReg"   class="btn regular">😐 Regular</button>
+      <button id="btnBad"   class="btn bad">👎 Mala</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BASE = "https://ferbot-api.onrender.com";
+
+  const nameEl  = document.getElementById("name");
+  const stageEl = document.getElementById("stage");
+  const ctxEl   = document.getElementById("context");
+  const inputEl = document.getElementById("input");
+  const guideEl = document.getElementById("guide");
+  const outEl   = document.getElementById("output");
+
+  const sentEl  = document.getElementById("sentiment");
+  const sentTx  = document.getElementById("sentimentText");
+
+  const bullet  = document.getElementById("bullet");
+  const timerEl = document.getElementById("timer");
+
+  const btnGen  = document.getElementById("btnGen");
+  const btnClr  = document.getElementById("btnClear");
+  const btnG    = document.getElementById("btnGood");
+  const btnR    = document.getElementById("btnReg");
+  const btnB    = document.getElementById("btnBad");
+  const autoEl  = document.getElementById("autopaste");
+
+  function updateSentimentBadge(text){
+    const s = (text||"").toLowerCase();
+    let cls = "neu", t = "Neutral";
+    const pos = /(gracias|excelente|me interesa|bien|listo|perfecto|genial)/i;
+    const neg = /(no puedo|caro|dif[ií]cil|malo|no me gusta|no sirve|no tengo tiempo|no s[ée])/i;
+    if (neg.test(s)) { cls="neg"; t="Negativo"; }
+    else if (pos.test(s)) { cls="pos"; t="Positivo"; }
+    sentEl.classList.remove("pos","neu","neg");
+    sentEl.classList.add(cls);
+    sentTx.textContent = t;
+  }
+  inputEl.addEventListener("input", ()=> updateSentimentBadge(inputEl.value));
+
+  // Countdown
+  let t0=0, iv=null;
+  function startTimer(){
+    stopTimer(); t0=performance.now();
+    setBullet("rojo");
+    iv=setInterval(()=>{
+      const dt=(performance.now()-t0)/1000;
+      timerEl.textContent=dt.toFixed(1)+"s";
+      if (dt<2.0) setBullet("rojo");
+      else if (dt<4.0) setBullet("ambar");
+      else setBullet("verde");
+    },100);
+  }
+  function stopTimer(){ if(iv){ clearInterval(iv); iv=null; } }
+  function setBullet(color){
+    bullet.classList.remove("ambar","verde");
+    if(color==="ambar") bullet.classList.add("ambar");
+    else if(color==="verde") bullet.classList.add("verde");
+  }
+
+  function toggleRatings(show){
+    btnG.style.display = show ? "inline-block" : "none";
+    btnR.style.display = show ? "inline-block" : "none";
+    btnB.style.display = show ? "inline-block" : "none";
+  }
+  toggleRatings(false);
+  let lastReply = null;
+
+  btnGen.onclick = async ()=>{
+    const q = (inputEl.value || "").trim();
+    if (!q){ alert("Escribe la objeción/pregunta primero."); return; }
+    const name = (nameEl.value || "").trim() || "Cliente";
+    const stage= stageEl.value;
+    const context = (ctxEl.value || "").trim();
+
+    guideEl.value = ""; outEl.value = ""; toggleRatings(false);
+    startTimer();
+
+    try{
+      const body = { question:q, customerName:name, stage, context };
+      const res = await fetch(`${BASE}/assist_trainer`, {
+        method:"POST", headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+
+      stopTimer(); setBullet("verde");
+
+      if(!res.ok){
+        const txt = await res.text().catch(()=> "");
+        alert(`No se pudo generar (HTTP ${res.status}). ${txt || ""}`);
+        return;
+      }
+      const json = await res.json();
+
+      const reply = (json?.result?.reply || json?.text || "").trim();
+      const why   = (json?.result?.why  || "").trim();
+      const next  = (json?.result?.next || "").trim();
+
+      outEl.value = reply;
+      guideEl.value = `POR QUÉ: ${why}\nSIGUIENTE PASO: ${next}`;
+
+      lastReply = reply; toggleRatings(true);
+
+      btnG.onclick = ()=> rate("good",  stage, q, reply);
+      btnR.onclick = ()=> rate("regular",stage, q, reply);
+      btnB.onclick = ()=> rate("bad",   stage, q, reply);
+    }catch(e){
+      stopTimer(); setBullet("rojo"); timerEl.textContent="0.0s";
+      alert("No se pudo generar. Verifica la API o tu conexión.");
+    }
+  };
+
+  async function rate(rating, stage, q, reply){
+    try{
+      await fetch(`${BASE}/trackRate`, {
+        method:"POST", headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ intent: guessIntent(q), stage, text: reply, rating })
+      });
+    }catch(_){}
+    toggleRatings(false);
+  }
+
+  btnClr.onclick = ()=>{
+    guideEl.value=""; outEl.value=""; toggleRatings(false);
+    stopTimer(); setBullet("rojo"); timerEl.textContent="0.0s";
+  };
+
+  function guessIntent(q=""){
+    const s=(q||"").toLowerCase();
+    if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|ocupad)/.test(s)) return "tiempo";
+    if (/(precio|caro|costo|costoso|vale|promoci|oferta|descuento)/.test(s)) return "precio";
+    if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
+    if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
+    if (/(qué es platzi|que es platzi|platzi|pitch)/.test(s)) return "pitch";
+    return "_default";
+  }
+</script>
+  <script>
+  (function () {
+    try {
+      // Cambiar título de la pestaña del navegador
+      document.title = "FerBot — Panel de consulta web";
+
+      // Si tu cabecera principal es un H1 o similar, intenta renombrarla:
+      const heading = document.querySelector("h1, header h1, .title, .panel-title");
+      if (heading && /emergencia/i.test(heading.textContent)) {
+        heading.textContent = "Panel de consulta web";
+      }
+
+      // Reemplazar pie "Hecho con ❤ para el equipo de Platzi — FerBot (versión comercial 2025)" -> "Hecho con ❤"
+      const footerCandidates = Array.from(document.querySelectorAll("footer, .footer, .foot, .pie, .credits, .creditos"));
+      for (const f of footerCandidates) {
+        const txt = f.textContent.trim();
+        if (/Hecho con/i.test(txt)) {
+          f.textContent = "Hecho con ❤";
+          break;
+        }
+      }
+    } catch (_) {}
+  })();
+</script>
+
+</body>
+</html>
