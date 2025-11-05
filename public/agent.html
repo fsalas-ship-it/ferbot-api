@@ -1,169 +1,228 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>FerBot · Panel unificado</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/panel.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>FerBot — Panel</title>
+  <style>
+    :root{
+      --green:#97C93E; --ink:#e2e8f0; --dark:#0b0f19; --muted:#94a3b8;
+      --warn:#fbbf24; --ok:#22c55e; --bad:#ef4444; --panel:#0b0f19E6;
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; background:var(--dark); color:var(--ink); font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter; }
+    .wrap{ max-width:860px; margin:32px auto; padding:0 16px; }
+    .card{ background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:16px; box-shadow:0 18px 40px rgba(0,0,0,.35); }
+    .row{ display:flex; gap:12px; }
+    .grid{ display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    .label{ font-size:12px; color:var(--muted); margin:8px 0 6px; display:block; }
+    input, select, textarea{ width:100%; background:#0f1524; color:#dce7ff; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px; outline:none; font-size:14px; }
+    textarea{ min-height:96px; resize:vertical; }
+    .pill{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; background:#101727; border:1px solid rgba(255,255,255,.10); border-radius:999px; color:#cbd5e1; font-size:12px; }
+    .dot{ width:8px; height:8px; border-radius:999px; background:#ef4444; }
+    .dot.ambre{ background:#f59e0b; }
+    .dot.ok{ background:#22c55e; }
+    .btns{ display:flex; gap:8px; flex-wrap:wrap; }
+    .btn{ padding:10px 12px; border-radius:12px; border:0; cursor:pointer; font-weight:800; font-size:13px; }
+    .primary{ background:var(--green); color:#0b0f19; }
+    .ghost{ background:#1b2333; color:#cbd5e1; }
+    .good{ background:#19c37d; color:#062d1f; display:none; }
+    .regular{ background:#fbbf24; color:#332200; display:none; }
+    .bad{ background:#ef4444; color:white; display:none; }
+    .footer{ display:flex; gap:8px; margin-top:12px; }
+    .h{ padding:10px 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.08); }
+    .h .tt{ font-weight:900; letter-spacing:.3px; display:flex; align-items:center; gap:8px; }
+    .panel{ padding:12px; }
+  </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>FerBot · Panel unificado</h1>
-
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <div class="pill">
-          <span class="dot" id="healthDot"></span>
-          <span id="healthText">Revisando API…</span>
-        </div>
-        <div class="pill"><span class="timer" id="timer">0.0s</span></div>
+      <div class="h">
+        <div class="tt">FerBot <span>🤖</span></div>
+        <div class="pill"><span id="dot" class="dot"></span><span id="timer">0.0s</span></div>
       </div>
-    </div>
+      <div class="panel">
 
-    <div class="row">
-      <div class="card">
-        <div class="row">
+        <div class="grid">
           <div>
-            <label>Nombre del cliente</label>
+            <label class="label">Nombre del cliente</label>
             <input id="name" placeholder="Ej. Laura"/>
           </div>
           <div>
-            <label>Etapa</label>
+            <label class="label">Etapa</label>
             <select id="stage">
               <option value="integracion">Integración</option>
-              <option value="sondeo" selected>Sondeo</option>
-              <option value="rebatir">Rebatir</option>
+              <option value="sondeo">Sondeo</option>
               <option value="pre_cierre">Pre-cierre</option>
+              <option value="rebatir" selected>Rebatir</option>
               <option value="cierre">Cierre</option>
             </select>
           </div>
         </div>
 
-        <label>Contexto (opcional, para el bot)</label>
-        <input id="context" placeholder="Ej. preguntó por certificaciones; poco tiempo" />
+        <label class="label">Contexto (opcional, para el bot)</label>
+        <input id="ctx" placeholder="Ej. poco tiempo; inglés nocturno; call center"/>
 
-        <label style="margin-top:8px">Texto del cliente</label>
-        <textarea id="question" placeholder="Escribe la objeción/pregunta…"></textarea>
-
-        <label style="margin-top:8px">Explicación (POR QUÉ + SIGUIENTE PASO)</label>
-        <textarea id="guide" readonly placeholder="Aquí verás POR QUÉ y el SIGUIENTE PASO."></textarea>
-
-        <label style="margin-top:8px">Respuesta (lista para pegar)</label>
-        <textarea id="reply" readonly placeholder="Mensaje breve para el cliente (≤ 2 frases)."></textarea>
-
-        <div class="btns">
-          <button class="btn primary" id="generate">Generar</button>
-          <button class="btn ghost" id="clear">Clear</button>
-          <button class="btn" id="good" style="background:#19c37d;color:#062d1f;display:none">👍 Buena</button>
-          <button class="btn" id="regular" style="background:#fbbf24;color:#332200;display:none">😐 Regular</button>
-          <button class="btn" id="bad" style="background:#ef4444;color:#fff;display:none">👎 Mala</button>
+        <div class="row" style="align-items:flex-end">
+          <div style="flex:1">
+            <label class="label">Texto / objeción del cliente</label>
+            <textarea id="q" placeholder="Selecciona del chat o escribe aquí…"></textarea>
+          </div>
+          <div class="pill" title="Análisis de sentimiento">
+            <span id="sentDot" class="dot ambre"></span>
+            <span id="sentText">Neutral</span>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <label>Sentimiento del cliente</label>
-        <div class="pill" id="sentBadge"><span class="dot neu" id="sentDot"></span><span id="sentText">Neutral</span></div>
+        <label class="label">Explicación (POR QUÉ + SIGUIENTE PASO)</label>
+        <textarea id="guide" placeholder="Aquí verás POR QUÉ + Siguiente paso. Se completa al generar." readonly></textarea>
 
-        <div style="margin-top:16px">
-          <label>Logs / estado</label>
-          <textarea id="logs" readonly style="min-height:220px"></textarea>
+        <label class="label">Respuesta (lista para pegar)</label>
+        <textarea id="out" placeholder="Mensaje breve para el cliente (≤ 2 frases)." readonly></textarea>
+
+        <div class="footer">
+          <button id="gen" class="btn primary">Generar</button>
+          <button id="clr" class="btn ghost">Clear</button>
+          <button id="rGood" class="btn good">👍 Buena</button>
+          <button id="rReg"  class="btn regular">😐 Regular</button>
+          <button id="rBad"  class="btn bad">👎 Mala</button>
         </div>
+
       </div>
     </div>
   </div>
 
-<script>
-const BASE = location.origin; // mismo servidor
-const healthDot = document.getElementById('healthDot');
-const healthText = document.getElementById('healthText');
+  <script>
+    const BASE = location.origin;
 
-const nameEl = document.getElementById('name');
-const stageEl = document.getElementById('stage');
-const ctxEl = document.getElementById('context');
-const qEl = document.getElementById('question');
-const guideEl = document.getElementById('guide');
-const replyEl = document.getElementById('reply');
-const logEl = document.getElementById('logs');
+    // refs
+    const nameEl = document.getElementById("name");
+    const stageEl = document.getElementById("stage");
+    const ctxEl   = document.getElementById("ctx");
+    const qEl     = document.getElementById("q");
+    const guideEl = document.getElementById("guide");
+    const outEl   = document.getElementById("out");
+    const genEl   = document.getElementById("gen");
+    const clrEl   = document.getElementById("clr");
+    const rGood   = document.getElementById("rGood");
+    const rReg    = document.getElementById("rReg");
+    const rBad    = document.getElementById("rBad");
+    const dot     = document.getElementById("dot");
+    const timerEl = document.getElementById("timer");
+    const sDot    = document.getElementById("sentDot");
+    const sTxt    = document.getElementById("sentText");
 
-const btnGen = document.getElementById('generate');
-const btnClear = document.getElementById('clear');
-const btnGood = document.getElementById('good');
-const btnReg = document.getElementById('regular');
-const btnBad = document.getElementById('bad');
+    // selección rápida al abrir
+    try {
+      const sel = window.getSelection()?.toString()?.trim();
+      if (sel) qEl.value = sel;
+    } catch {}
 
-const timerEl = document.getElementById('timer');
-let t0=0, iv=null;
+    function toggleRatings(show){
+      rGood.style.display = show ? "inline-block" : "none";
+      rReg .style.display = show ? "inline-block" : "none";
+      rBad .style.display = show ? "inline-block" : "none";
+    }
+    toggleRatings(false);
 
-function startTimer(){
-  stopTimer(); t0 = performance.now();
-  iv = setInterval(()=>{ timerEl.textContent = ((performance.now()-t0)/1000).toFixed(1)+'s'; }, 100);
-}
-function stopTimer(){ if(iv){ clearInterval(iv); iv=null; } }
+    function updateSentiment(t) {
+      const s = (t||"").toLowerCase();
+      let label="Neutral", cls="ambre";
+      if (/(no puedo|caro|difícil|no me gusta|no sirve|no tengo tiempo)/.test(s)) { label="Negativo"; cls=""; }
+      if (/(gracias|excelente|me interesa|bien|listo|perfecto|genial)/.test(s)) { label="Positivo"; cls="ok"; }
+      sTxt.textContent = label;
+      sDot.className = `dot ${cls}`;
+    }
+    qEl.addEventListener("input", ()=> updateSentiment(qEl.value)); updateSentiment(qEl.value);
 
-async function checkHealth(){
-  try{
-    const r = await fetch(BASE + '/health'); const j = await r.json();
-    healthText.textContent = j.ok ? `API OK (${j.model_env})` : 'Error API';
-    healthDot.className = 'dot ' + (j.ok ? 'pos': 'neg');
-  }catch{ healthText.textContent = 'Sin conexión'; healthDot.className = 'dot neg'; }
-}
-checkHealth();
+    // timer
+    let t0 = 0, iv = null, lastReply = "";
+    function startTimer(){
+      stopTimer(); t0 = performance.now(); dot.className = "dot"; // rojo
+      iv = setInterval(()=>{
+        const dt = (performance.now() - t0)/1000;
+        timerEl.textContent = dt.toFixed(1) + "s";
+        if (dt >= 2 && dt < 4) dot.className = "dot ambre";
+        if (dt >= 4) dot.className = "dot ok";
+      }, 100);
+    }
+    function stopTimer(){ if (iv) { clearInterval(iv); iv=null; } }
 
-function setSent(s) {
-  const dot = document.getElementById('sentDot');
-  const txt = document.getElementById('sentText');
-  dot.classList.remove('pos','neu','neg'); dot.classList.add(s.cls);
-  txt.textContent = s.text;
-}
-function analyzeSent(t) {
-  t = (t||'').toLowerCase();
-  const neg = /(no puedo|caro|difícil|malo|no tengo tiempo|no sirve|no sé|no se)/i;
-  const pos = /(gracias|excelente|me interesa|bien|listo|perfecto|genial)/i;
-  if (neg.test(t)) return {cls:'neg', text:'Negativo'};
-  if (pos.test(t)) return {cls:'pos', text:'Positivo'};
-  return {cls:'neu', text:'Neutral'};
-}
-qEl.addEventListener('input', ()=> setSent(analyzeSent(qEl.value)));
+    function guessIntent(q=""){
+      const s = (q||"").toLowerCase();
+      if (/(tiempo|agenda|horario|no tengo tiempo|ocupad)/.test(s)) return "tiempo";
+      if (/(precio|caro|costo|descuento|promoci)/.test(s)) return "precio";
+      if (/(cert|certificado|certificación)/.test(s)) return "cert";
+      if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
+      if (/(platzi|pitch|que es platzi|qué es platzi)/.test(s)) return "pitch";
+      return "_panel";
+    }
 
-function toggleRatings(show){
-  btnGood.style.display = show ? 'inline-block':'none';
-  btnReg.style.display  = show ? 'inline-block':'none';
-  btnBad.style.display  = show ? 'inline-block':'none';
-}
-toggleRatings(false);
+    async function trackShown(txt){
+      try {
+        await fetch(`${BASE}/trackShown`, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ intent: guessIntent(qEl.value), stage: stageEl.value, text: txt })
+        });
+      } catch {}
+    }
+    async function rate(kind){
+      if (!lastReply) return;
+      try {
+        await fetch(`${BASE}/trackRate`, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ intent: guessIntent(qEl.value), stage: stageEl.value, text: lastReply, rating: kind })
+        });
+      } catch {}
+      toggleRatings(false);
+    }
 
-btnGen.onclick = async () => {
-  const q = (qEl.value||'').trim();
-  if (!q){ alert('Escribe el texto del cliente.'); return; }
-  guideEl.value = ''; replyEl.value = ''; toggleRatings(false);
-  startTimer();
-  try{
-    const body = { question:q, customerName:(nameEl.value||'Cliente'), stage:stageEl.value, context:(ctxEl.value||'') };
-    const r = await fetch(BASE + '/assist_trainer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-    stopTimer();
-    if (!r.ok){ const t = await r.text(); alert('Error '+r.status+': '+t); return; }
-    const j = await r.json();
-    replyEl.value = j?.result?.reply || j?.text || '';
-    guideEl.value = `POR QUÉ: ${(j?.result?.why||'')}\nSIGUIENTE PASO: ${(j?.result?.next||'')}`;
-    logEl.value = JSON.stringify(j, null, 2);
-    toggleRatings(true);
-  }catch(e){
-    stopTimer(); alert('No se pudo conectar al servidor.'); console.error(e);
-  }
-};
+    genEl.onclick = async () => {
+      const question = (qEl.value || "").trim() || window.getSelection()?.toString()?.trim();
+      if (!question) { alert("Escribe o selecciona el texto del cliente."); return; }
+      const customerName = (nameEl.value || "Cliente").trim();
+      const stage = stageEl.value;
+      const context = ctxEl.value || "";
 
-btnClear.onclick = ()=>{ guideEl.value=''; replyEl.value=''; toggleRatings(false); stopTimer(); timerEl.textContent='0.0s'; };
+      outEl.value = ""; guideEl.value = ""; toggleRatings(false);
+      startTimer();
 
-async function rate(type){
-  const text = (replyEl.value||'').trim();
-  if (!text) return;
-  try{
-    await fetch(BASE + '/trackRate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ intent:'_panel', stage:stageEl.value, text, rating:type }) });
-  }catch{} toggleRatings(false);
-}
-btnGood.onclick = ()=> rate('good');
-btnReg.onclick  = ()=> rate('regular');
-btnBad.onclick  = ()=> rate('bad');
-</script>
+      try {
+        const resp = await fetch(`${BASE}/assist_trainer`, {
+          method:"POST", headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ question, customerName, stage, context })
+        });
+        stopTimer(); dot.className = "dot ok";
+
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        const json = await resp.json();
+        const reply = (json?.result?.reply || json?.text || "").trim();
+        const why   = (json?.result?.why  || "").trim();
+        const next  = (json?.result?.next || "").trim();
+
+        lastReply = reply;
+        outEl.value = reply;
+        guideEl.value = `POR QUÉ: ${why}\nSIGUIENTE PASO: ${next}`;
+        toggleRatings(true);
+        await trackShown(reply);
+      } catch (e) {
+        stopTimer(); dot.className = "dot";
+        alert("No se pudo generar. Revisa el servidor.");
+      }
+    };
+
+    rGood.onclick = () => rate("good");
+    rReg .onclick = () => rate("regular");
+    rBad .onclick = () => rate("bad");
+
+    clrEl.onclick = () => {
+      qEl.value = ""; outEl.value = ""; guideEl.value = "";
+      toggleRatings(false); stopTimer(); timerEl.textContent = "0.0s"; dot.className = "dot";
+      updateSentiment("");
+    };
+  </script>
 </body>
 </html>
