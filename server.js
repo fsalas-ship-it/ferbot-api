@@ -1,224 +1,167 @@
+// server.js — FerBot API (panel + trainer + métricas)
+// Requiere: Node 18+, .env con OPENAI_API_KEY y OPENAI_MODEL=gpt-5
+import express from "express";
 import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
-import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import OpenAI from "openai";
 
 dotenv.config();
-
-const __root = path.resolve();
 const app = express();
-
 const PORT = process.env.PORT || 3000;
-const OPENAI_KEY = process.env.OPENAI_API_KEY || "";
-const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-5";
+const __dirname = path.resolve();
 
-app.use(cors());
-app.use(express.json({ limit: "1mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "1mb" }));
+app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
 
-// --- Rutas estáticas (panel unificado)
-app.use(express.static(path.join(__root, "public")));
+// ---------- Utilidades de archivo ----------
+const ensureDir = async (p) => { if (!fs.existsSync(p)) await fsp.mkdir(p, { recursive: true }); };
+const readText = async (p) => fs.existsSync(p) ? (await fsp.readFile(p, "utf8")) : "";
+const writeJson = async (p, data) => { await ensureDir(path.dirname(p)); await fsp.writeFile(p, JSON.stringify(data, null, 2), "utf8"); };
+const appendLine = async (p, line) => { await ensureDir(path.dirname(p)); await fsp.appendFile(p, line + "\n", "utf8"); };
 
-// --- Paths de data
-const DATA_DIR = path.join(__root, "data");
-const IDENTITY_PATH = path.join(DATA_DIR, "trainer_identity.txt");
-const KNOW_DIR = path.join(DATA_DIR, "trainer_knowledge");
-const STATS_PATH = path.join(DATA_DIR, "stats.json");
-const MEMORY_PATH = path.join(DATA_DIR, "memory.json");
-
-// --- Estado en memoria
-let TRAINER_IDENTITY = "";
-let TRAINER_KNOWLEDGE = ""; // concatenado
-let STATS = { byKey: {} };
-
-// ------------------------ Utilidades ------------------------
-async function ensureFiles() {
-  await fsp.mkdir(DATA_DIR, { recursive: true });
-  await fsp.mkdir(KNOW_DIR, { recursive: true });
-  if (!fs.existsSync(STATS_PATH)) {
-    await fsp.writeFile(STATS_PATH, JSON.stringify({ byKey: {} }, null, 2));
-  }
-  if (!fs.existsSync(MEMORY_PATH)) {
-    await fsp.writeFile(MEMORY_PATH, JSON.stringify({ items: [] }, null, 2));
-  }
-}
-
-async function loadStats() {
-  try {
-    const raw = await fsp.readFile(STATS_PATH, "utf8");
-    STATS = JSON.parse(raw);
-  } catch {
-    STATS = { byKey: {} };
-  }
-}
-
-async function saveStats() {
-  await fsp.writeFile(STATS_PATH, JSON.stringify(STATS, null, 2));
-}
-
-async function loadTrainer() {
-  const idTxt = fs.existsSync(IDENTITY_PATH)
-    ? await fsp.readFile(IDENTITY_PATH, "utf8")
-    : "";
-
-  const files = fs.existsSync(KNOW_DIR) ? await fsp.readdir(KNOW_DIR) : [];
-  const md = [];
-  for (const f of files) {
-    if (f.endsWith(".md")) {
-      const p = path.join(KNOW_DIR, f);
-      const t = await fsp.readFile(p, "utf8");
-      md.push(`\n# Archivo: ${f}\n${t}\n`);
-    }
-  }
-
-  TRAINER_IDENTITY = idTxt;
-  TRAINER_KNOWLEDGE = md.join("\n");
-  return {
-    identity_len: TRAINER_IDENTITY.length,
-    knowledge_len: TRAINER_KNOWLEDGE.length
-  };
-}
-
-function sig(str) {
-  return Buffer.from(str).toString("base64").slice(0, 16);
-}
-
-function normalize(text) {
-  return (text || "").replace(/\s+/g, " ").trim();
-}
-
-function guessIntent(q = "") {
-  const s = (q || "").toLowerCase();
-  if (/(tiempo|no tengo tiempo|poco tiempo|agenda|horario|no alcanzo|ocupad)/.test(s)) return "tiempo";
-  if (/(precio|caro|costo|costoso|vale|promoci|oferta|descuento)/.test(s)) return "precio";
-  if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
-  if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
-  if (/(qué es platzi|que es platzi|platzi|pitch)/.test(s)) return "pitch";
-  return "_default";
-}
-
-// ------------------------ OpenAI (fetch directo) ------------------------
-async function callOpenAI(messages) {
-  if (!OPENAI_KEY) {
-    // modo local sin key: devuelve dummy coherente para probar UI
-    return {
-      reply: "Entendido, avanzas con clases cortas y plan anual. ¿Te activo hoy?",
-      why: "Reconozco tu objeción y la convierto en hábito flexible anual.",
-      next: "Confirma y activo su plan anual y primera clase hoy."
-    };
-  }
-
-  const body = {
-    model: OPENAI_MODEL,
-    messages,
-    temperature: 0.4
-  };
-
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body)
-  });
-
-  if (!res.ok) {
-    const t = await res.text().catch(() => "");
-    throw new Error(`OpenAI ${res.status}: ${t}`);
-  }
-
-  const data = await res.json();
-  const text = data?.choices?.[0]?.message?.content || "";
-
-  // Extrae REPLY / WHY / NEXT (formato que imponemos)
-  const reply = (text.match(/REPLY:\s*(.+)/i)?.[1] || text).trim().slice(0, 220);
-  const why   = (text.match(/WHY:\s*(.+)/i)?.[1] || "").trim();
-  const next  = (text.match(/NEXT:\s*(.+)/i)?.[1] || "").trim();
-
-  return { reply, why, next, raw: text };
-}
-
-function buildSystemPrompt() {
-  return [
-    "Eres FerBot, asesor comercial de Platzi para Colombia.",
-    "Tono: español Colombia, amable, dinámico y con energía positiva.",
-    "No vendes cursos sueltos; vendes TRANSFORMACIÓN con suscripción ANUAL.",
-    "Respeta ETAPAS (integracion, sondeo, rebatir, pre_cierre, cierre).",
-    "Prohibido: llamadas, pedir correos, enviar material.",
-    "Formato OBLIGATORIO (3 líneas):",
-    "REPLY: <máx 220c, 1–2 frases, listo para WhatsApp>",
-    "WHY: <por qué (≤100c) explicando la lógica comercial>",
-    "NEXT: <siguiente paso para el asesor (≤100c) orientado a venta anual>"
-  ].join("\n");
-}
-
-// ------------------------ Endpoints ------------------------
+// ---------- HEALTH ----------
 app.get("/health", async (_req, res) => {
   res.json({
     ok: true,
     service: "ferbot-api",
     time: new Date().toISOString(),
-    openai: !!OPENAI_KEY,
-    model_env: OPENAI_MODEL
+    openai: !!process.env.OPENAI_API_KEY,
+    model_env: process.env.OPENAI_MODEL || "none"
   });
 });
 
+// ---------- TRAINER: identidad + conocimiento ----------
+const IDENTITY_PATH = path.join(__dirname, "data", "trainer_identity.txt");
+const KNOW_DIR = path.join(__dirname, "data", "trainer_knowledge");
+
+async function loadTrainer() {
+  const identity = await readText(IDENTITY_PATH);
+  let knowledge = "";
+  if (fs.existsSync(KNOW_DIR)) {
+    const files = (await fsp.readdir(KNOW_DIR)).filter(f => f.endsWith(".md"));
+    for (const f of files) {
+      knowledge += `\n\n### ${f}\n` + await readText(path.join(KNOW_DIR, f));
+    }
+  }
+  return { identity, knowledge };
+}
+
+// Nivel mínimo de guardia para prompts “REPLY/WHY/NEXT”
+function formatGuard(text) {
+  const trimmed = (text || "").trim();
+  if (/REPLY:/i.test(trimmed) && /WHY:/i.test(trimmed) && /NEXT:/i.test(trimmed)) return trimmed;
+  // fallback para modelos que no respeten formato
+  return `REPLY: ${trimmed}\nWHY: Conecto valor con objetivo del cliente.\nNEXT: Proponer siguiente paso anual y activar hoy.`;
+}
+
 app.get("/admin/reloadTrainer", async (_req, res) => {
   try {
-    const r = await loadTrainer();
-    res.json({ ok: true, ...r });
+    const { identity, knowledge } = await loadTrainer();
+    res.json({ ok: true, identity_len: identity.length, knowledge_len: knowledge.length });
+  } catch (err) {
+    res.json({ ok: false, error: String(err) });
+  }
+});
+
+// ---------- STATS (shown + ratings) ----------
+const DATA_DIR   = path.join(__dirname, "data");
+const STATS_JSON = path.join(DATA_DIR, "stats.json");
+const USAGE_ND   = path.join(DATA_DIR, "usage.ndjson");
+
+async function addShown(intent, stage, text) {
+  const now = new Date().toISOString();
+  await appendLine(USAGE_ND, JSON.stringify({ t: now, type: "shown", intent, stage, text }));
+  const stats = fs.existsSync(STATS_JSON) ? JSON.parse(await readText(STATS_JSON)) : { bySig: {} };
+  const sig = `${intent}__${stage}__${text}`;
+  stats.bySig[sig] = stats.bySig[sig] || { intent, stage, text, shown: 0, wins: 0 };
+  stats.bySig[sig].shown += 1;
+  await writeJson(STATS_JSON, stats);
+}
+
+async function addRating(intent, stage, text, rating) {
+  const now = new Date().toISOString();
+  await appendLine(USAGE_ND, JSON.stringify({ t: now, type: "rating", intent, stage, text, rating }));
+  const stats = fs.existsSync(STATS_JSON) ? JSON.parse(await readText(STATS_JSON)) : { bySig: {} };
+  const sig = `${intent}__${stage}__${text}`;
+  stats.bySig[sig] = stats.bySig[sig] || { intent, stage, text, shown: 0, wins: 0 };
+  // scoring: buena=1, regular=0.5, mala=0
+  const score = rating === "good" ? 1 : rating === "regular" ? 0.5 : 0;
+  stats.bySig[sig].wins += score;
+  await writeJson(STATS_JSON, stats);
+}
+
+app.post("/trackShown", async (req, res) => {
+  try {
+    const { intent = "_panel", stage = "integracion", text = "" } = req.body || {};
+    await addShown(intent, stage, text);
+    res.json({ ok: true });
   } catch (e) {
     res.status(500).json({ ok: false, error: String(e) });
   }
 });
 
-// Sirve el panel unificado (emergencia)
-app.get("/agent", (_req, res) => {
-  res.sendFile(path.join(__root, "public", "agent.html"));
+app.post("/trackRate", async (req, res) => {
+  try {
+    const { intent = "_panel", stage = "integracion", text = "", rating = "regular" } = req.body || {};
+    await addRating(intent, stage, text, rating);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: String(e) });
+  }
 });
 
-// Consulta principal del bot
+// ---------- ASSIST_TRAINER ----------
+function guessIntent(q = "") {
+  const s = (q || "").toLowerCase();
+  if (/(tiempo|agenda|horario|no tengo tiempo|ocupad)/.test(s)) return "tiempo";
+  if (/(precio|caro|costo|descuento|promoci)/.test(s)) return "precio";
+  if (/(cert|certificado|certificación)/.test(s)) return "cert";
+  if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
+  if (/(platzi|pitch|que es platzi|qué es platzi)/.test(s)) return "pitch";
+  return "_default";
+}
+
 app.post("/assist_trainer", async (req, res) => {
+  const { question = "", customerName = "Cliente", stage = "sondeo", context = "" } = req.body || {};
+  const intent = guessIntent(question);
+
   try {
-    const { question = "", customerName = "Cliente", stage = "sondeo", context = "" } = req.body || {};
-    const intent = guessIntent(question);
-
-    const system = [
-      buildSystemPrompt(),
-      "",
-      "=== Identidad ===",
-      TRAINER_IDENTITY,
-      "",
-      "=== Conocimiento ===",
-      TRAINER_KNOWLEDGE
-    ].join("\n");
-
+    const { identity, knowledge } = await loadTrainer();
+    const sys = `${identity}\n\n${knowledge}`.trim();
     const user = [
       `Cliente: ${customerName}`,
       `Etapa: ${stage}`,
-      `Intent: ${intent}`,
-      context ? `Contexto: ${context}` : "",
-      `Mensaje del cliente: "${question}"`
+      context ? `Contexto: ${context}` : null,
+      `Mensaje: ${question}`,
+      `Formato estricto (máx 220c):`,
+      `REPLY: ...`,
+      `WHY: ... (breve, didáctico)`,
+      `NEXT: ... (paso accionable anual, sin llamadas ni enviar material)`,
     ].filter(Boolean).join("\n");
 
-    const messages = [
-      { role: "system", content: system },
-      { role: "user", content: user }
-    ];
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const chat = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-5",
+      messages: [
+        { role: "system", content: sys },
+        { role: "user",   content: user }
+      ],
+      temperature: 0.7,
+      max_tokens: 320
+    });
 
-    const out = await callOpenAI(messages);
-    const reply = normalize(out.reply);
-    const why = normalize(out.why);
-    const next = normalize(out.next);
+    const raw = chat.choices?.[0]?.message?.content || "";
+    const text = formatGuard(raw);
 
-    // tracking de "shown"
-    const key = `${intent}::${stage}::${sig(reply)}`;
-    STATS.byKey[key] ??= { intent, stage, text: reply, shown: 0, wins: 0 };
-    STATS.byKey[key].shown++;
-    await saveStats();
+    // Parse REPLY / WHY / NEXT
+    const reply = (text.match(/REPLY:\s*([\s\S]*?)\n\s*WHY:/i)?.[1] || "").trim() || text.trim();
+    const why   = (text.match(/WHY:\s*([\s\S]*?)\n\s*NEXT:/i)?.[1] || "").trim();
+    const next  = (text.match(/NEXT:\s*([\s\S]*)$/i)?.[1] || "").trim();
+
+    await addShown(intent, stage, reply);
 
     res.json({
       ok: true,
@@ -229,48 +172,30 @@ app.post("/assist_trainer", async (req, res) => {
         reply, why, next,
         guide: `POR QUÉ: ${why} · SIGUIENTE PASO: ${next}`,
         sections: { [stage]: reply },
-        model: OPENAI_MODEL,
+        model: process.env.OPENAI_MODEL || "gpt-5",
         confidence: 0.9,
-        intent,
-        stage,
-        persona: { name: "FerBot", brand: "Platzi" }
+        intent, stage
       }
     });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: String(e) });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: String(err) });
   }
 });
 
-// Calificación desde extensión o panel
-app.post("/trackRate", async (req, res) => {
-  try {
-    const { intent = "_default", stage = "sondeo", text = "", rating = "good" } = req.body || {};
-    const key = `${intent}::${stage}::${sig(text)}`;
-    STATS.byKey[key] ??= { intent, stage, text, shown: 0, wins: 0 };
-    if (rating === "good") STATS.byKey[key].wins += 1;
-    if (rating === "regular") STATS.byKey[key].wins += 0.5;
-    // "mala" no suma
-    await saveStats();
-    res.json({ ok: true });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: String(e) });
-  }
+// ---------- PANEL UNIFICADO ----------
+app.get(["/agent", "/panel"], (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "agent.html"));
 });
 
-// JSON crudo de stats (para gráficos si quieres)
-app.get("/admin/usage.json", async (_req, res) => {
-  await loadStats();
-  res.json({ ok: true, stats: STATS });
+// ---------- USO / ADMIN ----------
+app.get("/admin/usage", async (_req, res) => {
+  const stats = fs.existsSync(STATS_JSON) ? JSON.parse(await readText(STATS_JSON)) : { bySig: {} };
+  const rows = Object.values(stats.bySig);
+  rows.sort((a, b) => (b.wins / Math.max(1, b.shown)) - (a.wins / Math.max(1, a.shown)));
+  res.json({ ok: true, rows, total: rows.length });
 });
 
-// Redirecciones amigables que pediste antes
-app.get("/admin/dashboard", (_req, res) => res.redirect("/agent"));
-app.get("/admin/usability", (_req, res) => res.redirect("/agent"));
-
-// Boot
-await ensureFiles();
-await loadStats();
-await loadTrainer();
+// ---------- START ----------
 app.listen(PORT, () => {
-  console.log(`[FerBot] API arriba en http://localhost:${PORT}`);
+  console.log(`FerBot API ready on :${PORT}`);
 });
