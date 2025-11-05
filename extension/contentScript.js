@@ -1,21 +1,33 @@
-// extension/contentScript.js — FerBot (Render fijo) con FAB movible, panel con X, countdown, sentimiento y ratings 1-vez.
+// FerBot content script — FAB + Panel con botón X, allowlist por dominio y atajo teclado.
+// Lee allowlist desde chrome.storage.sync. Si dominio no está activo, no muestra el FAB.
+// Modo debug: si localStorage.ferbot_force_on === "1", muestra FAB en cualquier dominio.
+
 (() => {
-  const BASE = "https://ferbot-api.onrender.com";
+  const BASE = "https://ferbot-api.onrender.com"; // API en Render (fijo)
   const PLATZI_GREEN = "#97C93E";
   const DARK = "#0b0f19";
 
+  // Dominios activos por defecto
   const DEFAULT_ALLOW = {
     "app.hilos.io": true,
     "web.whatsapp.com": true,
     "fsalas-ship-it.github.io": true,
     "ferbot-api.onrender.com": true
   };
-  const HARD_BLOCK = /^(chrome:|chrome-extension:|edge:|moz-extension:|about:|file:|chromewebstore.google.com)/i;
+
+  const HARD_BLOCK = /^(chrome:|chrome-extension:|edge:|moz-extension:|about:|file:|chromewebstore\.google\.com)/i;
 
   if (window.__ferbot_loaded__) return;
   window.__ferbot_loaded__ = true;
 
-  if (HARD_BLOCK.test(location.protocol) || /chromewebstore\.google\.com/.test(location.host)) return;
+  if (HARD_BLOCK.test(location.protocol) || /chromewebstore\.google\.com/.test(location.host)) {
+    return;
+  }
+
+  // DEBUG FORCE (opcional)
+  const FORCE = (() => {
+    try { return localStorage.getItem("ferbot_force_on") === "1"; } catch { return false; }
+  })();
 
   function getAllowlist() {
     return new Promise((resolve) => {
@@ -28,7 +40,9 @@
       }
     });
   }
+
   function isAllowedHost(allow) {
+    if (FORCE) return true; // bypass temporal
     const host = location.hostname;
     if (allow[host]) return true;
     const parts = host.split(".");
@@ -39,7 +53,6 @@
     return false;
   }
 
-  // Styles
   const style = document.createElement("style");
   style.id = "ferbot-styles";
   style.textContent = `
@@ -73,7 +86,10 @@
     width:24px; height:24px; border-radius:6px; background:#121a2b; color:#cbd5e1; border:1px solid rgba(255,255,255,.12);
     display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; line-height:1;
   }
-  .ferbot-signal{ display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#94a3b8; background:#121a2b; border:1px solid rgba(255,255,255,.10); border-radius:999px; padding:4px 8px; }
+  .ferbot-signal{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#94a3b8;
+    background:#121a2b; border:1px solid rgba(255,255,255,.10); border-radius:999px; padding:4px 8px;
+  }
   .ferbot-bullet{ width:8px; height:8px; border-radius:12px; background:#ef4444; }
   .ferbot-bullet.ambar{ background:#f59e0b; }
   .ferbot-bullet.verde{ background:#22c55e; }
@@ -87,11 +103,17 @@
   .ferbot-input, .ferbot-output{
     width:100%; min-height:92px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
     background:#0f1524; color:#dbeafe; outline:none; padding:8px 9px; resize:vertical;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto; font-size:13px; box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto; font-size:13px;
+    box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02);
   }
   .ferbot-output{ min-height:86px; }
-  .ferbot-select, .ferbot-name, .ferbot-context{ width:100%; padding:7px 9px; border-radius:9px; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12); font-size:13px; }
-  .ferbot-footer{ position:absolute; left:0; right:0; bottom:0; display:flex; gap:6px; padding:8px 10px; background:rgba(255,255,255,.04); border-top:1px solid rgba(255,255,255,.08); flex-wrap:wrap; }
+  .ferbot-select, .ferbot-name, .ferbot-context{
+    width:100%; padding:7px 9px; border-radius:9px; background:#0f1524; color:#dbeafe; border:1px solid rgba(255,255,255,.12); font-size:13px;
+  }
+  .ferbot-footer{
+    position:absolute; left:0; right:0; bottom:0; display:flex; gap:6px; padding:8px 10px;
+    background:rgba(255,255,255,.04); border-top:1px solid rgba(255,255,255,.08); flex-wrap:wrap;
+  }
   .ferbot-btn{ flex:1; padding:7px 8px; border-radius:9px; border:0; cursor:pointer; font-weight:800; font-size:12px; }
   .ferbot-primary{ background:${PLATZI_GREEN}; color:${DARK}; }
   .ferbot-ghost{ background:#1b2333; color:#cbd5e1; }
@@ -112,7 +134,6 @@
     b.textContent = "🤖";
     document.body.appendChild(b);
 
-    // Drag FAB
     let drag=false, offX=0, offY=0;
     b.addEventListener("mousedown",(e)=>{ drag=true; offX = e.clientX - b.getBoundingClientRect().left; offY = e.clientY - b.getBoundingClientRect().top; });
     window.addEventListener("mousemove",(e)=>{ if(!drag) return; b.style.right="auto"; b.style.bottom="auto"; b.style.left=`${e.clientX-offX}px`; b.style.top=`${e.clientY-offY}px`; });
@@ -200,7 +221,7 @@
       </div>
     `;
 
-    // Drag panel
+    // Drag del panel
     const drag = div.querySelector("#ferbot-drag-bar");
     let dragging=false, dx=0, dy=0;
     drag.addEventListener("mousedown",(e)=>{
@@ -212,7 +233,7 @@
     window.addEventListener("mousemove",(e)=>{ if(!dragging) return; div.style.left=`${e.clientX-dx}px`; div.style.top=`${e.clientY-dy}px`; });
     window.addEventListener("mouseup",()=> dragging=false);
 
-    // Close X
+    // Cerrar con X
     div.querySelector("#ferbot-close").onclick = () => { div.remove(); panel = null; };
 
     // Refs
@@ -233,11 +254,9 @@
     const btnReg  = div.querySelector("#ferbot-rate-regular");
     const btnBad  = div.querySelector("#ferbot-rate-bad");
 
-    // Persist
     nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_name", nameEl.value.trim()));
     autoEl.addEventListener("change", ()=> localStorage.setItem("ferbot_autopaste", autoEl.checked ? "1" : "0"));
 
-    // Sentiment
     function updateSentimentBadge(text){
       const s = (text||"").toLowerCase();
       let cls = "neu", t = "Neutral";
@@ -249,6 +268,7 @@
       badge.classList.add(cls);
       badgeTxt.textContent = t;
     }
+
     function captureSelectionIntoInput() {
       try { const sel = window.getSelection()?.toString()?.trim() || ""; if (sel) input.value = sel; } catch {}
       updateSentimentBadge(input.value);
@@ -258,14 +278,13 @@
     document.addEventListener("mouseup", () => setTimeout(captureSelectionIntoInput, 30));
     input.addEventListener("input", ()=> updateSentimentBadge(input.value));
 
-    // Ratings hidden until generate
     toggleRatings(false);
     let lastReplyForRating = null;
 
-    // Countdown
     let t0 = 0, iv = null;
     function startTimer(){
-      stopTimer(); t0 = performance.now();
+      stopTimer();
+      t0 = performance.now();
       setBullet("rojo");
       iv = setInterval(()=>{
         const dt = (performance.now()-t0)/1000;
@@ -289,11 +308,13 @@
       const stage = stageEl.value;
       const context = (ctxEl.value || "").trim();
 
-      guide.value = ""; output.value = ""; toggleRatings(false);
-      startTimer();
+      guide.value = "";
+      output.value = "";
+      toggleRatings(false);
 
+      startTimer();
       try{
-        const body = { question:q, customerName:name, stage, context };
+        const body = { question:q, customerName:name, stage, context, intent: guessIntent(q) };
         const res = await fetch(`${BASE}/assist_trainer`, {
           method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body)
         });
@@ -319,9 +340,9 @@
         lastReplyForRating = reply;
         toggleRatings(true);
 
-        btnGood.onclick = () => doRateAndHide("good",    lastReplyForRating, stage, q);
-        btnReg.onclick  = () => doRateAndHide("regular", lastReplyForRating, stage, q);
-        btnBad.onclick  = () => doRateAndHide("bad",     lastReplyForRating, stage, q);
+        btnGood.onclick = () => doRateAndHide("good", lastReplyForRating, stage);
+        btnReg.onclick  = () => doRateAndHide("regular", lastReplyForRating, stage);
+        btnBad.onclick  = () => doRateAndHide("bad", lastReplyForRating, stage);
       }catch(e){
         stopTimer();
         alert("No se pudo generar. Verifica que el servidor esté arriba.");
@@ -329,16 +350,18 @@
     };
 
     btnClear.onclick = () => {
-      guide.value = ""; output.value = ""; toggleRatings(false);
-      stopTimer(); setBullet("rojo"); timerEl.textContent = "0.0s";
+      guide.value = "";
+      output.value = "";
+      toggleRatings(false);
+      stopTimer(); setBullet("rojo"); document.getElementById("ferbot-timer").textContent = "0.0s";
     };
 
-    async function doRateAndHide(rating, replyText, stage, q){
+    async function doRateAndHide(rating, replyText, stage){
       if (!replyText) return;
       try{
         await fetch(`${BASE}/trackRate`, {
           method:"POST", headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ intent: guessIntent(q), stage, text: replyText, rating })
+          body: JSON.stringify({ intent: guessIntent(input.value), stage, text: replyText, rating })
         });
       }catch(_){}
       toggleRatings(false);
@@ -402,7 +425,6 @@
     } catch {}
   }
 
-  // Hotkey: Alt+Shift+F para abrir/cerrar (si FAB existe)
   document.addEventListener("keydown", (e) => {
     if (e.altKey && e.shiftKey && (e.key === "F" || e.key === "f")) {
       if (!fab) return;
@@ -411,9 +433,9 @@
     }
   });
 
-  // Arranque condicionado por allowlist
   getAllowlist().then((allow) => {
     if (!isAllowedHost(allow)) return;
     fab = buildFab();
   });
+
 })();
