@@ -1,49 +1,25 @@
 {
   "manifest_version": 3,
   "name": "FerBot",
-  "version": "1.0.0",
-  "description": "FerBot: panel comercial en sitios permitidos (Hilos, WhatsApp Web, etc.)",
+  "description": "Asistente comercial (WhatsApp-friendly) con WHY/NEXT, countdown, sentimiento y ratings.",
+  "version": "1.5.1-debug",
   "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
   },
-
   "permissions": ["storage"],
   "host_permissions": [
-    "*://app.hilos.io/*",
-    "*://web.whatsapp.com/*",
-    "*://fsalas-ship-it.github.io/*",
-    "*://ferbot-api.onrender.com/*",
-    "*://chatgpt.com/*",
-    "*://chat.openai.com/*"
+    "https://ferbot-api.onrender.com/*"
   ],
-
   "content_scripts": [
     {
-      "matches": [
-        "*://app.hilos.io/*",
-        "*://web.whatsapp.com/*",
-        "*://fsalas-ship-it.github.io/*",
-        "*://ferbot-api.onrender.com/*",
-        "*://chatgpt.com/*",
-        "*://chat.openai.com/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["contentScript.js"],
-      "run_at": "document_idle"
+      "run_at": "document_end"
     }
   ],
-
-  "web_accessible_resources": [
-    {
-      "resources": ["fab-move.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
-
   "action": {
-    "default_popup": "popup.html",
     "default_title": "FerBot"
   }
 }
