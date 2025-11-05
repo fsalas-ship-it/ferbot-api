@@ -3,6 +3,7 @@
   "name": "FerBot",
   "description": "Asistente comercial (FerBot) para web y Hilos. FAB arrastrable + panel.",
   "version": "1.4.0",
+
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
@@ -10,23 +11,13 @@
     "128": "icon128.png"
   },
 
-  "action": {
-    "default_title": "FerBot"
-  },
+  "action": { "default_title": "FerBot" },
 
   "content_scripts": [
     {
-      "matches": [
-        "https://app.hilos.io/*",
-        "https://*.hilos.io/*",
-        "https://web.whatsapp.com/*",
-        "https://*.whatsapp.com/*",
-        "https://*.facebook.com/*",
-        "https://*.instagram.com/*",
-        "https://*/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["contentScript.js"],
-      "run_at": "document_idle",
+      "run_at": "document_end",
       "all_frames": true
     }
   ],
@@ -36,18 +27,11 @@
     "https://*/*"
   ],
 
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
 
   "web_accessible_resources": [
     {
-      "resources": [
-        "icon16.png",
-        "icon32.png",
-        "icon48.png",
-        "icon128.png"
-      ],
+      "resources": ["icon16.png","icon32.png","icon48.png","icon128.png"],
       "matches": ["<all_urls>"]
     }
   ]
