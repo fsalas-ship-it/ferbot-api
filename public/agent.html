@@ -2,265 +2,168 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>FerBot — Agente</title>
+  <title>FerBot · Panel unificado</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root{
-      --green:#97C93E; --bg:#0b0f19; --card:#0f1524; --muted:#94a3b8; --text:#e2e8f0; --ink:#dbeafe;
-      --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.06); --warn:#f59e0b; --good:#19c37d; --bad:#ef4444;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial; color:var(--text);
-      background:
-        radial-gradient(1200px 700px at 75% -10%, rgba(151,201,62,.14), transparent 60%),
-        radial-gradient(900px 600px at -20% 20%, rgba(56,189,248,.10), transparent 55%),
-        var(--bg);
-      overflow-y:auto;
-    }
-    .mesh{
-      position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend:screen;
-      background:
-        linear-gradient(transparent 49%, rgba(255,255,255,.07) 50%, transparent 51%) 0 0/36px 36px,
-        linear-gradient(90deg, transparent 49%, rgba(255,255,255,.07) 50%, transparent 51%) 0 0/36px 36px;
-      animation: drift 28s linear infinite;
-    }
-    @keyframes drift{ 0%{transform:translateY(0)} 100%{transform:translateY(-36px)} }
-
-    .wrap{max-width:920px; margin:0 auto; padding:36px 16px 56px;}
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 42px rgba(0,0,0,.35);
-      backdrop-filter: blur(6px);
-    }
-    .pad{padding:16px}
-    .row{display:flex; gap:10px; align-items:center; justify-content:space-between}
-    .title{font-weight:800; letter-spacing:.3px; font-size:18px}
-    .chip{
-      display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
-      background:#121a2b; border:1px solid var(--line); color:#cbd5e1; font-size:12px
-    }
-    .dot{width:8px; height:8px; border-radius:999px; background:#ef4444}
-    .dot.warn{background:var(--warn)} .dot.good{background:#22c55e}
-
-    .grid{display:grid; gap:10px}
-    .cols-2{grid-template-columns:1fr 220px}
-    .cols-2 > *{min-width:0}
-
-    label{display:block; font-size:12px; color:var(--muted); margin:8px 2px 6px}
-    input,select,textarea{
-      width:100%; border-radius:12px; border:1px solid var(--line); background:#0f1524;
-      color:var(--ink); padding:10px 12px; outline:none; font-size:14px;
-      box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02);
-    }
-    textarea{min-height:112px; resize:vertical}
-    .out{min-height:108px}
-    .guide{min-height:92px}
-
-    .footer{
-      display:flex; gap:10px; padding:12px 16px; border-top:1px solid var(--line);
-      background:rgba(255,255,255,.04); border-radius:0 0 16px 16px; flex-wrap:wrap;
-    }
-    .btn{
-      border:0; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer; font-size:13px
-    }
-    .btn-primary{ background:var(--green); color:#0b0f19 }
-    .btn-ghost{ background:#121a2b; color:var(--text); border:1px solid var(--line) }
-    .btn-good{ background:var(--good); color:#062d1f; display:none }
-    .btn-regular{ background:#fbbf24; color:#332200; display:none }
-    .btn-bad{ background:var(--bad); color:#fff; display:none }
-
-    .badge{
-      font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--line);
-      background:#101727; color:#cbd5e1; display:inline-flex; align-items:center; gap:6px
-    }
-    .badge .b{width:7px;height:7px;border-radius:999px;background:#64748b}
-    .badge.pos .b{background:#22c55e}
-    .badge.neu .b{background:#f59e0b}
-    .badge.neg .b{background:#ef4444}
-
-    .made{margin-top:16px; color:var(--muted); font-size:13px}
-    .heart{color:var(--green)}
-  </style>
+  <link rel="stylesheet" href="/panel.css" />
 </head>
 <body>
-  <div class="mesh"></div>
   <div class="wrap">
-    <div class="card">
-      <div class="pad">
-        <div class="row">
-          <div class="title">FerBot — Agente</div>
-          <div class="row" style="gap:8px">
-            <div class="chip"><span id="bullet" class="dot"></span><span id="timer">0.0s</span></div>
-            <div id="sent" class="badge neu" title="Análisis de sentimiento"><span class="b"></span><span id="sentTxt">Neutral</span></div>
-          </div>
-        </div>
+    <h1>FerBot · Panel unificado</h1>
 
-        <div class="grid cols-2" style="margin-top:8px">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div class="pill">
+          <span class="dot" id="healthDot"></span>
+          <span id="healthText">Revisando API…</span>
+        </div>
+        <div class="pill"><span class="timer" id="timer">0.0s</span></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="card">
+        <div class="row">
           <div>
             <label>Nombre del cliente</label>
-            <input id="name" placeholder="Ej. Laura" />
+            <input id="name" placeholder="Ej. Laura"/>
           </div>
           <div>
             <label>Etapa</label>
             <select id="stage">
               <option value="integracion">Integración</option>
-              <option value="sondeo">Sondeo</option>
+              <option value="sondeo" selected>Sondeo</option>
+              <option value="rebatir">Rebatir</option>
               <option value="pre_cierre">Pre-cierre</option>
-              <option value="rebatir" selected>Rebatir</option>
               <option value="cierre">Cierre</option>
             </select>
           </div>
         </div>
 
         <label>Contexto (opcional, para el bot)</label>
-        <input id="ctx" placeholder="Ej. preguntó por certificaciones; poco tiempo" />
+        <input id="context" placeholder="Ej. preguntó por certificaciones; poco tiempo" />
 
-        <label>Texto del cliente</label>
-        <textarea id="in" placeholder="Pega aquí lo que dijo el cliente o su objeción…"></textarea>
+        <label style="margin-top:8px">Texto del cliente</label>
+        <textarea id="question" placeholder="Escribe la objeción/pregunta…"></textarea>
 
-        <label>Explicación (POR QUÉ + SIGUIENTE PASO)</label>
-        <textarea id="guide" class="guide" placeholder="Aquí verás POR QUÉ y SIGUIENTE PASO."></textarea>
+        <label style="margin-top:8px">Explicación (POR QUÉ + SIGUIENTE PASO)</label>
+        <textarea id="guide" readonly placeholder="Aquí verás POR QUÉ y el SIGUIENTE PASO."></textarea>
 
-        <label>Respuesta (lista para pegar)</label>
-        <textarea id="out" class="out" placeholder="Mensaje corto para el cliente (≤ 2 frases)."></textarea>
+        <label style="margin-top:8px">Respuesta (lista para pegar)</label>
+        <textarea id="reply" readonly placeholder="Mensaje breve para el cliente (≤ 2 frases)."></textarea>
+
+        <div class="btns">
+          <button class="btn primary" id="generate">Generar</button>
+          <button class="btn ghost" id="clear">Clear</button>
+          <button class="btn" id="good" style="background:#19c37d;color:#062d1f;display:none">👍 Buena</button>
+          <button class="btn" id="regular" style="background:#fbbf24;color:#332200;display:none">😐 Regular</button>
+          <button class="btn" id="bad" style="background:#ef4444;color:#fff;display:none">👎 Mala</button>
+        </div>
       </div>
 
-      <div class="footer">
-        <button id="gen" class="btn btn-primary">Generar</button>
-        <button id="clr" class="btn btn-ghost">Clear</button>
-        <button id="rg" class="btn btn-good">👍 Buena</button>
-        <button id="rm" class="btn btn-regular">😐 Regular</button>
-        <button id="rb" class="btn btn-bad">👎 Mala</button>
+      <div class="card">
+        <label>Sentimiento del cliente</label>
+        <div class="pill" id="sentBadge"><span class="dot neu" id="sentDot"></span><span id="sentText">Neutral</span></div>
+
+        <div style="margin-top:16px">
+          <label>Logs / estado</label>
+          <textarea id="logs" readonly style="min-height:220px"></textarea>
+        </div>
       </div>
     </div>
-
-    <div class="made">Hecho con <span class="heart">❤</span> FerBot v1.4.0</div>
   </div>
 
-  <script>
-  (function(){
-    const BASE = (localStorage.getItem("ferbot_api_base") || "https://ferbot-api.onrender.com").replace(/\/+$/,'');
-    const el = s => document.querySelector(s);
+<script>
+const BASE = location.origin; // mismo servidor
+const healthDot = document.getElementById('healthDot');
+const healthText = document.getElementById('healthText');
 
-    const nameEl = el('#name'), stageEl = el('#stage'), ctxEl = el('#ctx'), inEl = el('#in'),
-          guideEl = el('#guide'), outEl = el('#out'),
-          genBtn = el('#gen'), clrBtn = el('#clr'),
-          goodBtn = el('#rg'), regBtn = el('#rm'), badBtn = el('#rb'),
-          timerEl = el('#timer'), bullet = el('#bullet'), sent = el('#sent'), sentTxt = el('#sentTxt');
+const nameEl = document.getElementById('name');
+const stageEl = document.getElementById('stage');
+const ctxEl = document.getElementById('context');
+const qEl = document.getElementById('question');
+const guideEl = document.getElementById('guide');
+const replyEl = document.getElementById('reply');
+const logEl = document.getElementById('logs');
 
-    // Persistencia mínima
-    nameEl.value = localStorage.getItem("ferbot_agent_name") || "";
-    nameEl.addEventListener("change", ()=> localStorage.setItem("ferbot_agent_name", nameEl.value.trim()));
+const btnGen = document.getElementById('generate');
+const btnClear = document.getElementById('clear');
+const btnGood = document.getElementById('good');
+const btnReg = document.getElementById('regular');
+const btnBad = document.getElementById('bad');
 
-    // Sentimiento heurístico
-    function updSent(txt){
-      const s = (txt||"").toLowerCase();
-      let mode="neu", t="Neutral";
-      const pos = /(gracias|excelente|me interesa|bien|listo|perfecto|genial|buen)/i;
-      const neg = /(no puedo|caro|difícil|malo|no me gusta|no sirve|no tengo tiempo|no sé|no se|no quiero|muy caro)/i;
-      if (neg.test(s)){ mode="neg"; t="Negativo"; }
-      else if (pos.test(s)){ mode="pos"; t="Positivo"; }
-      sent.classList.remove("pos","neu","neg"); sent.classList.add(mode); sentTxt.textContent=t;
-    }
-    inEl.addEventListener("input", ()=> updSent(inEl.value));
+const timerEl = document.getElementById('timer');
+let t0=0, iv=null;
 
-    // Countdown
-    let t0=0, iv=null;
-    function setBullet(c){ bullet.classList.remove('warn','good'); if(c==='warn') bullet.classList.add('warn'); if(c==='good') bullet.classList.add('good'); }
-    function startTimer(){
-      stopTimer(); t0=performance.now(); setBullet(''); timerEl.textContent="0.0s";
-      iv=setInterval(()=>{
-        const dt=(performance.now()-t0)/1000; timerEl.textContent=dt.toFixed(1)+"s";
-        if(dt<2) setBullet('');
-        else if(dt<4) setBullet('warn');
-        else setBullet('good');
-      },100);
-    }
-    function stopTimer(){ if(iv){clearInterval(iv); iv=null;} }
+function startTimer(){
+  stopTimer(); t0 = performance.now();
+  iv = setInterval(()=>{ timerEl.textContent = ((performance.now()-t0)/1000).toFixed(1)+'s'; }, 100);
+}
+function stopTimer(){ if(iv){ clearInterval(iv); iv=null; } }
 
-    // Ratings toggle
-    function toggleRatings(show){
-      goodBtn.style.display = show ? "inline-block" : "none";
-      regBtn.style.display  = show ? "inline-block" : "none";
-      badBtn.style.display  = show ? "inline-block" : "none";
-    }
-    toggleRatings(false);
+async function checkHealth(){
+  try{
+    const r = await fetch(BASE + '/health'); const j = await r.json();
+    healthText.textContent = j.ok ? `API OK (${j.model_env})` : 'Error API';
+    healthDot.className = 'dot ' + (j.ok ? 'pos': 'neg');
+  }catch{ healthText.textContent = 'Sin conexión'; healthDot.className = 'dot neg'; }
+}
+checkHealth();
 
-    // Intent heurístico
-    function guessIntent(q=""){
-      const s=(q||"").toLowerCase();
-      if (/(tiempo|no tengo tiempo|agenda|horario|no alcanzo|ocupad)/.test(s)) return "tiempo";
-      if (/(precio|caro|costo|promoci|oferta|descuento)/.test(s)) return "precio";
-      if (/(cert|certificado|certificación|certificaciones)/.test(s)) return "cert";
-      if (/(coursera|udemy|alura|competenc)/.test(s)) return "competencia";
-      if (/(qué es platzi|que es platzi|platzi|pitch)/.test(s)) return "pitch";
-      return "_panel";
-    }
+function setSent(s) {
+  const dot = document.getElementById('sentDot');
+  const txt = document.getElementById('sentText');
+  dot.classList.remove('pos','neu','neg'); dot.classList.add(s.cls);
+  txt.textContent = s.text;
+}
+function analyzeSent(t) {
+  t = (t||'').toLowerCase();
+  const neg = /(no puedo|caro|difícil|malo|no tengo tiempo|no sirve|no sé|no se)/i;
+  const pos = /(gracias|excelente|me interesa|bien|listo|perfecto|genial)/i;
+  if (neg.test(t)) return {cls:'neg', text:'Negativo'};
+  if (pos.test(t)) return {cls:'pos', text:'Positivo'};
+  return {cls:'neu', text:'Neutral'};
+}
+qEl.addEventListener('input', ()=> setSent(analyzeSent(qEl.value)));
 
-    // Generar
-    genBtn.onclick = async ()=>{
-      const q = (inEl.value||"").trim();
-      if(!q){ alert("Escribe o pega el texto del cliente."); return; }
-      updSent(q);
-      outEl.value=""; guideEl.value=""; toggleRatings(false);
-      startTimer();
+function toggleRatings(show){
+  btnGood.style.display = show ? 'inline-block':'none';
+  btnReg.style.display  = show ? 'inline-block':'none';
+  btnBad.style.display  = show ? 'inline-block':'none';
+}
+toggleRatings(false);
 
-      const body = {
-        question:q,
-        customerName: nameEl.value.trim() || "Cliente",
-        stage: stageEl.value,
-        context: (ctxEl.value||"").trim(),
-        intent: guessIntent(q)
-      };
+btnGen.onclick = async () => {
+  const q = (qEl.value||'').trim();
+  if (!q){ alert('Escribe el texto del cliente.'); return; }
+  guideEl.value = ''; replyEl.value = ''; toggleRatings(false);
+  startTimer();
+  try{
+    const body = { question:q, customerName:(nameEl.value||'Cliente'), stage:stageEl.value, context:(ctxEl.value||'') };
+    const r = await fetch(BASE + '/assist_trainer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    stopTimer();
+    if (!r.ok){ const t = await r.text(); alert('Error '+r.status+': '+t); return; }
+    const j = await r.json();
+    replyEl.value = j?.result?.reply || j?.text || '';
+    guideEl.value = `POR QUÉ: ${(j?.result?.why||'')}\nSIGUIENTE PASO: ${(j?.result?.next||'')}`;
+    logEl.value = JSON.stringify(j, null, 2);
+    toggleRatings(true);
+  }catch(e){
+    stopTimer(); alert('No se pudo conectar al servidor.'); console.error(e);
+  }
+};
 
-      try{
-        const res = await fetch(`${BASE}/assist_trainer`, {
-          method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body)
-        });
-        stopTimer(); setBullet('good');
-        if(!res.ok){
-          const t = await res.text().catch(()=> "");
-          alert(`No se pudo generar (HTTP ${res.status}). ${t||""}`);
-          return;
-        }
-        const j = await res.json();
-        const reply = (j?.result?.reply || j?.text || "").trim();
-        const why   = (j?.result?.why  || "").trim();
-        const next  = (j?.result?.next || "").trim();
+btnClear.onclick = ()=>{ guideEl.value=''; replyEl.value=''; toggleRatings(false); stopTimer(); timerEl.textContent='0.0s'; };
 
-        outEl.value   = reply;
-        guideEl.value = `POR QUÉ: ${why}\nSIGUIENTE PASO: ${next}`;
-
-        // mostrar ratings 1 vez
-        toggleRatings(true);
-        const ratePayload = (rating)=>({
-          intent: guessIntent(q), stage: stageEl.value, text: reply, rating
-        });
-        goodBtn.onclick = async()=>{ try{ await fetch(`${BASE}/trackRate`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(ratePayload("good"))}); }catch{} toggleRatings(false); };
-        regBtn.onclick  = async()=>{ try{ await fetch(`${BASE}/trackRate`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(ratePayload("regular"))}); }catch{} toggleRatings(false); };
-        badBtn.onclick  = async()=>{ try{ await fetch(`${BASE}/trackRate`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(ratePayload("bad"))}); }catch{} toggleRatings(false); };
-
-      }catch(e){
-        stopTimer(); setBullet('');
-        alert("No se pudo generar. Revisa que el servidor esté arriba.");
-      }
-    };
-
-    // Clear
-    clrBtn.onclick = ()=>{ outEl.value=""; guideEl.value=""; toggleRatings(false); stopTimer(); setBullet(''); timerEl.textContent="0.0s"; };
-
-    // Salud rápida a /health
-    (async()=>{
-      try{
-        const r = await fetch(`${BASE}/health`); if(!r.ok) throw 0;
-      }catch(_){
-        console.warn("No responde /health en", BASE);
-      }
-    })();
-
-  })();
-  </script>
+async function rate(type){
+  const text = (replyEl.value||'').trim();
+  if (!text) return;
+  try{
+    await fetch(BASE + '/trackRate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ intent:'_panel', stage:stageEl.value, text, rating:type }) });
+  }catch{} toggleRatings(false);
+}
+btnGood.onclick = ()=> rate('good');
+btnReg.onclick  = ()=> rate('regular');
+btnBad.onclick  = ()=> rate('bad');
+</script>
 </body>
 </html>
