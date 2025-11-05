@@ -1,25 +1,54 @@
 {
   "manifest_version": 3,
   "name": "FerBot",
-  "description": "Asistente comercial (WhatsApp-friendly) con WHY/NEXT, countdown, sentimiento y ratings.",
-  "version": "1.5.1-debug",
+  "description": "Asistente comercial (FerBot) para web y Hilos. FAB arrastrable + panel.",
+  "version": "1.4.0",
   "icons": {
-    "16": "icon-16.png",
-    "48": "icon-48.png",
-    "128": "icon-128.png"
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
-  "permissions": ["storage"],
-  "host_permissions": [
-    "https://ferbot-api.onrender.com/*"
-  ],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "run_at": "document_end"
-    }
-  ],
+
   "action": {
     "default_title": "FerBot"
-  }
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://app.hilos.io/*",
+        "https://*.hilos.io/*",
+        "https://web.whatsapp.com/*",
+        "https://*.whatsapp.com/*",
+        "https://*.facebook.com/*",
+        "https://*.instagram.com/*",
+        "https://*/*"
+      ],
+      "js": ["contentScript.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+
+  "host_permissions": [
+    "https://ferbot-api.onrender.com/*",
+    "https://*/*"
+  ],
+
+  "permissions": [
+    "storage"
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icon16.png",
+        "icon32.png",
+        "icon48.png",
+        "icon128.png"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
